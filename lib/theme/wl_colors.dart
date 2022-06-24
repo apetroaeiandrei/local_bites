@@ -1,0 +1,31 @@
+import 'package:flutter/material.dart';
+
+abstract class WlColors {
+  static const textColor = Color(0xff1c1c1c);
+
+  //App bar color, separators, Fab icon
+  static const primary = Color(0xFF3E8B89);
+  //Loading Indicator
+  static const primaryVariant = Color(0xFF2E6665);
+  // App bar buttons, Fab background
+  static const onPrimary = Color(0xFFFFFFFF);
+  // Card color
+  static const surface = Color(0xFFeef0eb);
+  // Buttons disabled base color
+  static const onSurface = primary;
+  // Used for selection checkmarks of food and tab indicator
+  static const secondary = Color(0xFFFFFFFF);
+
+  //Error flushbar
+  static const error = Color(0xFFD73A44);
+  //Flushbar error text
+  static const onError = Color(0xFFFFFFFF);
+
+  static const unused = Color(0xFFFFFFFF);
+
+  //Background gradient
+  static const backgroundStart = Color(0xffcae7e0);
+  static const backgroundEnd = Color(0xff29577a);
+
+  static const notificationGreen = Color(0xFF22C393);
+}

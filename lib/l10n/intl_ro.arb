@@ -1,0 +1,10 @@
+{
+  "@@locale": "ro",
+  "auth_header": "Autorizare",
+  "auth_login": "Autentificare",
+  "auth_register": "Înregistrare",
+  "auth_email_placeholder": "Adresa de e-mail",
+  "auth_password_placeholder": "Parolă",
+  "auth_forgot_password": "Ai uitat parola?",
+  "auth_reset_password": "Resetare parolă"
+}

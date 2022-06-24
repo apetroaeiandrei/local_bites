@@ -1,31 +1,63 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:local/repos/auth_repo.dart';
+import 'package:local/routes.dart';
+import 'package:local/theme/theme.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'auth/auth_cubit.dart';
+import 'auth/auth_screen.dart';
+import 'firebase_options.dart';
+import 'generated/l10n.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  final authRepo = AuthRepo();
+  final isLoggedIn = authRepo.isLoggedIn();
+
+  runApp(MultiRepositoryProvider(
+    providers: [
+      RepositoryProvider<AuthRepo>(
+        create: (context) => authRepo,
+      ),
+    ],
+    child: MyApp(
+      isLoggedIn: isLoggedIn,
+    ),
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+  const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
+  final bool isLoggedIn;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+      localizationsDelegates: const [
+        // 1
+        S.delegate,
+        // 2
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
+      theme: AppThemeData().appThemeData,
+      initialRoute: isLoggedIn ? Routes.admin : Routes.auth,
+      routes: {
+        Routes.auth: (context) => BlocProvider<AuthCubit>(
+          create: (context) => AuthCubit(
+            RepositoryProvider.of<AuthRepo>(context),
+          ),
+          child: AuthScreen(),
+        ),
+      },);
   }
 }
 

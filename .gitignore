@@ -53,3 +53,4 @@ pubspec.lock
 local.iml
 .dart_tool/
 build/
+lib/generated/
