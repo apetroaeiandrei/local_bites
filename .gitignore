@@ -48,3 +48,8 @@ Thumbs.db
 *.mov
 *.wmv
 
+pubspec.lock
+.packages
+local.iml
+.dart_tool/
+build/
