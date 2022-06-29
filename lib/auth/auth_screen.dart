@@ -81,6 +81,10 @@ class AuthScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
+                        context.read<AuthCubit>().register(
+                          _emailController.text,
+                          _passwordController.text,
+                        );
                         Navigator.push(
                             context,
                             MaterialPageRoute(

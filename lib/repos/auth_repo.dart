@@ -36,6 +36,22 @@ class AuthRepo {
     }
   }
 
+  Future<bool> setUserDetails(String name, String address, String phoneNumber) async {
+    try {
+      await _firestore.collection(_collectionUsers).doc(_auth.currentUser?.uid).set({
+        "email": _auth.currentUser?.email,
+        "name": name,
+        "uid": _auth.currentUser?.uid,
+        "address": address,
+        "phoneNumber": phoneNumber,
+      });
+      return true;
+    } on Exception catch (e) {
+      debugPrint("Auth failed $e");
+      return false;
+    }
+  }
+
   Future<bool> login(String email, String password) async {
     try {
      await _auth.signInWithEmailAndPassword(

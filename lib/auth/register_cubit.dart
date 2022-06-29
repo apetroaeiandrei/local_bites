@@ -18,4 +18,11 @@ class RegisterCubit extends Cubit<RegisterState> {
       status: success ? AuthStatus.authorized : AuthStatus.unauthorized,
     ));
   }
+
+  setUserDetails(String name, String address, String phoneNumber) async {
+    final success = await _authRepo.setUserDetails(name, address, phoneNumber);
+    emit(state.copyWith(
+      status: success ? AuthStatus.authorized : AuthStatus.unauthorized,
+    ));
+  }
 }

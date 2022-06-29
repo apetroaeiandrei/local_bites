@@ -9,5 +9,8 @@
   "auth_forgot_password": "Ai uitat parola?",
   "auth_reset_password": "Resetare parolă",
   "phone_number": "Număr de telefon",
-  "name": "Nume si prenume"
+  "name": "Nume si prenume",
+  "address": "Adresa",
+  "user_details": "Date personale",
+  "save": "Salveaza"
 }

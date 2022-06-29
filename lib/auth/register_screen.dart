@@ -7,8 +7,9 @@ import '../theme/decorations.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({Key? key}) : super(key: key);
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class RegisterScreen extends StatelessWidget {
                       height: 60,
                     ),
                     Text(
-                      S.of(context).auth_register,
+                      S.of(context).user_details,
                       style: Theme.of(context).textTheme.headline4,
                       textAlign: TextAlign.center,
                     ),
@@ -39,28 +40,16 @@ class RegisterScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.name,
                         decoration: textFieldDecoration(S.of(context).name),
+                        controller: _nameController,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 32),
                       child: TextField(
-                        controller: _emailController,
                         textAlign: TextAlign.center,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: textFieldDecoration(
-                            S.of(context).auth_email_placeholder),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 32),
-                      child: TextField(
-                        controller: _passwordController,
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: true,
-                        autocorrect: false,
-                        decoration: textFieldDecoration(
-                            S.of(context).auth_password_placeholder),
+                        keyboardType: TextInputType.streetAddress,
+                        decoration: textFieldDecoration(S.of(context).address),
+                        controller: _addressController,
                       ),
                     ),
                     Padding(
@@ -70,6 +59,7 @@ class RegisterScreen extends StatelessWidget {
                         keyboardType: TextInputType.number,
                         decoration:
                             textFieldDecoration(S.of(context).phone_number),
+                        controller: _phoneController,
                       ),
                     ),
                     const SizedBox(
@@ -77,12 +67,13 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        context.read<RegisterCubit>().register(
-                              _emailController.text,
-                              _passwordController.text,
-                            );
+                        context.read<RegisterCubit>().setUserDetails(
+                          _nameController.text,
+                          _addressController.text,
+                          _phoneController.text
+                        );
                       },
-                      child: Text(S.of(context).auth_register),
+                      child: Text(S.of(context).save),
                     ),
                   ],
                 ),
