@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/auth/register_cubit.dart';
-import 'package:local/auth/register_screen.dart';
-import 'package:local/repos/auth_repo.dart';
 
 import '../generated/l10n.dart';
-import '../routes.dart';
 import '../theme/decorations.dart';
-import 'auth_cubit.dart';
-import 'auth_status.dart';
 
-class AuthScreen extends StatelessWidget {
-  AuthScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatelessWidget {
+  RegisterScreen({Key? key}) : super(key: key);
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthCubit, AuthState>(
-      listener: (context, state) {
-        if (state.status == AuthStatus.authorized) {
-          Navigator.of(context).pushReplacementNamed(Routes.admin);
-        }
-      },
+    return BlocConsumer<RegisterCubit, RegisterState>(
+      listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
           body: SingleChildScrollView(
@@ -38,9 +29,17 @@ class AuthScreen extends StatelessWidget {
                       height: 60,
                     ),
                     Text(
-                      S.of(context).auth_header,
+                      S.of(context).auth_register,
                       style: Theme.of(context).textTheme.headline4,
                       textAlign: TextAlign.center,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 32),
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.name,
+                        decoration: textFieldDecoration(S.of(context).name),
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 32),
@@ -64,34 +63,24 @@ class AuthScreen extends StatelessWidget {
                             S.of(context).auth_password_placeholder),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 32),
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        decoration:
+                            textFieldDecoration(S.of(context).phone_number),
+                      ),
+                    ),
                     const SizedBox(
                       height: 32,
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        context.read<AuthCubit>().login(
+                        context.read<RegisterCubit>().register(
                               _emailController.text,
                               _passwordController.text,
                             );
-                      },
-                      child: Text(S.of(context).auth_login),
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    BlocProvider<RegisterCubit>(
-                                      create: (context) => RegisterCubit(
-                                          RepositoryProvider.of<AuthRepo>(
-                                              context)),
-                                      child: RegisterScreen(),
-                                    ),
-                                fullscreenDialog: true));
                       },
                       child: Text(S.of(context).auth_register),
                     ),
