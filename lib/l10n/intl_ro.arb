@@ -5,7 +5,6 @@
   "auth_register": "Înregistrare",
   "auth_email_placeholder": "Adresa de e-mail",
   "auth_password_placeholder": "Parolă",
-  "auth_confirm_password_placeholder": "Confirmă parola",
   "auth_forgot_password": "Ai uitat parola?",
   "auth_reset_password": "Resetare parolă",
   "phone_number": "Număr de telefon",

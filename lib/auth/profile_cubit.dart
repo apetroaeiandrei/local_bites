@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import '../repos/auth_repo.dart';
 import 'auth_status.dart';
 
-part 'register_state.dart';
+part 'profile_state.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
   RegisterCubit(this._authRepo)

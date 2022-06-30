@@ -1,4 +1,4 @@
-part of 'register_cubit.dart';
+part of 'profile_cubit.dart';
 
 class RegisterState extends Equatable {
   final AuthStatus status;

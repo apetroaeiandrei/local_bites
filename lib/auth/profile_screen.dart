@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:local/auth/register_cubit.dart';
+import 'package:local/auth/profile_cubit.dart';
 
 import '../generated/l10n.dart';
 import '../theme/decorations.dart';
