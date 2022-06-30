@@ -1,17 +1,17 @@
 part of 'profile_cubit.dart';
 
-class RegisterState extends Equatable {
+class ProfileState extends Equatable {
   final AuthStatus status;
 
   @override
   List<Object?> get props => [status];
 
-  const RegisterState({required this.status});
+  const ProfileState({required this.status});
 
-  RegisterState copyWith({
+  ProfileState copyWith({
     AuthStatus? status,
   }) {
-    return RegisterState(
+    return ProfileState(
       status: status ?? this.status,
     );
   }

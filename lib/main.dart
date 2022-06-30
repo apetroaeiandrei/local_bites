@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:local/auth/profile_cubit.dart';
+import 'package:local/auth/profile_screen.dart';
 import 'package:local/repos/auth_repo.dart';
 import 'package:local/routes.dart';
 import 'package:local/theme/theme.dart';
@@ -56,6 +58,12 @@ class MyApp extends StatelessWidget {
             RepositoryProvider.of<AuthRepo>(context),
           ),
           child: AuthScreen(),
+        ),
+        Routes.profile: (context) => BlocProvider<ProfileCubit>(
+          create: (context) => ProfileCubit(
+            RepositoryProvider.of<AuthRepo>(context),
+          ),
+          child: ProfileScreen(),
         ),
       },);
   }

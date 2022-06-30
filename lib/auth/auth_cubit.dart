@@ -13,7 +13,7 @@ class AuthCubit extends Cubit<AuthState> {
   register(String email, String password) async {
     final success = await _authRepo.register(email, password);
     emit(state.copyWith(
-      status: success ? AuthStatus.authorized : AuthStatus.unauthorized,
+      status: success ? AuthStatus.registeredSuccessfully : AuthStatus.unauthorized,
     ));
   }
 

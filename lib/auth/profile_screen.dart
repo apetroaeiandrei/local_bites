@@ -5,15 +5,15 @@ import 'package:local/auth/profile_cubit.dart';
 import '../generated/l10n.dart';
 import '../theme/decorations.dart';
 
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({Key? key}) : super(key: key);
+class ProfileScreen extends StatelessWidget {
+  ProfileScreen({Key? key}) : super(key: key);
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RegisterCubit, RegisterState>(
+    return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
@@ -67,7 +67,7 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        context.read<RegisterCubit>().setUserDetails(
+                        context.read<ProfileCubit>().setUserDetails(
                           _nameController.text,
                           _addressController.text,
                           _phoneController.text

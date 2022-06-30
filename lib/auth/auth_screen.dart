@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:local/auth/profile_cubit.dart';
-import 'package:local/auth/profile_screen.dart';
-import 'package:local/repos/auth_repo.dart';
 
 import '../generated/l10n.dart';
 import '../routes.dart';
@@ -21,6 +18,18 @@ class AuthScreen extends StatelessWidget {
       listener: (context, state) {
         if (state.status == AuthStatus.authorized) {
           Navigator.of(context).pushReplacementNamed(Routes.admin);
+        }
+        switch (state.status) {
+          case AuthStatus.authorized:
+            {
+              Navigator.of(context).pushReplacementNamed(Routes.admin);
+            }
+            break;
+          case AuthStatus.registeredSuccessfully:
+            {
+              Navigator.of(context).pushReplacementNamed(Routes.profile);
+            }
+            break;
         }
       },
       builder: (context, state) {
@@ -82,20 +91,9 @@ class AuthScreen extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         context.read<AuthCubit>().register(
-                          _emailController.text,
-                          _passwordController.text,
-                        );
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    BlocProvider<RegisterCubit>(
-                                      create: (context) => RegisterCubit(
-                                          RepositoryProvider.of<AuthRepo>(
-                                              context)),
-                                      child: RegisterScreen(),
-                                    ),
-                                fullscreenDialog: true));
+                              _emailController.text,
+                              _passwordController.text,
+                            );
                       },
                       child: Text(S.of(context).auth_register),
                     ),
