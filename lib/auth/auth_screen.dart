@@ -21,14 +21,10 @@ class AuthScreen extends StatelessWidget {
         }
         switch (state.status) {
           case AuthStatus.authorized:
-            {
               Navigator.of(context).pushReplacementNamed(Routes.admin);
-            }
             break;
           case AuthStatus.registeredSuccessfully:
-            {
               Navigator.of(context).pushReplacementNamed(Routes.profile);
-            }
             break;
         }
       },
