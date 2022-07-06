@@ -17,7 +17,6 @@ class UserRepo {
   Future<bool> isProfileCompleted() async {
     var firebaseUser = await _firestore.collection(_collectionUsers).doc(FirebaseAuth.instance.currentUser?.uid).get();
     var doc = firebaseUser.data()!;
-    print(doc["name"]);
     return doc["name"] != null;
   }
 }
