@@ -21,7 +21,7 @@ class AuthScreen extends StatelessWidget {
               Navigator.of(context).pushReplacementNamed(Routes.admin);
             break;
           case AuthStatus.registeredSuccessfully:
-              Navigator.of(context).pushReplacementNamed(Routes.profile);
+              Navigator.of(context).pushReplacementNamed(Routes.home);
             break;
           case AuthStatus.initial:
             // TODO: Handle this case.
