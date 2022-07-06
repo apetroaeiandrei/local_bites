@@ -31,7 +31,7 @@ class ProfileScreen extends StatelessWidget {
                       height: 60,
                     ),
                     Text(
-                      S.of(context).user_details,
+                      S.of(context).profile_user_details,
                       style: Theme.of(context).textTheme.headline4,
                       textAlign: TextAlign.center,
                     ),
@@ -40,7 +40,7 @@ class ProfileScreen extends StatelessWidget {
                       child: TextField(
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.name,
-                        decoration: textFieldDecoration(S.of(context).name),
+                        decoration: textFieldDecoration(S.of(context).profile_name),
                         controller: _nameController,
                       ),
                     ),
@@ -49,7 +49,7 @@ class ProfileScreen extends StatelessWidget {
                       child: TextField(
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.streetAddress,
-                        decoration: textFieldDecoration(S.of(context).address),
+                        decoration: textFieldDecoration(S.of(context).profile_address),
                         controller: _addressController,
                       ),
                     ),
@@ -59,7 +59,7 @@ class ProfileScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.number,
                         decoration:
-                            textFieldDecoration(S.of(context).phone_number),
+                            textFieldDecoration(S.of(context).profile_phone_number),
                         controller: _phoneController,
                       ),
                     ),
@@ -74,7 +74,7 @@ class ProfileScreen extends StatelessWidget {
                           _phoneController.text
                         );
                       },
-                      child: Text(S.of(context).save),
+                      child: Text(S.of(context).profile_save),
                     ),
                   ],
                 ),
