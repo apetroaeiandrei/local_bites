@@ -21,7 +21,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   final authRepo = AuthRepo();
-  final isLoggedIn = authRepo.isLoggedIn();
+  final isLoggedIn = await authRepo.isLoggedIn();
 
   runApp(MultiRepositoryProvider(
     providers: [
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: S.delegate.supportedLocales,
       theme: AppThemeData().appThemeData,
-      initialRoute: isLoggedIn ? Routes.admin : Routes.auth,
+      initialRoute: isLoggedIn ? Routes.home : Routes.auth,
       routes: {
         Routes.auth: (context) => BlocProvider<AuthCubit>(
           create: (context) => AuthCubit(

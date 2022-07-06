@@ -17,7 +17,11 @@ class AuthRepo {
     return instance!;
   }
 
-  bool isLoggedIn() => _auth.currentUser != null;
+  Future<bool> isLoggedIn() async {
+    var firebaseUser = _auth.currentUser;
+    firebaseUser ??= await _auth.authStateChanges().first;
+    return firebaseUser != null;
+  }
 
   String? get uid => _auth.currentUser?.uid;
 
