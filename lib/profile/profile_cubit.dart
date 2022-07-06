@@ -1,11 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
-
+import 'package:local/profile/profile_state.dart';
 import '../repos/auth_repo.dart';
-import 'auth_status.dart';
-
-part 'profile_state.dart';
+import '../auth/auth_status.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit(this._authRepo)

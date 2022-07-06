@@ -2,11 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:local/auth/profile_cubit.dart';
-import 'package:local/auth/profile_screen.dart';
+import 'package:local/profile/profile_cubit.dart';
 import 'package:local/home/home_cubit.dart';
 import 'package:local/home/home_screen.dart';
+import 'package:local/profile/profile_screen.dart';
 import 'package:local/repos/auth_repo.dart';
+import 'package:local/repos/user_repo.dart';
 import 'package:local/routes.dart';
 import 'package:local/theme/theme.dart';
 
@@ -28,6 +29,9 @@ Future<void> main() async {
       RepositoryProvider<AuthRepo>(
         create: (context) => authRepo,
       ),
+      RepositoryProvider<UserRepo>(
+        create: (context) => UserRepo(),
+      ),
     ],
     child: MyApp(
       isLoggedIn: isLoggedIn,
@@ -38,6 +42,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
   final bool isLoggedIn;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -56,22 +61,25 @@ class MyApp extends StatelessWidget {
       initialRoute: isLoggedIn ? Routes.home : Routes.auth,
       routes: {
         Routes.auth: (context) => BlocProvider<AuthCubit>(
-          create: (context) => AuthCubit(
-            RepositoryProvider.of<AuthRepo>(context),
-          ),
-          child: AuthScreen(),
-        ),
+              create: (context) => AuthCubit(
+                RepositoryProvider.of<AuthRepo>(context),
+              ),
+              child: AuthScreen(),
+            ),
         Routes.profile: (context) => BlocProvider<ProfileCubit>(
-          create: (context) => ProfileCubit(
-            RepositoryProvider.of<AuthRepo>(context),
-          ),
-          child: ProfileScreen(),
-        ),
+              create: (context) => ProfileCubit(
+                RepositoryProvider.of<AuthRepo>(context),
+              ),
+              child: ProfileScreen(),
+            ),
         Routes.home: (context) => BlocProvider<HomeCubit>(
-          create: (context) => HomeCubit(),
-          child: HomeScreen(),
-        ),
-      },);
+              create: (context) => HomeCubit(
+                RepositoryProvider.of<UserRepo>(context),
+              ),
+              child: const HomeScreen(),
+            ),
+      },
+    );
   }
 }
 

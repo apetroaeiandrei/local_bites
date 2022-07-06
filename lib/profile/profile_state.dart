@@ -1,4 +1,7 @@
-part of 'profile_cubit.dart';
+
+import 'package:equatable/equatable.dart';
+
+import '../auth/auth_status.dart';
 
 class ProfileState extends Equatable {
   final AuthStatus status;
