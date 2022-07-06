@@ -54,3 +54,4 @@ local.iml
 .dart_tool/
 build/
 lib/generated/
+.flutter-plugins-dependencies

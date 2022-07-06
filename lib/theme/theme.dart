@@ -29,7 +29,7 @@ class AppThemeData {
           brightness: Brightness.light,
         ),
         indicatorColor: WlColors.secondary,
-        scaffoldBackgroundColor: Colors.transparent,
+        scaffoldBackgroundColor: WlColors.surface,
         fontFamily: "SanFrancisco",
         textTheme: TextTheme(
           headline1: const TextStyle(

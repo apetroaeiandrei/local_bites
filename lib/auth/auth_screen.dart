@@ -16,8 +16,16 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state.status == AuthStatus.authorized) {
-          Navigator.of(context).pushReplacementNamed(Routes.admin);
+        switch (state.status) {
+          case AuthStatus.authorized:
+              Navigator.of(context).pushReplacementNamed(Routes.home);
+            break;
+          case AuthStatus.initial:
+            // TODO: Handle this case.
+            break;
+          case AuthStatus.unauthorized:
+            // TODO: Handle this case.
+            break;
         }
       },
       builder: (context, state) {

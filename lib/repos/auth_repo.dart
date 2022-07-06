@@ -17,7 +17,11 @@ class AuthRepo {
     return instance!;
   }
 
-  bool isLoggedIn() => _auth.currentUser != null;
+  Future<bool> isLoggedIn() async {
+    var firebaseUser = _auth.currentUser;
+    firebaseUser ??= await _auth.authStateChanges().first;
+    return firebaseUser != null;
+  }
 
   String? get uid => _auth.currentUser?.uid;
 
@@ -38,8 +42,7 @@ class AuthRepo {
 
   Future<bool> login(String email, String password) async {
     try {
-     await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
       return true;
     } on Exception catch (e) {
       debugPrint("Auth failed $e");

@@ -6,5 +6,10 @@
   "auth_email_placeholder": "Adresa de e-mail",
   "auth_password_placeholder": "Parolă",
   "auth_forgot_password": "Ai uitat parola?",
-  "auth_reset_password": "Resetare parolă"
+  "auth_reset_password": "Resetare parolă",
+  "profile_phone_number": "Număr de telefon",
+  "profile_name": "Nume si prenume",
+  "profile_address": "Adresa",
+  "profile_user_details": "Date personale",
+  "profile_save": "Salveaza"
 }
