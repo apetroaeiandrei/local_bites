@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
             ),
         Routes.profile: (context) => BlocProvider<ProfileCubit>(
               create: (context) => ProfileCubit(
-                RepositoryProvider.of<AuthRepo>(context),
+                RepositoryProvider.of<UserRepo>(context),
               ),
               child: ProfileScreen(),
             ),
