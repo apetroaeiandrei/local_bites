@@ -40,7 +40,8 @@ class ProfileScreen extends StatelessWidget {
                       child: TextField(
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.name,
-                        decoration: textFieldDecoration(S.of(context).profile_name),
+                        decoration:
+                            textFieldDecoration(S.of(context).profile_name),
                         controller: _nameController,
                       ),
                     ),
@@ -49,7 +50,8 @@ class ProfileScreen extends StatelessWidget {
                       child: TextField(
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.streetAddress,
-                        decoration: textFieldDecoration(S.of(context).profile_address),
+                        decoration:
+                            textFieldDecoration(S.of(context).profile_address),
                         controller: _addressController,
                       ),
                     ),
@@ -58,8 +60,8 @@ class ProfileScreen extends StatelessWidget {
                       child: TextField(
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.number,
-                        decoration:
-                            textFieldDecoration(S.of(context).profile_phone_number),
+                        decoration: textFieldDecoration(
+                            S.of(context).profile_phone_number),
                         controller: _phoneController,
                       ),
                     ),
@@ -69,10 +71,9 @@ class ProfileScreen extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         context.read<ProfileCubit>().setUserDetails(
-                          _nameController.text,
-                          _addressController.text,
-                          _phoneController.text
-                        );
+                            _nameController.text,
+                            _addressController.text,
+                            _phoneController.text);
                       },
                       child: Text(S.of(context).profile_save),
                     ),

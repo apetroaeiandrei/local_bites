@@ -42,8 +42,7 @@ class AuthRepo {
 
   Future<bool> login(String email, String password) async {
     try {
-     await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
       return true;
     } on Exception catch (e) {
       debugPrint("Auth failed $e");
