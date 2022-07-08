@@ -7,6 +7,7 @@ import 'package:local/home/home_cubit.dart';
 import 'package:local/home/home_screen.dart';
 import 'package:local/profile/profile_screen.dart';
 import 'package:local/repos/auth_repo.dart';
+import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:local/routes.dart';
 import 'package:local/theme/theme.dart';
@@ -31,6 +32,9 @@ Future<void> main() async {
       ),
       RepositoryProvider<UserRepo>(
         create: (context) => UserRepo(),
+      ),
+      RepositoryProvider<RestaurantsRepo>(
+        create: (context) => RestaurantsRepo(),
       ),
     ],
     child: MyApp(
@@ -75,6 +79,7 @@ class MyApp extends StatelessWidget {
         Routes.home: (context) => BlocProvider<HomeCubit>(
               create: (context) => HomeCubit(
                 RepositoryProvider.of<UserRepo>(context),
+                RepositoryProvider.of<RestaurantsRepo>(context),
               ),
               child: const HomeScreen(),
             ),

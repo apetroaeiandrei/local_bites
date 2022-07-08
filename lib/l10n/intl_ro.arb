@@ -11,5 +11,8 @@
   "profile_name": "Nume si prenume",
   "profile_address": "Adresa",
   "profile_user_details": "Date personale",
-  "profile_save": "Salveaza"
+  "profile_save": "Salveaza",
+
+  "home_welcome": "Bun venit"
+
 }
