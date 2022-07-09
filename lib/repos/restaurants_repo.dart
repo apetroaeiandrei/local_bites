@@ -1,15 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:models/food_category_model.dart';
+import 'package:models/food_model.dart';
 import 'package:models/restaurant_model.dart';
 
 class RestaurantsRepo {
   static RestaurantsRepo? instance;
   static const String _collectionRestaurants = "restaurants";
+  static const String _collectionCategories = "categories";
+  static const String _propertyCategoriesOrder = "categoriesOrder";
+  static const String _collectionFood = "food";
 
   final _geo = Geoflutterfire();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final List<RestaurantModel> _restaurants = [];
+  final List<FoodModel> _foods = [];
+  final List<FoodCategoryModel> _categories = [];
+  String? _selectedRestaurantId;
 
   RestaurantsRepo._privateConstructor();
 
@@ -18,7 +26,18 @@ class RestaurantsRepo {
     return instance!;
   }
 
+  set selectedRestaurantId(String restaurantId) {
+    clearSelectedRestaurantData();
+    _selectedRestaurantId = restaurantId;
+  }
+
   List<RestaurantModel> get restaurants => _restaurants;
+
+  DocumentReference<Map<String, dynamic>> _getRestaurantDoc() {
+    return _firestore
+        .collection(_collectionRestaurants)
+        .doc(_selectedRestaurantId);
+  }
 
   Future<bool> getNearbyRestaurants(double latitude, double longitude) async {
     var collectionReference = _firestore.collection(_collectionRestaurants);
@@ -35,5 +54,49 @@ class RestaurantsRepo {
     _restaurants.addAll(
         docs.map((doc) => RestaurantModel.fromMap(doc.data()!)).toList());
     return true;
+  }
+
+  Future<List<FoodCategoryModel>> getCategoriesAsync() async {
+    print("getCategoriesAsync");
+    final categories =
+        await _getRestaurantDoc().collection(_collectionCategories).get();
+    final restaurant = await _getRestaurantDoc().get();
+    final categoriesOrder =
+        List<String>.from(restaurant.data()![_propertyCategoriesOrder]);
+    final result = categories.docs
+        .map((e) => FoodCategoryModel.fromMap(e.data()))
+        .toList();
+    result.sort((a, b) =>
+        categoriesOrder.indexOf(a.id) - categoriesOrder.indexOf(b.id));
+    _categories.clear();
+    _categories.addAll(result);
+    return result;
+  }
+
+  Future<void> getFoodsAsync() async {
+    print("FoodRepo getFoodsAsync");
+    final foodCollection =
+        await _getRestaurantDoc().collection(_collectionFood).get();
+    _foods.clear();
+    _foods.addAll(
+        foodCollection.docs.map((e) => FoodModel.fromMap(e.data())).toList());
+  }
+
+  List<FoodModel> getFoodsContent() {
+    _foods.sort((a, b) => a.name.compareTo(b.name));
+    return List.from(_foods);
+  }
+
+  List<FoodCategoryModel> getCategoriesContent() {
+    return _categories;
+  }
+
+  getFoodsByCategory(String id) {
+    return _foods.where((element) => element.categoryId == id).toList();
+  }
+
+  void clearSelectedRestaurantData() {
+    _foods.clear();
+    _categories.clear();
   }
 }

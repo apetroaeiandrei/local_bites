@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/home/home_cubit.dart';
+import 'package:models/restaurant_model.dart';
 
 import '../generated/l10n.dart';
 import '../routes.dart';
@@ -43,14 +44,14 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text(S.of(context).home_welcome),
           ),
           body: ListView.builder(
-            itemCount: state.restaurants.length + 1,
+              itemCount: state.restaurants.length + 1,
               itemBuilder: (context, index) {
-            if (index == 0) {
-              return _getProfileCard(context, state);
-            } else {
-              return _getRestaurantCard(context, state, index - 1);
-            }
-          }),
+                if (index == 0) {
+                  return _getProfileCard(context, state);
+                } else {
+                  return _getRestaurantCard(context, state, index - 1);
+                }
+              }),
         );
       },
     );
@@ -62,9 +63,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _getRestaurantCard(BuildContext context, HomeState state, int i) {
     final restaurant = state.restaurants[i];
-    return HomeScreenCard(
-      imageUrl: restaurant.imageUrl,
-      name: restaurant.name,
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context)
+            .pushNamed(Routes.restaurant, arguments: restaurant);
+      },
+      child: HomeScreenCard(
+        imageUrl: restaurant.imageUrl,
+        name: restaurant.name,
+      ),
     );
   }
 }

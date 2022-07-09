@@ -9,8 +9,11 @@ import 'package:local/profile/profile_screen.dart';
 import 'package:local/repos/auth_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
+import 'package:local/restaurant/restaurant_cubit.dart';
+import 'package:local/restaurant/restaurant_screen.dart';
 import 'package:local/routes.dart';
 import 'package:local/theme/theme.dart';
+import 'package:models/restaurant_model.dart';
 
 import 'auth/auth_cubit.dart';
 import 'auth/auth_screen.dart';
@@ -83,6 +86,20 @@ class MyApp extends StatelessWidget {
               ),
               child: const HomeScreen(),
             ),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == Routes.restaurant) {
+           return MaterialPageRoute(
+            builder: (context) => BlocProvider<RestaurantCubit>(
+              create: (context) => RestaurantCubit(
+                RepositoryProvider.of<RestaurantsRepo>(context),
+                settings.arguments as RestaurantModel,
+              ),
+              child: const RestaurantScreen(),
+            ),
+          );
+        }
+        return null;
       },
     );
   }

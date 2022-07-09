@@ -13,6 +13,8 @@
   "profile_user_details": "Date personale",
   "profile_save": "Salveaza",
 
+  "price_currency_ron" : "{price} RON",
+
   "home_welcome": "Bun venit"
 
 }
