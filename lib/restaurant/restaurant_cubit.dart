@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:local/repos/cart_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:models/food_model.dart';
 import 'package:models/restaurant_model.dart';
@@ -15,15 +16,19 @@ class RestaurantCubit extends Cubit<RestaurantState> {
           status: RestaurantStatus.initial,
           foods: [],
           categories: [],
+          cartCount: 0,
+          cartTotal: 0,
         )) {
     _init();
   }
 
   final RestaurantsRepo _restaurantsRepo;
+  final CartRepo _cartRepo = CartRepo();
   final RestaurantModel _restaurant;
 
   _init() async {
     _restaurantsRepo.selectedRestaurantId = _restaurant.id;
+    _cartRepo.selectedRestaurantId = _restaurant.id;
     await _restaurantsRepo.getCategoriesAsync();
     await _restaurantsRepo.getFoodsAsync();
     _refreshFoodsContent();
@@ -42,6 +47,18 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       foods: _restaurantsRepo.getFoodsContent(),
       categories: categoriesContent,
     ));
+  }
+
+  void addToCart(FoodModel food) {
+    _cartRepo.addToCart(food, 1);
+    emit(state.copyWith(
+      cartCount: _cartRepo.cartCount,
+      cartTotal: _cartRepo.cartTotal,
+    ));
+  }
+
+  void placeOrder() {
+    _cartRepo.placeOrder();
   }
 
 }

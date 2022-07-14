@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/restaurant/restaurant_cubit.dart';
 
+import '../generated/l10n.dart';
 import '../theme/dimens.dart';
 import '../widgets/food_card.dart';
 import 'category_content.dart';
@@ -23,34 +24,53 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               appBar: AppBar(
                 title: Text(state.name),
               ),
-              body: ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: Dimens.defaultPadding),
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.categories.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 30, left: 10),
-                          child: Text(
-                            state.categories[index].category.name,
-                            style: Theme.of(context).textTheme.headline2,
-                          ),
-                        ),
-                        ...getFoodsInCategory(state.categories[index]),
-                      ],
-                    );
-                  }));
+              body: Stack(
+                children: [
+                  ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: Dimens.defaultPadding),
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.categories.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 30, left: 10),
+                              child: Text(
+                                state.categories[index].category.name,
+                                style: Theme.of(context).textTheme.headline2,
+                              ),
+                            ),
+                            ...getFoodsInCategory(state.categories[index]),
+                          ],
+                        );
+                      }),
+                  Positioned(
+                    bottom: Dimens.defaultPadding,
+                    left: 0,
+                    right: 0,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.read<RestaurantCubit>().placeOrder();
+                      },
+                      child: Text(S
+                          .of(context)
+                          .cart_status(state.cartCount, state.cartTotal),),
+                    ),
+                  ),
+                ],
+              ));
         });
   }
 
   Iterable<Widget> getFoodsInCategory(CategoryContent categoryContent) {
     return categoryContent.foods.map(
       (food) => GestureDetector(
-        onTap: () {},
+        onTap: () {
+          context.read<RestaurantCubit>().addToCart(food);
+        },
         child: FoodCard(
           foodModel: food,
         ),
