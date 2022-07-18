@@ -12,6 +12,8 @@ import 'package:local/repos/user_repo.dart';
 import 'package:local/restaurant/restaurant_cubit.dart';
 import 'package:local/restaurant/restaurant_screen.dart';
 import 'package:local/routes.dart';
+import 'package:local/settings/settings_cubit.dart';
+import 'package:local/settings/settings_screen.dart';
 import 'package:local/theme/theme.dart';
 import 'package:models/restaurant_model.dart';
 
@@ -85,6 +87,13 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<RestaurantsRepo>(context),
               ),
               child: const HomeScreen(),
+            ),
+        Routes.settings: (context) => BlocProvider<SettingsCubit>(
+              create: (context) => SettingsCubit(
+                RepositoryProvider.of<AuthRepo>(context),
+                RepositoryProvider.of<UserRepo>(context),
+              ),
+              child: const SettingsScreen(),
             ),
       },
       onGenerateRoute: (settings) {

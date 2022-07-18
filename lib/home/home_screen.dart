@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/home/home_cubit.dart';
-import 'package:models/restaurant_model.dart';
 
 import '../generated/l10n.dart';
 import '../routes.dart';
@@ -42,6 +41,14 @@ class _HomeScreenState extends State<HomeScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(S.of(context).home_welcome),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.of(context).pushNamed(Routes.settings);
+                },
+              ),
+            ],
           ),
           body: ListView.builder(
               itemCount: state.restaurants.length + 1,

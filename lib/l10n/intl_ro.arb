@@ -17,6 +17,10 @@
 
   "cart_status" : "Comandă {count} pentru {total} RON",
 
-  "home_welcome": "Bun venit"
+  "home_welcome": "Bun venit",
+  "settings_title": "Setări",
+  "settings_welcome": "Salut, {name}!",
+  "settings_logout": "Deconectare",
+  "settings_profile": "Profil"
 
 }

@@ -5,6 +5,7 @@ import 'package:local/profile/profile_state.dart';
 
 import '../generated/l10n.dart';
 import '../theme/decorations.dart';
+import '../theme/dimens.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({Key? key}) : super(key: key);
@@ -18,67 +19,62 @@ class ProfileScreen extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              S.of(context).profile_user_details,
+            ),
+          ),
           body: SingleChildScrollView(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 500),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(
-                      height: 60,
-                    ),
-                    Text(
-                      S.of(context).profile_user_details,
-                      style: Theme.of(context).textTheme.headline4,
+            child: Padding(
+              padding: const EdgeInsets.all(Dimens.defaultPadding),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 32),
+                    child: TextField(
                       textAlign: TextAlign.center,
+                      keyboardType: TextInputType.name,
+                      decoration:
+                          textFieldDecoration(S.of(context).profile_name),
+                      controller: _nameController,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 32),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.name,
-                        decoration:
-                            textFieldDecoration(S.of(context).profile_name),
-                        controller: _nameController,
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 32),
+                    child: TextField(
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.streetAddress,
+                      decoration:
+                          textFieldDecoration(S.of(context).profile_address),
+                      controller: _addressController,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 32),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.streetAddress,
-                        decoration:
-                            textFieldDecoration(S.of(context).profile_address),
-                        controller: _addressController,
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 32),
+                    child: TextField(
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      decoration: textFieldDecoration(
+                          S.of(context).profile_phone_number),
+                      controller: _phoneController,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 32),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.number,
-                        decoration: textFieldDecoration(
-                            S.of(context).profile_phone_number),
-                        controller: _phoneController,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<ProfileCubit>().setUserDetails(
-                            _nameController.text,
-                            _addressController.text,
-                            _phoneController.text);
-                      },
-                      child: Text(S.of(context).profile_save),
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<ProfileCubit>().setUserDetails(
+                          _nameController.text,
+                          _addressController.text,
+                          _phoneController.text);
+                    },
+                    child: Text(S.of(context).profile_save),
+                  ),
+                ],
               ),
             ),
           ),

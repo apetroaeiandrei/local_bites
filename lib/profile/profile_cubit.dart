@@ -10,7 +10,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   final UserRepo _userRepo;
 
   setUserDetails(String name, String address, String phoneNumber) async {
-    final success = await _userRepo.setUserDetails(name, address, phoneNumber);
+    final success = await _userRepo.setUserDetails(name,  phoneNumber);
     emit(state.copyWith(
       status: success ? AuthStatus.authorized : AuthStatus.unauthorized,
     ));
