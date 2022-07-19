@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:local/repos/user_repo.dart';
 import 'package:models/food_model.dart';
 import 'package:models/food_order.dart';
 import 'package:models/order.dart';
@@ -11,14 +12,15 @@ class CartRepo {
   static const String _collectionRestaurants = "restaurants";
   static const String _collectionOrders = "orders";
   final List<FoodOrder> _foodOrders = [];
+  final UserRepo _userRepo;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String? _selectedRestaurantId;
 
-  CartRepo._privateConstructor();
+  CartRepo._privateConstructor(this._userRepo);
 
-  factory CartRepo() {
-    instance ??= CartRepo._privateConstructor();
+  factory CartRepo(UserRepo userRepo) {
+    instance ??= CartRepo._privateConstructor(userRepo);
     return instance!;
   }
 
@@ -51,22 +53,25 @@ class CartRepo {
   Future<bool> placeOrder() async {
     Random random = Random();
     final orderId = random.nextInt(10000);
+    final address = _userRepo.address!;
+    final user = _userRepo.user!;
+
     final Order order = Order(
-        id: orderId.toString(),
-        date: DateTime.now(),
-        foods: _foodOrders,
-        status: OrderStatus.pending);
+      id: orderId.toString(),
+      date: DateTime.now(),
+      foods: _foodOrders,
+      status: OrderStatus.pending,
+      latitude: address.latitude,
+      longitude: address.longitude,
+      street: address.street,
+      propertyDetails: address.propertyDetails,
+      name: user.name,
+      phoneNumber: user.phoneNumber,
+    );
+
     final restaurantDoc = _firestore
         .collection(_collectionRestaurants)
         .doc(_selectedRestaurantId);
-    // try {
-    //   await restaurantDoc.collection(_collectionOrders).add(order.toMap());
-    //   _foodOrders.clear();
-    //   return true;
-    // } catch (e) {
-    //   print(e);
-    //   return false;
-    // }
     await restaurantDoc.collection(_collectionOrders).add(order.toMap());
     return true;
   }

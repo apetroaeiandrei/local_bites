@@ -10,7 +10,7 @@ import 'category_content.dart';
 part 'restaurant_state.dart';
 
 class RestaurantCubit extends Cubit<RestaurantState> {
-  RestaurantCubit(this._restaurantsRepo, this._restaurant)
+  RestaurantCubit(this._restaurantsRepo, this._cartRepo, this._restaurant, )
       : super(RestaurantState(
           name: _restaurant.name,
           status: RestaurantStatus.initial,
@@ -23,7 +23,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   }
 
   final RestaurantsRepo _restaurantsRepo;
-  final CartRepo _cartRepo = CartRepo();
+  final CartRepo _cartRepo;
   final RestaurantModel _restaurant;
 
   _init() async {

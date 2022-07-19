@@ -9,6 +9,7 @@ import 'package:local/home/home_cubit.dart';
 import 'package:local/home/home_screen.dart';
 import 'package:local/profile/profile_screen.dart';
 import 'package:local/repos/auth_repo.dart';
+import 'package:local/repos/cart_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:local/restaurant/restaurant_cubit.dart';
@@ -45,6 +46,9 @@ Future<void> main() async {
       RepositoryProvider<RestaurantsRepo>(
         create: (context) => RestaurantsRepo(),
       ),
+      RepositoryProvider<CartRepo>(
+        create: (context) => CartRepo(userRepo),
+      ),
     ],
     child: MyApp(
       isLoggedIn: isLoggedIn,
@@ -61,6 +65,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
         // 1
         S.delegate,
@@ -112,6 +117,7 @@ class MyApp extends StatelessWidget {
             builder: (context) => BlocProvider<RestaurantCubit>(
               create: (context) => RestaurantCubit(
                 RepositoryProvider.of<RestaurantsRepo>(context),
+                RepositoryProvider.of<CartRepo>(context),
                 settings.arguments as RestaurantModel,
               ),
               child: const RestaurantScreen(),
