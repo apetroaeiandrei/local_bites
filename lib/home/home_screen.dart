@@ -4,6 +4,7 @@ import 'package:local/home/home_cubit.dart';
 
 import '../generated/l10n.dart';
 import '../routes.dart';
+import '../theme/dimens.dart';
 import '../widgets/home_screen_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text(S.of(context).home_welcome),
             actions: [
               IconButton(
-                icon: Icon(Icons.settings),
+                icon: const Icon(Icons.settings),
                 onPressed: () {
                   Navigator.of(context).pushNamed(Routes.settings);
                 },
@@ -54,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: state.restaurants.length + 1,
               itemBuilder: (context, index) {
                 if (index == 0) {
-                  return _getProfileCard(context, state);
+                  return _getAddressZone(context, state);
                 } else {
                   return _getRestaurantCard(context, state, index - 1);
                 }
@@ -64,8 +65,31 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _getProfileCard(BuildContext context, HomeState state) {
-    return Text("Your profile here");
+  Widget _getAddressZone(BuildContext context, HomeState state) {
+    return Padding(
+      padding: const EdgeInsets.all(Dimens.defaultPadding),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context)
+              .pushNamed(Routes.address)
+              .then((value) => context.read<HomeCubit>().init());
+        },
+        child: Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                state.address ?? S.of(context).home_address_empty,
+                style: Theme.of(context).textTheme.headline5,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+              const Icon(Icons.keyboard_arrow_down),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _getRestaurantCard(BuildContext context, HomeState state, int i) {

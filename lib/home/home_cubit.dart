@@ -9,30 +9,38 @@ part 'home_state.dart';
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit(this._userRepo, this._restaurantsRepo)
       : super(const HomeState(status: HomeStatus.initial, restaurants: [])) {
-    _init();
+    init();
   }
 
   final UserRepo _userRepo;
   final RestaurantsRepo _restaurantsRepo;
 
-  _init() async {
-    if (await _userRepo.isProfileCompleted()) {
-      print('profile completed, getting restaurants');
-      final success =
-          await _restaurantsRepo.getNearbyRestaurants(47.530534, 25.555038);
-      if (success) {
-        print('got restaurants successfully ${_restaurantsRepo.restaurants.length}');
-        emit(state.copyWith(
-          status: HomeStatus.loaded,
-          restaurants: _restaurantsRepo.restaurants,
-        ));
-      } else {
-        emit(state.copyWith(
-          status: HomeStatus.restaurantsError,
-        ));
-      }
-    } else {
+  init() async {
+    if (!await _userRepo.isProfileCompleted()) {
       emit(state.copyWith(status: HomeStatus.profileIncomplete));
+      return;
+    }
+
+    final address = _userRepo.address;
+    if (address == null) {
+      emit(state.copyWith(status: HomeStatus.addressError));
+      return;
+    }
+
+    final success = await _restaurantsRepo.getNearbyRestaurants(
+        address.latitude, address.longitude);
+    if (success) {
+      print(
+          'got restaurants successfully ${_restaurantsRepo.restaurants.length}');
+      emit(state.copyWith(
+        status: HomeStatus.loaded,
+        restaurants: _restaurantsRepo.restaurants,
+        address: address.street,
+      ));
+    } else {
+      emit(state.copyWith(
+        status: HomeStatus.restaurantsError,
+      ));
     }
   }
 }

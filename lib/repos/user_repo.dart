@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:models/delivery_address.dart';
 import 'package:models/local_user.dart';
 
 class UserRepo {
@@ -12,6 +13,7 @@ class UserRepo {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   LocalUser? _user;
+  DeliveryAddress? _address;
 
   factory UserRepo() {
     instance ??= UserRepo._privateConstructor();
@@ -20,18 +22,29 @@ class UserRepo {
 
   LocalUser? get user => _user;
 
-  Future<bool> isProfileCompleted() async {
-    final firebaseUser = await _firestore
-        .collection(_collectionUsers)
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .get();
-    final doc = firebaseUser.data()!;
-    _user = LocalUser.fromMap(doc);
-    return doc["name"] != null;
+  DeliveryAddress? get address => _address;
+
+  getUser() async {
+    try {
+      final firebaseUser = await _firestore
+          .collection(_collectionUsers)
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .get();
+      final doc = firebaseUser.data()!;
+      _user = LocalUser.fromMap(doc);
+      _address = DeliveryAddress.fromMap(doc);
+    } catch (e) {
+      print(e);
+    }
   }
 
-  Future<bool> setUserDetails(
-      String name, String phoneNumber) async {
+  Future<bool> isProfileCompleted() async {
+    bool isCompleted = user != null;
+    print("UserRepo isProfileCompleted $isCompleted");
+    return isCompleted;
+  }
+
+  Future<bool> setUserDetails(String name, String phoneNumber) async {
     try {
       final properties = {
         "email": _auth.currentUser?.email,
@@ -47,6 +60,28 @@ class UserRepo {
       return true;
     } on Exception catch (e) {
       debugPrint("Auth failed $e");
+      return false;
+    }
+  }
+
+  Future<bool> setDeliveryAddress(double latitude, double longitude,
+      String street, String propertyDetails) async {
+    try {
+      final properties = {
+        "latitude": latitude,
+        "longitude": longitude,
+        "street": street,
+        "propertyDetails": propertyDetails,
+      };
+      await _firestore
+          .collection(_collectionUsers)
+          .doc(_auth.currentUser?.uid)
+          .update(properties);
+
+      _address = DeliveryAddress.fromMap(properties);
+      return true;
+    } on Exception catch (e) {
+      debugPrint("Set address failed $e");
       return false;
     }
   }

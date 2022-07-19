@@ -25,6 +25,7 @@ abstract class Dimens {
   static const sliverImageHeight = 230.0;
   static const actionIconSize = 40.0;
   static const actionIconSidePadding = 16.0;
+  static const locationPinHeight = 50.0;
 
   static const maxWidth = 500.0;
 

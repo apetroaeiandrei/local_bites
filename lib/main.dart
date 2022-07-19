@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:local/address/address_cubit.dart';
+import 'package:local/address/address_screen.dart';
 import 'package:local/profile/profile_cubit.dart';
 import 'package:local/home/home_cubit.dart';
 import 'package:local/home/home_screen.dart';
@@ -28,7 +30,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   final authRepo = AuthRepo();
+  final userRepo = UserRepo();
   final isLoggedIn = await authRepo.isLoggedIn();
+  await userRepo.getUser();
 
   runApp(MultiRepositoryProvider(
     providers: [
@@ -36,7 +40,7 @@ Future<void> main() async {
         create: (context) => authRepo,
       ),
       RepositoryProvider<UserRepo>(
-        create: (context) => UserRepo(),
+        create: (context) => userRepo,
       ),
       RepositoryProvider<RestaurantsRepo>(
         create: (context) => RestaurantsRepo(),
@@ -95,10 +99,16 @@ class MyApp extends StatelessWidget {
               ),
               child: const SettingsScreen(),
             ),
+        Routes.address: (context) => BlocProvider<AddressCubit>(
+              create: (context) => AddressCubit(
+                RepositoryProvider.of<UserRepo>(context),
+              ),
+              child: const AddressScreen(),
+            ),
       },
       onGenerateRoute: (settings) {
         if (settings.name == Routes.restaurant) {
-           return MaterialPageRoute(
+          return MaterialPageRoute(
             builder: (context) => BlocProvider<RestaurantCubit>(
               create: (context) => RestaurantCubit(
                 RepositoryProvider.of<RestaurantsRepo>(context),

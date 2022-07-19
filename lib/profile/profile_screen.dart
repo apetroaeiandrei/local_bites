@@ -10,7 +10,6 @@ import '../theme/dimens.dart';
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({Key? key}) : super(key: key);
   final _nameController = TextEditingController();
-  final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
 
   @override
@@ -46,16 +45,6 @@ class ProfileScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 32),
                     child: TextField(
                       textAlign: TextAlign.center,
-                      keyboardType: TextInputType.streetAddress,
-                      decoration:
-                          textFieldDecoration(S.of(context).profile_address),
-                      controller: _addressController,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32),
-                    child: TextField(
-                      textAlign: TextAlign.center,
                       keyboardType: TextInputType.number,
                       decoration: textFieldDecoration(
                           S.of(context).profile_phone_number),
@@ -68,11 +57,9 @@ class ProfileScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       context.read<ProfileCubit>().setUserDetails(
-                          _nameController.text,
-                          _addressController.text,
-                          _phoneController.text);
+                          _nameController.text, _phoneController.text);
                     },
-                    child: Text(S.of(context).profile_save),
+                    child: Text(S.of(context).generic_save),
                   ),
                 ],
               ),
