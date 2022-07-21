@@ -51,13 +51,16 @@ class CartRepo {
       0, (sum, element) => sum + element.quantity * element.food.price);
 
   Future<bool> placeOrder() async {
-    Random random = Random();
-    final orderId = random.nextInt(10000);
     final address = _userRepo.address!;
     final user = _userRepo.user!;
 
+    final restaurantDoc = _firestore
+        .collection(_collectionRestaurants)
+        .doc(_selectedRestaurantId);
+    final orderDoc = restaurantDoc.collection(_collectionOrders).doc();
+
     final Order order = Order(
-      id: orderId.toString(),
+      id: orderDoc.id,
       date: DateTime.now(),
       foods: _foodOrders,
       status: OrderStatus.pending,
@@ -67,12 +70,10 @@ class CartRepo {
       propertyDetails: address.propertyDetails,
       name: user.name,
       phoneNumber: user.phoneNumber,
+      number: Random().nextInt(1000).toString(),
+      total: cartTotal,
     );
-
-    final restaurantDoc = _firestore
-        .collection(_collectionRestaurants)
-        .doc(_selectedRestaurantId);
-    await restaurantDoc.collection(_collectionOrders).add(order.toMap());
+    await orderDoc.set(order.toMap());
     return true;
   }
 
