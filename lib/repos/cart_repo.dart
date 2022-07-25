@@ -29,13 +29,18 @@ class CartRepo {
     _selectedRestaurantId = restaurantId;
   }
 
-  addToCart(FoodModel food, int quantity) {
-    final foodOrder =
-        _foodOrders.firstWhere((element) => element.food == food, orElse: () {
+  addToCart(FoodModel food, int quantity,
+      Map<String, List<String>> selectedOptions, double price) {
+    final foodOrder = _foodOrders.firstWhere(
+        (element) =>
+            element.food == food && element.selectedOptions == selectedOptions,
+        orElse: () {
       return FoodOrder(
         id: food.id,
         food: food,
         quantity: 0,
+        selectedOptions: selectedOptions,
+        price: price,
       );
     });
     _foodOrders.remove(foodOrder);
@@ -48,7 +53,7 @@ class CartRepo {
       _foodOrders.fold<int>(0, (sum, element) => sum + element.quantity);
 
   get cartTotal => _foodOrders.fold<double>(
-      0, (sum, element) => sum + element.quantity * element.food.price);
+      0, (sum, element) => sum + element.price);
 
   Future<bool> placeOrder() async {
     final address = _userRepo.address!;

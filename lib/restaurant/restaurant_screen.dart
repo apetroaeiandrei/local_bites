@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/restaurant/restaurant_cubit.dart';
+import 'package:local/routes.dart';
 
 import '../generated/l10n.dart';
 import '../theme/dimens.dart';
@@ -49,15 +50,17 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                       }),
                   Positioned(
                     bottom: Dimens.defaultPadding,
-                    left: 0,
-                    right: 0,
+                    left: Dimens.defaultPadding,
+                    right: Dimens.defaultPadding,
                     child: ElevatedButton(
                       onPressed: () {
                         context.read<RestaurantCubit>().placeOrder();
                       },
-                      child: Text(S
-                          .of(context)
-                          .cart_status(state.cartCount, state.cartTotal),),
+                      child: Text(
+                        S
+                            .of(context)
+                            .cart_status(state.cartCount, state.cartTotal),
+                      ),
                     ),
                   ),
                 ],
@@ -69,7 +72,11 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     return categoryContent.foods.map(
       (food) => GestureDetector(
         onTap: () {
-          context.read<RestaurantCubit>().addToCart(food);
+          if (food.hasOptions) {
+            Navigator.pushNamed(context, Routes.foodDetails, arguments: food);
+          } else {
+            context.read<RestaurantCubit>().addToCart(food);
+          }
         },
         child: FoodCard(
           foodModel: food,

@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:local/address/address_cubit.dart';
 import 'package:local/address/address_screen.dart';
+import 'package:local/food_details/food_details_cubit.dart';
+import 'package:local/food_details/food_details_screen.dart';
 import 'package:local/profile/profile_cubit.dart';
 import 'package:local/home/home_cubit.dart';
 import 'package:local/home/home_screen.dart';
@@ -18,6 +20,7 @@ import 'package:local/routes.dart';
 import 'package:local/settings/settings_cubit.dart';
 import 'package:local/settings/settings_screen.dart';
 import 'package:local/theme/theme.dart';
+import 'package:models/food_model.dart';
 import 'package:models/restaurant_model.dart';
 
 import 'auth/auth_cubit.dart';
@@ -121,6 +124,19 @@ class MyApp extends StatelessWidget {
                 settings.arguments as RestaurantModel,
               ),
               child: const RestaurantScreen(),
+            ),
+          );
+        }
+        if (settings.name == Routes.foodDetails) {
+          return MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => BlocProvider<FoodDetailsCubit>(
+              create: (context) => FoodDetailsCubit(
+                RepositoryProvider.of<RestaurantsRepo>(context),
+                RepositoryProvider.of<CartRepo>(context),
+                settings.arguments as FoodModel,
+              ),
+              child: const FoodDetailsScreen(),
             ),
           );
         }

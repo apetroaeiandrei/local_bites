@@ -31,5 +31,8 @@
   "address_street_error": "Vă rugăm să introduceți o adresă validă",
   "address_property_error": "Vă rugăm să completați cu informatii de ajutor pentru curierul nostru",
 
-  "generic_save": "Salveaza"
+  "generic_save": "Salveaza",
+
+  "food_option_price_extra" : " + {price} RON",
+  "food_details_add_button" : "Adauga {quantity} pentru {price} RON"
 }

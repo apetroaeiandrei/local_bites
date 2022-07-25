@@ -10,8 +10,11 @@ import 'category_content.dart';
 part 'restaurant_state.dart';
 
 class RestaurantCubit extends Cubit<RestaurantState> {
-  RestaurantCubit(this._restaurantsRepo, this._cartRepo, this._restaurant, )
-      : super(RestaurantState(
+  RestaurantCubit(
+    this._restaurantsRepo,
+    this._cartRepo,
+    this._restaurant,
+  ) : super(RestaurantState(
           name: _restaurant.name,
           status: RestaurantStatus.initial,
           foods: [],
@@ -50,7 +53,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   }
 
   void addToCart(FoodModel food) {
-    _cartRepo.addToCart(food, 1);
+    _cartRepo.addToCart(food, 1, {}, food.price);
     emit(state.copyWith(
       cartCount: _cartRepo.cartCount,
       cartTotal: _cartRepo.cartTotal,
@@ -60,5 +63,4 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   void placeOrder() {
     _cartRepo.placeOrder();
   }
-
 }

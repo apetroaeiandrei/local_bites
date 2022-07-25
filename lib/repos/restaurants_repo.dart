@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:models/food_category_model.dart';
 import 'package:models/food_model.dart';
+import 'package:models/food_option.dart';
+import 'package:models/food_option_category.dart';
 import 'package:models/restaurant_model.dart';
 
 class RestaurantsRepo {
@@ -10,6 +12,8 @@ class RestaurantsRepo {
   static const String _collectionCategories = "categories";
   static const String _propertyCategoriesOrder = "categoriesOrder";
   static const String _collectionFood = "food";
+  static const String _collectionOptionCategories = "foodOptionCategories";
+  static const String _collectionFoodOptionItem = "foodOptionItems";
 
   final _geo = Geoflutterfire();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -57,7 +61,6 @@ class RestaurantsRepo {
   }
 
   Future<List<FoodCategoryModel>> getCategoriesAsync() async {
-    print("getCategoriesAsync");
     final categories =
         await _getRestaurantDoc().collection(_collectionCategories).get();
     final restaurant = await _getRestaurantDoc().get();
@@ -74,7 +77,6 @@ class RestaurantsRepo {
   }
 
   Future<void> getFoodsAsync() async {
-    print("FoodRepo getFoodsAsync");
     final foodCollection =
         await _getRestaurantDoc().collection(_collectionFood).get();
     _foods.clear();
@@ -98,5 +100,32 @@ class RestaurantsRepo {
   void clearSelectedRestaurantData() {
     _foods.clear();
     _categories.clear();
+  }
+
+  Future<List<FoodOptionCategory>> getFoodOptionsAsync(
+      List<String> optionIds) async {
+    List<FoodOptionCategory> result = [];
+    for (var element in optionIds) {
+      final optionCategory = await _getOptionCategory(element);
+      result.add(optionCategory);
+    }
+    return result;
+  }
+
+  Future<FoodOptionCategory> _getOptionCategory(String id) async {
+    final category = await _getRestaurantDoc()
+        .collection(_collectionOptionCategories)
+        .doc(id)
+        .get()
+        .then((e) => FoodOptionCategory.fromMap(e.data()!));
+
+    final itemsSnapshot = await _getRestaurantDoc()
+        .collection(_collectionOptionCategories)
+        .doc(id)
+        .collection(_collectionFoodOptionItem)
+        .get();
+    final List<FoodOption> items =
+        itemsSnapshot.docs.map((e) => FoodOption.fromMap(e.data())).toList();
+    return category.copyWith(options: items);
   }
 }
