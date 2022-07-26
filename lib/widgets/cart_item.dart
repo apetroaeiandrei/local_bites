@@ -13,17 +13,19 @@ class CartItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "${item.quantity} x",
               style: Theme.of(context).textTheme.headline4,
             ),
             const SizedBox(width: 4),
-            Text(
-              item.food.name.toString(),
-              style: Theme.of(context).textTheme.headline4,
+            Expanded(
+              child: Text(
+                item.food.name.toString(),
+                style: Theme.of(context).textTheme.headline4,
+              ),
             ),
-            const Spacer(),
             Text(
               S.of(context).price_currency_ron(item.price),
               style: Theme.of(context).textTheme.headline4,
