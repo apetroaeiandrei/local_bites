@@ -12,7 +12,6 @@ class FoodCard extends StatelessWidget {
   }) : super(key: key);
   final FoodModel foodModel;
   static const _nameMaxLines = 2;
-  static const _textsSpacing = 8.0;
 
   @override
   Widget build(BuildContext context) {
@@ -79,12 +78,12 @@ class FoodCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: _textsSpacing,
-                      ),
-                      Text(
-                        foodModel.description,
-                        style: Theme.of(context).textTheme.bodyText2,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, right: 70),
+                        child: Text(
+                          foodModel.description,
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
                       ),
                     ],
                   ),

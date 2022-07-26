@@ -30,10 +30,12 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               children: [
                 ListView.builder(
                     shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: Dimens.defaultPadding,
-                        vertical: Dimens.defaultPadding),
-                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(
+                      Dimens.defaultPadding,
+                      Dimens.defaultPadding,
+                      Dimens.defaultPadding,
+                      80,
+                    ),
                     itemCount: state.categories.length,
                     itemBuilder: (context, index) {
                       return Column(
