@@ -22,49 +22,55 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         listener: (context, state) {},
         builder: (context, state) {
           return Scaffold(
-              appBar: AppBar(
-                title: Text(state.name),
-              ),
-              body: Stack(
-                children: [
-                  ListView.builder(
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: Dimens.defaultPadding),
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: state.categories.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 30, left: 10),
-                              child: Text(
-                                state.categories[index].category.name,
-                                style: Theme.of(context).textTheme.headline2,
-                              ),
+            appBar: AppBar(
+              title: Text(state.name),
+            ),
+            body: Stack(
+              fit: StackFit.expand,
+              children: [
+                ListView.builder(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Dimens.defaultPadding,
+                        vertical: Dimens.defaultPadding),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: state.categories.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 30, bottom: 20),
+                            child: Text(
+                              state.categories[index].category.name
+                                  .toUpperCase(),
+                              style: Theme.of(context).textTheme.headline3,
                             ),
-                            ...getFoodsInCategory(state.categories[index]),
-                          ],
-                        );
-                      }),
-                  Positioned(
-                    bottom: Dimens.defaultPadding,
-                    left: Dimens.defaultPadding,
-                    right: Dimens.defaultPadding,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(Routes.cart);
-                      },
-                      child: Text(
-                        S
-                            .of(context)
-                            .cart_status(state.cartCount, state.cartTotal),
-                      ),
+                          ),
+                          ...getFoodsInCategory(state.categories[index]),
+                        ],
+                      );
+                    }),
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOut,
+                  bottom: state.cartCount > 0 ? 30 : -50,
+                  left: Dimens.defaultPadding,
+                  right: Dimens.defaultPadding,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(Routes.cart);
+                    },
+                    child: Text(
+                      S
+                          .of(context)
+                          .cart_status(state.cartCount, state.cartTotal),
                     ),
                   ),
-                ],
-              ));
+                ),
+              ],
+            ),
+          );
         });
   }
 

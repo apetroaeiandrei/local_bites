@@ -8,10 +8,14 @@ class AppThemeData {
     const letterSpacing = -0.0;
     return ThemeData(
         appBarTheme: const AppBarTheme(
+          color: WlColors.surface,
+          iconTheme: IconThemeData(
+            color: WlColors.textColor,
+          ),
           titleTextStyle: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 18,
-              color: WlColors.onPrimary),
+              color: WlColors.textColor),
         ),
         brightness: Brightness.light,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -30,6 +34,9 @@ class AppThemeData {
         ),
         indicatorColor: WlColors.secondary,
         scaffoldBackgroundColor: WlColors.surface,
+        iconTheme: IconThemeData(
+          color: WlColors.primary,
+        ),
         fontFamily: "SanFrancisco",
         textTheme: TextTheme(
           headline1: const TextStyle(
@@ -91,6 +98,15 @@ class AppThemeData {
           backgroundColor: WlColors.secondary,
           titleTextStyle: TextStyle(
               fontSize: 20, fontWeight: FontWeight.w700, color: textColor),
-        ));
+        ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.all(15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40),
+          ),
+        ),
+      ),
+    );
   }
 }

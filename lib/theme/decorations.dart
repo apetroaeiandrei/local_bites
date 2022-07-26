@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local/theme/wl_colors.dart';
 
-BoxDecoration backgroundDecoration = const BoxDecoration(
-    gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [WlColors.backgroundStart, WlColors.backgroundEnd]));
-
 OutlineInputBorder outlineInputBorder() => OutlineInputBorder(
       borderSide:
           const BorderSide(style: BorderStyle.solid, color: Colors.white),

@@ -6,7 +6,7 @@ abstract class Dimens {
   static const defaultPadding = 20.0;
   static const cardCornerRadius = 15.0;
   static const profileCardElevation = 4.0;
-  static const foodCardPhotoWidth = 110.0;
+  static const foodCardPhotoSize = 70.0;
   static const orderCommentsHeight = 100.0;
   static const homeCardHeight = 200.0;
 
@@ -28,6 +28,8 @@ abstract class Dimens {
   static const locationPinHeight = 50.0;
 
   static const maxWidth = 500.0;
+
+  static const double foodCardPhotoRadius = 10.0;
 
   static double getGoldenRatioFromWidth(BuildContext context) {
     return MediaQuery.of(context).size.width / goldenRatio;
