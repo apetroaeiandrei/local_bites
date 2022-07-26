@@ -25,6 +25,8 @@ import 'package:models/restaurant_model.dart';
 
 import 'auth/auth_cubit.dart';
 import 'auth/auth_screen.dart';
+import 'cart/cart_cubit.dart';
+import 'cart/cart_screen.dart';
 import 'firebase_options.dart';
 import 'generated/l10n.dart';
 
@@ -112,6 +114,15 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<UserRepo>(context),
               ),
               child: const AddressScreen(),
+            ),
+        Routes.cart: (context) => BlocProvider<CartCubit>(
+              create: (context) => CartCubit(
+                RepositoryProvider.of<CartRepo>(context),
+                RepositoryProvider.of<RestaurantsRepo>(context),
+                RepositoryProvider.of<UserRepo>(context),
+
+              ),
+              child: const CartScreen(),
             ),
       },
       onGenerateRoute: (settings) {

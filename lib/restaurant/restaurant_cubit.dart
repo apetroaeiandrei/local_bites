@@ -59,8 +59,4 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       cartTotal: _cartRepo.cartTotal,
     ));
   }
-
-  void placeOrder() {
-    _cartRepo.placeOrder();
-  }
 }

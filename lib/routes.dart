@@ -8,4 +8,6 @@ abstract class Routes {
 
   static const settings = '/settings';
   static const address = '/address';
+
+  static const String cart = '/cart';
 }

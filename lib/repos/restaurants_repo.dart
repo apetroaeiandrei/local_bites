@@ -22,6 +22,7 @@ class RestaurantsRepo {
   final List<FoodModel> _foods = [];
   final List<FoodCategoryModel> _categories = [];
   String? _selectedRestaurantId;
+  RestaurantModel? _selectedRestaurant;
 
   RestaurantsRepo._privateConstructor();
 
@@ -33,9 +34,14 @@ class RestaurantsRepo {
   set selectedRestaurantId(String restaurantId) {
     clearSelectedRestaurantData();
     _selectedRestaurantId = restaurantId;
+    _selectedRestaurant = _restaurants.firstWhere(
+      (element) => element.id == restaurantId,
+    );
   }
 
   List<RestaurantModel> get restaurants => _restaurants;
+
+  RestaurantModel get selectedRestaurant => _selectedRestaurant!;
 
   DocumentReference<Map<String, dynamic>> _getRestaurantDoc() {
     return _firestore

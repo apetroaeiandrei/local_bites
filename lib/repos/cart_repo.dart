@@ -55,6 +55,8 @@ class CartRepo {
   get cartTotal => _foodOrders.fold<double>(
       0, (sum, element) => sum + element.price);
 
+  List<FoodOrder> get cartItems => List.from(_foodOrders);
+
   Future<bool> placeOrder() async {
     final address = _userRepo.address!;
     final user = _userRepo.user!;

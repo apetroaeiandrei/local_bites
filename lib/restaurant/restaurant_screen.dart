@@ -54,7 +54,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                     right: Dimens.defaultPadding,
                     child: ElevatedButton(
                       onPressed: () {
-                        context.read<RestaurantCubit>().placeOrder();
+                        Navigator.of(context).pushNamed(Routes.cart);
                       },
                       child: Text(
                         S

@@ -8,14 +8,11 @@
   "auth_forgot_password": "Ai uitat parola?",
   "auth_reset_password": "Resetare parolă",
   "profile_phone_number": "Număr de telefon",
-  "profile_name": "Nume si prenume",
+  "profile_name": "Nume și prenume",
   "profile_address": "Adresa",
   "profile_user_details": "Date personale",
 
   "price_currency_ron" : "{price} RON",
-
-  "cart_status" : "Comandă {count} pentru {total} RON",
-
   "home_welcome": "Bun venit",
   "home_address": "Adresa ta",
   "home_address_empty": "Vă rugăm să introduceți adresa pentru livrare",
@@ -26,13 +23,30 @@
   "settings_profile": "Profil",
 
   "address_title": "Adresa ta",
-  "address_street_label": "Strada si numarul",
+  "address_street_label": "Strada și numarul",
   "address_property_label": "Bloc, apartament, etc.",
   "address_street_error": "Vă rugăm să introduceți o adresă validă",
   "address_property_error": "Vă rugăm să completați cu informatii de ajutor pentru curierul nostru",
 
-  "generic_save": "Salveaza",
+  "generic_save": "Salvează",
 
   "food_option_price_extra" : " + {price} RON",
-  "food_details_add_button" : "Adauga {quantity} pentru {price} RON"
+  "food_details_add_button" : "Adaugă {quantity} pentru {price} RON",
+
+  "cart_status" : "Comandă {count} pentru {total} RON",
+  "cart_title": "Comandă",
+  "cart_order_headline": "Comanda ta",
+  "cart_order_summary": "{count} produse de la {restaurant}",
+  "cart_delivery_details": "Detalii livrare",
+  "cart_summary": "Sumar",
+  "cart_total": "Total",
+  "cart_products": "Produse",
+  "cart_delivery_headline": "Livrare",
+  "cart_confirm_button": "Confirmă comanda",
+  "cart_mentions": "Mențiuni speciale",
+  "cart_mentions_headline": "Adaugă mențiunile tale",
+  "cart_mentions_placeholder": "Anunță restaurantul de ce ar trebui să țină cont.",
+  "cart_delivery_fee" : "Taxă livrare",
+  "cart_delivery_fee_free" : "GRATUIT"
+
 }
