@@ -54,6 +54,10 @@ class RestaurantCubit extends Cubit<RestaurantState> {
 
   void addToCart(FoodModel food) {
     _cartRepo.addToCart(food, 1, {}, food.price);
+    refreshCart();
+  }
+
+  void refreshCart() {
     emit(state.copyWith(
       cartCount: _cartRepo.cartCount,
       cartTotal: _cartRepo.cartTotal,
