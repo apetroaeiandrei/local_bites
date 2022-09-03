@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/home/home_cubit.dart';
 
 import '../generated/l10n.dart';
+import '../img.dart';
 import '../routes.dart';
 import '../theme/dimens.dart';
 import '../widgets/home_screen_card.dart';
@@ -36,6 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
           case HomeStatus.error:
             // TODO: Handle this case.
             break;
+          case HomeStatus.addressError:
+            _showAddressScreen(context);
+            break;
         }
       },
       builder: (BuildContext context, HomeState state) {
@@ -51,17 +55,37 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          body: ListView.builder(
-              itemCount: state.restaurants.length + 1,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return _getAddressZone(context, state);
-                } else {
-                  return _getRestaurantCard(context, state, index - 1);
-                }
-              }),
+          body: state.restaurants.isEmpty
+              ? _getEmptyRestaurants(state)
+              : ListView.builder(
+                  itemCount: state.restaurants.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return _getAddressZone(context, state);
+                    } else {
+                      return _getRestaurantCard(context, state, index - 1);
+                    }
+                  }),
         );
       },
+    );
+  }
+
+  Widget _getEmptyRestaurants(HomeState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _getAddressZone(context, state),
+        Image.asset(Img.emptyPlate),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+          child: Text(
+            S.of(context).home_restaurants_empty,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline4,
+          ),
+        )
+      ],
     );
   }
 
@@ -70,9 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(Dimens.defaultPadding),
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context)
-              .pushNamed(Routes.address)
-              .then((value) => context.read<HomeCubit>().init());
+          _showAddressScreen(context);
         },
         child: Center(
           child: Row(
@@ -90,6 +112,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void _showAddressScreen(BuildContext context) {
+    Navigator.of(context)
+        .pushNamed(Routes.address)
+        .then((value) => context.read<HomeCubit>().init());
   }
 
   Widget _getRestaurantCard(BuildContext context, HomeState state, int i) {
