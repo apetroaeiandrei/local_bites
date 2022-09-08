@@ -75,6 +75,7 @@ class CartRepo {
       longitude: address.longitude,
       street: address.street,
       propertyDetails: address.propertyDetails,
+      userId: user.uid,
       name: user.name,
       phoneNumber: user.phoneNumber,
       number: Random().nextInt(1000).toString(),
