@@ -1,19 +1,25 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:models/restaurant_model.dart';
+import 'package:models/user_order.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit(this._userRepo, this._restaurantsRepo)
-      : super(const HomeState(status: HomeStatus.initial, restaurants: [])) {
+  HomeCubit(this._userRepo, this._restaurantsRepo, this._ordersRepo)
+      : super(const HomeState(status: HomeStatus.initial, restaurants: [], showCurrentOrder: false)) {
     init();
   }
 
   final UserRepo _userRepo;
   final RestaurantsRepo _restaurantsRepo;
+  final OrdersRepo _ordersRepo;
+  StreamSubscription? _currentOrderSubscription;
 
   init() async {
     if (!await _userRepo.isProfileCompleted()) {
@@ -42,5 +48,17 @@ class HomeCubit extends Cubit<HomeState> {
         status: HomeStatus.restaurantsError,
       ));
     }
+
+    _currentOrderSubscription = _ordersRepo.currentOrderStream.listen((event) {
+      emit(state.copyWith(currentOrder: event, showCurrentOrder: event != null));
+    });
+    _ordersRepo.listenForOrderInProgress();
+
+  }
+
+  @override
+  Future<void> close() {
+    _currentOrderSubscription?.cancel();
+    return super.close();
   }
 }

@@ -24,7 +24,9 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<CartCubit, CartState>(
       listener: (context, state) {
-        // TODO: implement listener
+        if (state.status == CartStatus.orderSuccess) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
       },
       builder: (context, state) {
         return Scaffold(

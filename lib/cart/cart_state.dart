@@ -3,6 +3,7 @@ part of 'cart_cubit.dart';
 enum CartStatus {
   initial,
   orderSuccess,
+  orderError,
 }
 
 class CartState extends Equatable {

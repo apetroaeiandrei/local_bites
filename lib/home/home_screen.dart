@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/home/home_cubit.dart';
+import 'package:local/widgets/order_mini.dart';
 
 import '../generated/l10n.dart';
 import '../img.dart';
@@ -55,6 +56,26 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
+          bottomSheet: !state.showCurrentOrder
+              ? null
+              : Container(
+                  width: double.infinity,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.25),
+                        spreadRadius: 0,
+                        blurRadius: 4,
+                        offset: const Offset(0, -4), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: OrderMini(
+                    order: state.currentOrder!,
+                  ),
+                ),
           body: state.restaurants.isEmpty
               ? _getEmptyRestaurants(state)
               : ListView.builder(

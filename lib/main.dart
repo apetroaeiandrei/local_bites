@@ -12,6 +12,7 @@ import 'package:local/home/home_screen.dart';
 import 'package:local/profile/profile_screen.dart';
 import 'package:local/repos/auth_repo.dart';
 import 'package:local/repos/cart_repo.dart';
+import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:local/restaurant/restaurant_cubit.dart';
@@ -21,6 +22,7 @@ import 'package:local/settings/settings_cubit.dart';
 import 'package:local/settings/settings_screen.dart';
 import 'package:local/theme/theme.dart';
 import 'package:models/food_model.dart';
+import 'package:models/order.dart';
 import 'package:models/restaurant_model.dart';
 
 import 'auth/auth_cubit.dart';
@@ -37,6 +39,7 @@ Future<void> main() async {
   );
   final authRepo = AuthRepo();
   final userRepo = UserRepo();
+  final ordersRepo = OrdersRepo();
   final isLoggedIn = await authRepo.isLoggedIn();
   await userRepo.getUser();
 
@@ -53,6 +56,9 @@ Future<void> main() async {
       ),
       RepositoryProvider<CartRepo>(
         create: (context) => CartRepo(userRepo),
+      ),
+      RepositoryProvider<OrdersRepo>(
+        create: (context) => ordersRepo,
       ),
     ],
     child: MyApp(
@@ -99,6 +105,7 @@ class MyApp extends StatelessWidget {
               create: (context) => HomeCubit(
                 RepositoryProvider.of<UserRepo>(context),
                 RepositoryProvider.of<RestaurantsRepo>(context),
+                RepositoryProvider.of<OrdersRepo>(context),
               ),
               child: const HomeScreen(),
             ),

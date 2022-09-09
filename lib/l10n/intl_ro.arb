@@ -49,6 +49,13 @@
   "cart_mentions_headline": "Adaugă mențiunile tale",
   "cart_mentions_placeholder": "Anunță restaurantul de ce ar trebui să țină cont.",
   "cart_delivery_fee" : "Taxă livrare",
-  "cart_delivery_fee_free" : "GRATUIT"
+  "cart_delivery_fee_free" : "GRATUIT",
 
+  "order_mini_title" : "Comanda ta la {restaurant} este",
+  "order_mini_status_pending" : "În așteptare",
+  "order_mini_status_cooking" : "În pregătire",
+  "order_mini_status_ready_for_delivery" : "Gata pentru livrare",
+  "order_mini_status_in_delivery" : "În drum spre tine",
+  "order_mini_status_completed" : "Livrată",
+  "order_mini_status_canceled" : "Anulată"
 }
