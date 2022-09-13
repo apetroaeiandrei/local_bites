@@ -49,6 +49,14 @@ class RestaurantsRepo {
         .doc(_selectedRestaurantId);
   }
 
+  Future<RestaurantModel> getRestaurantById(String restaurantId) async {
+    final restaurantSnapshot = await _firestore
+        .collection(_collectionRestaurants)
+        .doc(restaurantId)
+        .get();
+    return RestaurantModel.fromMap(restaurantSnapshot.data()!);
+  }
+
   Future<bool> getNearbyRestaurants(double latitude, double longitude) async {
     var collectionReference = _firestore.collection(_collectionRestaurants);
     GeoFirePoint center = _geo.point(latitude: latitude, longitude: longitude);

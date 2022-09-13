@@ -24,6 +24,7 @@ import 'package:local/theme/theme.dart';
 import 'package:models/food_model.dart';
 import 'package:models/order.dart';
 import 'package:models/restaurant_model.dart';
+import 'package:models/user_order.dart';
 
 import 'auth/auth_cubit.dart';
 import 'auth/auth_screen.dart';
@@ -31,6 +32,8 @@ import 'cart/cart_cubit.dart';
 import 'cart/cart_screen.dart';
 import 'firebase_options.dart';
 import 'generated/l10n.dart';
+import 'order/order_cubit.dart';
+import 'order/order_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -127,7 +130,6 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<CartRepo>(context),
                 RepositoryProvider.of<RestaurantsRepo>(context),
                 RepositoryProvider.of<UserRepo>(context),
-
               ),
               child: const CartScreen(),
             ),
@@ -155,6 +157,21 @@ class MyApp extends StatelessWidget {
                 settings.arguments as FoodModel,
               ),
               child: const FoodDetailsScreen(),
+            ),
+          );
+        }
+        if (settings.name == Routes.orderDetails) {
+          final userOrder = settings.arguments as UserOrder;
+          return MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => BlocProvider<OrderCubit>(
+              create: (context) => OrderCubit(
+                RepositoryProvider.of<OrdersRepo>(context),
+                RepositoryProvider.of<RestaurantsRepo>(context),
+                userOrder.orderId,
+                userOrder.restaurantId,
+              ),
+              child: const OrderScreen(),
             ),
           );
         }

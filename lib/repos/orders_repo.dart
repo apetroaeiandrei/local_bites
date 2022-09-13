@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:models/order.dart';
 import 'package:models/order_status.dart';
 import 'package:models/user_order.dart';
 
 class OrdersRepo {
   static const _collectionOrders = "orders";
   static const _collectionUsers = "users";
+  static const _collectionRestaurants = "restaurants";
 
   OrdersRepo._privateConstructor();
 
@@ -28,9 +30,6 @@ class OrdersRepo {
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection(_collectionOrders)
         .where("status", isNotEqualTo: OrderStatus.completed.toSimpleString());
-    // query.get().then((value) {
-    //   _handleChangedOrder(value);
-    // });
     query.snapshots().listen((ordersSnapshot) {
       _handleChangedOrder(ordersSnapshot);
     });
@@ -46,4 +45,24 @@ class OrdersRepo {
   }
 
   Stream<UserOrder?> get currentOrderStream => _currentOrderController.stream;
+
+  Future<Order> getOrder(String orderId, String restaurantId) async {
+    final orderSnapshot = await _firestore
+        .collection(_collectionRestaurants)
+        .doc(restaurantId)
+        .collection(_collectionOrders)
+        .doc(orderId)
+        .get();
+    return Order.fromMap(orderSnapshot.data()!);
+  }
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getOrderSnapshotsStream(
+      String restaurantId, String orderId) {
+    return _firestore
+        .collection(_collectionRestaurants)
+        .doc(restaurantId)
+        .collection(_collectionOrders)
+        .doc(orderId)
+        .snapshots();
+  }
 }

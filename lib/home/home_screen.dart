@@ -68,12 +68,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.black.withOpacity(0.25),
                         spreadRadius: 0,
                         blurRadius: 4,
-                        offset: const Offset(0, -4), // changes position of shadow
+                        offset:
+                            const Offset(0, -4), // changes position of shadow
                       ),
                     ],
                   ),
-                  child: OrderMini(
-                    order: state.currentOrder!,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(Routes.orderDetails,
+                          arguments: state.currentOrder);
+                    },
+                    child: OrderMini(
+                      order: state.currentOrder!,
+                    ),
                   ),
                 ),
           body: state.restaurants.isEmpty
