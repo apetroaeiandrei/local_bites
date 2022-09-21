@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:local/address/address_cubit.dart';
 import 'package:local/address/address_screen.dart';
+import 'package:local/cart/mentions_screen.dart';
 import 'package:local/food_details/food_details_cubit.dart';
 import 'package:local/food_details/food_details_screen.dart';
 import 'package:local/profile/profile_cubit.dart';
@@ -133,6 +134,7 @@ class MyApp extends StatelessWidget {
               ),
               child: const CartScreen(),
             ),
+        Routes.mentions: (context) => const MentionsScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == Routes.restaurant) {

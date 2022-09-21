@@ -26,12 +26,15 @@ class CartCubit extends Cubit<CartState> {
   final UserRepo _userRepo;
 
   Future<void> checkout() async {
-    final success = await _cartRepo.placeOrder();
+    final success = await _cartRepo.placeOrder(state.mentions);
     if (success) {
       emit(state.copyWith(status: CartStatus.orderSuccess));
     } else {
       emit(state.copyWith(status: CartStatus.orderError));
     }
+  }
 
+  void updateMentions(String? mentions) {
+    emit(state.copyWith(mentions: mentions));
   }
 }

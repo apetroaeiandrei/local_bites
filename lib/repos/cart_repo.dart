@@ -57,7 +57,7 @@ class CartRepo {
 
   List<FoodOrder> get cartItems => List.from(_foodOrders);
 
-  Future<bool> placeOrder() async {
+  Future<bool> placeOrder(String mentions) async {
     final address = _userRepo.address!;
     final user = _userRepo.user!;
 
@@ -71,6 +71,7 @@ class CartRepo {
       date: DateTime.now(),
       foods: _foodOrders,
       status: OrderStatus.pending,
+      mentions: mentions,
       latitude: address.latitude,
       longitude: address.longitude,
       street: address.street,

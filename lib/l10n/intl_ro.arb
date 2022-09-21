@@ -60,5 +60,10 @@
   "order_mini_status_canceled" : "Anulată",
 
   "order_details_title" : "Comanda ta",
-  "order_details_restaurant_see_menu" : "Vezi meniul"
+  "order_details_restaurant_see_menu" : "Vezi meniul",
+
+  "mentions_title" : "Mențiuni speciale",
+  "mentions_headline" : "Adaugă mențiunile tale",
+  "mentions_placeholder" : "Anunță restaurantul de ce ar trebui să țină cont.",
+  "mentions_save" : "Salvează"
 }

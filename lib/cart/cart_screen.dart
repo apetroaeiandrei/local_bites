@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:local/cart/cart_cubit.dart';
+import 'package:local/routes.dart';
 import 'package:local/theme/wl_colors.dart';
 
 import '../generated/l10n.dart';
@@ -52,15 +53,25 @@ class _CartScreenState extends State<CartScreen> {
                         return CartItem(item: item);
                       }),
                       const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.of(context).cart_mentions,
-                              style: Theme.of(context).textTheme.headline3),
-                          const Icon(
-                            Icons.arrow_forward_ios,
-                          ),
-                        ],
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(Routes.mentions,
+                                  arguments: state.mentions)
+                              .then((value) => context
+                                  .read<CartCubit>()
+                                  .updateMentions(value as String?));
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(S.of(context).cart_mentions,
+                                style: Theme.of(context).textTheme.headline3),
+                            const Icon(
+                              Icons.arrow_forward_ios,
+                            ),
+                          ],
+                        ),
                       ),
                       Text(state.mentions,
                           style: Theme.of(context).textTheme.bodyText2),
