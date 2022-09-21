@@ -75,7 +75,8 @@ class _OrderScreenState extends State<OrderScreen> {
                           children: [
                             Lottie.asset(
                               state.order!.status.toLottieResource(),
-                              repeat: state.order!.status != OrderStatus.completed,
+                              repeat:
+                                  state.order!.status != OrderStatus.completed,
                               width: 130,
                               height: 130,
                             ),
@@ -99,8 +100,14 @@ class _OrderScreenState extends State<OrderScreen> {
                         const SizedBox(height: 4),
                         Text(S.of(context).cart_mentions,
                             style: Theme.of(context).textTheme.headline3),
-                        Text(state.order!.mentions,
-                            style: Theme.of(context).textTheme.bodyText2),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 4.0,
+                            right: 50,
+                          ),
+                          child: Text(state.order!.mentions,
+                              style: Theme.of(context).textTheme.bodyText2),
+                        ),
                         const SizedBox(height: 12),
                         Text(S.of(context).cart_delivery_headline,
                             style: Theme.of(context).textTheme.headline3),

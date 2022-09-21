@@ -73,8 +73,14 @@ class _CartScreenState extends State<CartScreen> {
                           ],
                         ),
                       ),
-                      Text(state.mentions,
-                          style: Theme.of(context).textTheme.bodyText2),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 4.0,
+                          right: 50,
+                        ),
+                        child: Text(state.mentions,
+                            style: Theme.of(context).textTheme.bodyText2),
+                      ),
                       const SizedBox(height: 12),
                       Text(S.of(context).cart_delivery_headline,
                           style: Theme.of(context).textTheme.headline3),
