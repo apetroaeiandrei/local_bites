@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/home/home_cubit.dart';
@@ -73,14 +74,29 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(Routes.orderDetails,
-                          arguments: state.currentOrder);
-                    },
-                    child: OrderMini(
-                      order: state.currentOrder!,
+                  child: CarouselSlider.builder(
+                    options: CarouselOptions(
+                      height: 150,
+                      viewportFraction: 1,
+                      enableInfiniteScroll: true,
+                      autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 8),
+                      initialPage: 0,
                     ),
+                    itemCount: state.currentOrders.length,
+                    itemBuilder:
+                        (BuildContext context, int index, int realIndex) {
+                      return GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          Navigator.of(context).pushNamed(Routes.orderDetails,
+                              arguments: state.currentOrders[index]);
+                        },
+                        child: OrderMini(
+                          order: state.currentOrders[index],
+                        ),
+                      );
+                    },
                   ),
                 ),
           body: state.restaurants.isEmpty

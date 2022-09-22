@@ -21,8 +21,8 @@ class OrdersRepo {
   }
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final StreamController<UserOrder?> _currentOrderController =
-      StreamController<UserOrder?>.broadcast();
+  final StreamController<List<UserOrder>> _currentOrderController =
+      StreamController<List<UserOrder>>.broadcast();
 
   listenForOrderInProgress() {
     final query = _firestore
@@ -36,15 +36,13 @@ class OrdersRepo {
   }
 
   void _handleChangedOrder(QuerySnapshot<Map<String, dynamic>> ordersSnapshot) {
-    if (ordersSnapshot.docs.isNotEmpty) {
-      final order = UserOrder.fromMap(ordersSnapshot.docs.first.data());
-      _currentOrderController.add(order);
-    } else {
-      _currentOrderController.add(null);
-    }
+    final orders =
+        ordersSnapshot.docs.map((e) => UserOrder.fromMap(e.data())).toList();
+    _currentOrderController.add(orders);
   }
 
-  Stream<UserOrder?> get currentOrderStream => _currentOrderController.stream;
+  Stream<List<UserOrder>> get currentOrderStream =>
+      _currentOrderController.stream;
 
   Future<Order> getOrder(String orderId, String restaurantId) async {
     final orderSnapshot = await _firestore

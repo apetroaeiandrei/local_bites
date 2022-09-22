@@ -13,17 +13,17 @@ class HomeState extends Equatable {
   final HomeStatus status;
   final List<RestaurantModel> restaurants;
   final String? address;
-  final UserOrder? currentOrder;
+  final List<UserOrder> currentOrders;
   final bool showCurrentOrder;
 
   @override
-  List<Object?> get props => [status, restaurants, address, currentOrder, showCurrentOrder];
+  List<Object?> get props => [status, restaurants, address, currentOrders, showCurrentOrder];
 
   const HomeState({
     required this.status,
     required this.restaurants,
     this.address,
-    this.currentOrder,
+    required this.currentOrders,
     required this.showCurrentOrder,
   });
 
@@ -31,14 +31,14 @@ class HomeState extends Equatable {
     HomeStatus? status,
     List<RestaurantModel>? restaurants,
     String? address,
-    UserOrder? currentOrder,
+    List<UserOrder>? currentOrders,
     bool? showCurrentOrder,
   }) {
     return HomeState(
       status: status ?? this.status,
       restaurants: restaurants ?? this.restaurants,
       address: address ?? this.address,
-      currentOrder: currentOrder ?? this.currentOrder,
+      currentOrders: currentOrders ?? this.currentOrders,
       showCurrentOrder: showCurrentOrder ?? this.showCurrentOrder,
     );
   }

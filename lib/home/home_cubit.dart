@@ -12,7 +12,11 @@ part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit(this._userRepo, this._restaurantsRepo, this._ordersRepo)
-      : super(const HomeState(status: HomeStatus.initial, restaurants: [], showCurrentOrder: false)) {
+      : super(const HomeState(
+            status: HomeStatus.initial,
+            restaurants: [],
+            currentOrders: [],
+            showCurrentOrder: false)) {
     init();
   }
 
@@ -50,10 +54,10 @@ class HomeCubit extends Cubit<HomeState> {
     }
 
     _currentOrderSubscription = _ordersRepo.currentOrderStream.listen((event) {
-      emit(state.copyWith(currentOrder: event, showCurrentOrder: event != null));
+      emit(state.copyWith(
+          currentOrders: event, showCurrentOrder: event.isNotEmpty));
     });
     _ordersRepo.listenForOrderInProgress();
-
   }
 
   @override
