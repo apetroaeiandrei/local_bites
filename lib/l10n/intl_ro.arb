@@ -23,6 +23,7 @@
   "settings_welcome": "Salut, {name}!",
   "settings_logout": "Deconectare",
   "settings_profile": "Profil",
+  "settings_orders": "Comenzile tale",
 
   "address_title": "Adresa ta",
   "address_street_label": "Strada și numarul",
@@ -65,5 +66,7 @@
   "mentions_title" : "Mențiuni speciale",
   "mentions_headline" : "Adaugă mențiunile tale",
   "mentions_placeholder" : "Anunță restaurantul de ce ar trebui să țină cont.",
-  "mentions_save" : "Salvează"
+  "mentions_save" : "Salvează",
+
+  "orders_title" : "Comenzile tale"
 }

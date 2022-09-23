@@ -7,6 +7,8 @@ import 'package:local/address/address_screen.dart';
 import 'package:local/cart/mentions_screen.dart';
 import 'package:local/food_details/food_details_cubit.dart';
 import 'package:local/food_details/food_details_screen.dart';
+import 'package:local/orders/orders_cubit.dart';
+import 'package:local/orders/orders_screen.dart';
 import 'package:local/profile/profile_cubit.dart';
 import 'package:local/home/home_cubit.dart';
 import 'package:local/home/home_screen.dart';
@@ -135,6 +137,12 @@ class MyApp extends StatelessWidget {
               child: const CartScreen(),
             ),
         Routes.mentions: (context) => const MentionsScreen(),
+        Routes.orders: (context) => BlocProvider<OrdersCubit>(
+              create: (context) => OrdersCubit(
+                RepositoryProvider.of<OrdersRepo>(context),
+              ),
+              child: const OrdersScreen(),
+            ),
       },
       onGenerateRoute: (settings) {
         if (settings.name == Routes.restaurant) {

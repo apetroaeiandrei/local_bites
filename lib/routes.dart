@@ -13,4 +13,5 @@ abstract class Routes {
   static const String cart = '/cart';
   static const String mentions = "/cart/mentions";
 
+  static const String orders = '/orders';
 }

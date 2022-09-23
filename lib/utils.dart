@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:local/generated/l10n.dart';
 import 'package:local/theme/wl_colors.dart';
 import 'package:models/order_status.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import 'constants.dart';
@@ -75,5 +75,11 @@ extension OrderStatusExtension on OrderStatus {
       case OrderStatus.cancelled:
         return Colors.red;
     }
+  }
+}
+
+extension DateUtils on DateTime {
+  String toUserString() {
+    return DateFormat.MMMd().format(this) + " " + DateFormat.Hm().format(this);
   }
 }

@@ -63,4 +63,13 @@ class OrdersRepo {
         .doc(orderId)
         .snapshots();
   }
+
+  Future<List<UserOrder>> getUserOrders() async {
+    final snapshot = await _firestore
+        .collection(_collectionUsers)
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection(_collectionOrders)
+        .get();
+    return snapshot.docs.map((e) => UserOrder.fromMap(e.data())).toList();
+  }
 }

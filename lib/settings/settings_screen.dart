@@ -46,6 +46,11 @@ class SettingsScreen extends StatelessWidget {
                       onTap: () {
                         context.read<SettingsCubit>().logout();
                       }),
+                  CustomMenuItem(
+                      name: S.of(context).settings_orders,
+                      onTap: () {
+                        Navigator.of(context).pushNamed(Routes.orders);
+                      }),
                 ],
               ),
             ),
