@@ -98,8 +98,11 @@ class _OrderScreenState extends State<OrderScreen> {
                           return CartItem(item: item);
                         }),
                         const SizedBox(height: 4),
-                        Text(S.of(context).cart_mentions,
-                            style: Theme.of(context).textTheme.headline3),
+                        Visibility(
+                          visible: state.order!.mentions.isNotEmpty,
+                          child: Text(S.of(context).cart_mentions,
+                              style: Theme.of(context).textTheme.headline3),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(
                             top: 4.0,

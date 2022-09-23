@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 150,
                       viewportFraction: 1,
                       enableInfiniteScroll: true,
-                      autoPlay: true,
+                      autoPlay: state.currentOrders.length > 1,
                       autoPlayInterval: const Duration(seconds: 8),
                       initialPage: 0,
                     ),
