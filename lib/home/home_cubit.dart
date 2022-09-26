@@ -65,4 +65,8 @@ class HomeCubit extends Cubit<HomeState> {
     _currentOrderSubscription?.cancel();
     return super.close();
   }
+
+  void rateOrder(UserOrder currentOrder, bool? liked) {
+    _ordersRepo.rateOrder(currentOrder, liked);
+  }
 }

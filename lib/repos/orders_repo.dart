@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:models/order.dart';
-import 'package:models/order_status.dart';
 import 'package:models/user_order.dart';
 
 class OrdersRepo {
@@ -29,7 +28,7 @@ class OrdersRepo {
         .collection(_collectionUsers)
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection(_collectionOrders)
-        .where("status", isNotEqualTo: OrderStatus.completed.toSimpleString());
+        .where("settled", isEqualTo: false);
     query.snapshots().listen((ordersSnapshot) {
       _handleChangedOrder(ordersSnapshot);
     });
@@ -71,5 +70,15 @@ class OrdersRepo {
         .collection(_collectionOrders)
         .get();
     return snapshot.docs.map((e) => UserOrder.fromMap(e.data())).toList();
+  }
+
+  void rateOrder(UserOrder currentOrder, bool? liked) {
+    //todo implement rating. For now used only for settlement
+    _firestore
+        .collection(_collectionUsers)
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection(_collectionOrders)
+        .doc(currentOrder.orderId)
+        .update({"settled": true});
   }
 }

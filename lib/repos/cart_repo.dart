@@ -52,8 +52,8 @@ class CartRepo {
   get cartCount =>
       _foodOrders.fold<int>(0, (sum, element) => sum + element.quantity);
 
-  get cartTotal => _foodOrders.fold<double>(
-      0, (sum, element) => sum + element.price);
+  get cartTotal =>
+      _foodOrders.fold<double>(0, (sum, element) => sum + element.price);
 
   List<FoodOrder> get cartItems => List.from(_foodOrders);
 
@@ -72,6 +72,7 @@ class CartRepo {
       foods: _foodOrders,
       status: OrderStatus.pending,
       mentions: mentions,
+      settled: false,
       latitude: address.latitude,
       longitude: address.longitude,
       street: address.street,

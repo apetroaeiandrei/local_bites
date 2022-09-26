@@ -18,6 +18,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static const _orderMiniHeight = 200.0;
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeState>(
@@ -61,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ? null
               : Container(
                   width: double.infinity,
-                  height: 150,
+                  height: _orderMiniHeight,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     boxShadow: [
@@ -76,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: CarouselSlider.builder(
                     options: CarouselOptions(
-                      height: 150,
+                      height: _orderMiniHeight,
                       viewportFraction: 1,
                       enableInfiniteScroll: true,
                       autoPlay: state.currentOrders.length > 1,
@@ -94,6 +96,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                         child: OrderMini(
                           order: state.currentOrders[index],
+                          onFeedback: (liked) {
+                            context
+                                .read<HomeCubit>()
+                                .rateOrder(state.currentOrders[index], liked);
+                          },
                         ),
                       );
                     },
