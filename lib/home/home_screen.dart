@@ -123,20 +123,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _getEmptyRestaurants(HomeState state) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _getAddressZone(context, state),
-        Image.asset(Img.emptyPlate),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0),
-          child: Text(
-            S.of(context).home_restaurants_empty,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline4,
-          ),
-        )
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _getAddressZone(context, state),
+          Image.asset(Img.emptyPlate),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            child: Text(
+              S.of(context).home_restaurants_empty,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          )
+        ],
+      ),
     );
   }
 

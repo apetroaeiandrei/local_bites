@@ -1,6 +1,9 @@
 {
   "@@locale": "ro",
-  "auth_header": "Autorizare",
+  "auth_title": "Bun venit!",
+  "auth_subtitle": "Folosește contul tău pentru mai multe beneficii.",
+  "auth_anonymous": "Continuă ca anonim",
+  "auth_divider": "sau",
   "auth_login": "Autentificare",
   "auth_register": "Înregistrare",
   "auth_email_placeholder": "Adresa de e-mail",

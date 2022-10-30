@@ -15,10 +15,15 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state.status == ProfileStatus.success) {
+          Navigator.of(context).pop();
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            leading: const SizedBox(),
             title: Text(
               S.of(context).profile_user_details,
             ),

@@ -1,10 +1,9 @@
-
 import 'package:equatable/equatable.dart';
 
-import '../auth/auth_status.dart';
+enum ProfileStatus { initial, loading, success, failure }
 
 class ProfileState extends Equatable {
-  final AuthStatus status;
+  final ProfileStatus status;
 
   @override
   List<Object?> get props => [status];
@@ -12,7 +11,7 @@ class ProfileState extends Equatable {
   const ProfileState({required this.status});
 
   ProfileState copyWith({
-    AuthStatus? status,
+    ProfileStatus? status,
   }) {
     return ProfileState(
       status: status ?? this.status,

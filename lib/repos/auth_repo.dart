@@ -55,4 +55,18 @@ class AuthRepo {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
+
+  Future<bool> loginAnonymously() async {
+    try {
+      final user = await _auth.signInAnonymously();
+      await _firestore.collection(_collectionUsers).doc(user.user?.uid).set({
+        "email": "anonymous ${user.user?.uid}",
+        "uid": user.user?.uid,
+      });
+      return true;
+    } on Exception catch (e) {
+      debugPrint("Auth failed $e");
+      return false;
+    }
+  }
 }

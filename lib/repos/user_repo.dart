@@ -47,7 +47,7 @@ class UserRepo {
   Future<bool> setUserDetails(String name, String phoneNumber) async {
     try {
       final properties = {
-        "email": _auth.currentUser?.email,
+        "email": _auth.currentUser?.email?? "anonymous ${_auth.currentUser?.uid}",
         "name": name,
         "uid": _auth.currentUser?.uid,
         "phoneNumber": phoneNumber,
@@ -84,5 +84,9 @@ class UserRepo {
       debugPrint("Set address failed $e");
       return false;
     }
+  }
+
+  void logout() {
+    _user = null;
   }
 }

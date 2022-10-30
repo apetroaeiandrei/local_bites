@@ -23,4 +23,11 @@ class AuthCubit extends Cubit<AuthState> {
       status: success ? AuthStatus.authorized : AuthStatus.unauthorized,
     ));
   }
+
+  loginAnonymously() async {
+    final success = await _authRepo.loginAnonymously();
+    emit(state.copyWith(
+      status: success ? AuthStatus.authorized : AuthStatus.unauthorized,
+    ));
+  }
 }

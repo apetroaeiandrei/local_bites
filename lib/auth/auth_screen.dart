@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:local/theme/wl_colors.dart';
 
 import '../generated/l10n.dart';
 import '../routes.dart';
 import '../theme/decorations.dart';
+import '../theme/dimens.dart';
 import 'auth_cubit.dart';
 import 'auth_status.dart';
 
@@ -18,7 +20,7 @@ class AuthScreen extends StatelessWidget {
       listener: (context, state) {
         switch (state.status) {
           case AuthStatus.authorized:
-              Navigator.of(context).pushReplacementNamed(Routes.home);
+            Navigator.of(context).pushReplacementNamed(Routes.home);
             break;
           case AuthStatus.initial:
             // TODO: Handle this case.
@@ -30,25 +32,29 @@ class AuthScreen extends StatelessWidget {
       },
       builder: (context, state) {
         return Scaffold(
+          appBar: AppBar(
+            title: Text(S.of(context).auth_title),
+          ),
           body: SingleChildScrollView(
-            child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(Dimens.defaultPadding),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 500),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(
-                      height: 60,
+                      height: 32,
                     ),
                     Text(
-                      S.of(context).auth_header,
+                      S.of(context).auth_subtitle,
                       style: Theme.of(context).textTheme.headline4,
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.start,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 32),
+                      padding: const EdgeInsets.only(top: 22),
                       child: TextField(
                         controller: _emailController,
                         textAlign: TextAlign.center,
@@ -58,7 +64,7 @@ class AuthScreen extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 32),
+                      padding: const EdgeInsets.only(top: 12),
                       child: TextField(
                         controller: _passwordController,
                         textAlign: TextAlign.center,
@@ -82,7 +88,7 @@ class AuthScreen extends StatelessWidget {
                       child: Text(S.of(context).auth_login),
                     ),
                     const SizedBox(
-                      height: 32,
+                      height: 12,
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -92,6 +98,35 @@ class AuthScreen extends StatelessWidget {
                             );
                       },
                       child: Text(S.of(context).auth_register),
+                    ),
+                    const SizedBox(height: 44,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 1,
+                            color: WlColors.textColor,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12, right: 12),
+                          child: Text(S.of(context).auth_divider, style: Theme.of(context).textTheme.subtitle1,),
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 1,
+                            color: WlColors.textColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24,),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<AuthCubit>().loginAnonymously();
+                      },
+                      child: Text(S.of(context).auth_anonymous),
                     ),
                   ],
                 ),
