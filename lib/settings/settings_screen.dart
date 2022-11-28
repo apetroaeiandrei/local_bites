@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/routes.dart';
 import 'package:local/settings/settings_cubit.dart';
 import 'package:local/widgets/custom_menu_item.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../constants.dart';
 import '../generated/l10n.dart';
 import '../theme/dimens.dart';
 
@@ -45,6 +47,11 @@ class SettingsScreen extends StatelessWidget {
                       name: S.of(context).settings_orders,
                       onTap: () {
                         Navigator.of(context).pushNamed(Routes.orders);
+                      }),
+                  CustomMenuItem(
+                      name: S.of(context).settings_terms,
+                      onTap: () {
+                        launchUrl(Uri.parse(Constants.tcUrl));
                       }),
                   CustomMenuItem(
                       name: S.of(context).settings_logout,

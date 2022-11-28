@@ -27,6 +27,7 @@
   "settings_logout": "Deconectare",
   "settings_profile": "Profil",
   "settings_orders": "Comenzile tale",
+  "settings_terms": "Termeni și condiții",
 
   "address_title": "Adresa ta",
   "address_street_label": "Strada și numarul",
@@ -71,5 +72,8 @@
   "mentions_placeholder" : "Anunță restaurantul de ce ar trebui să țină cont.",
   "mentions_save" : "Salvează",
 
-  "orders_title" : "Comenzile tale"
+  "orders_title" : "Comenzile tale",
+
+  "terms_clickable" : "termenii și condițiile",
+  "terms1" : "Folosind aceasta aplicație, sunteți de acord cu "
 }

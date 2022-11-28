@@ -1,7 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/theme/wl_colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../constants.dart';
 import '../generated/l10n.dart';
 import '../routes.dart';
 import '../theme/decorations.dart';
@@ -99,7 +102,9 @@ class AuthScreen extends StatelessWidget {
                       },
                       child: Text(S.of(context).auth_register),
                     ),
-                    const SizedBox(height: 44,),
+                    const SizedBox(
+                      height: 44,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -111,7 +116,10 @@ class AuthScreen extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 12, right: 12),
-                          child: Text(S.of(context).auth_divider, style: Theme.of(context).textTheme.subtitle1,),
+                          child: Text(
+                            S.of(context).auth_divider,
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
                         ),
                         Expanded(
                           child: Container(
@@ -121,12 +129,36 @@ class AuthScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24,),
+                    const SizedBox(
+                      height: 24,
+                    ),
                     ElevatedButton(
                       onPressed: () {
                         context.read<AuthCubit>().loginAnonymously();
                       },
                       child: Text(S.of(context).auth_anonymous),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(40.0),
+                      child: RichText(
+                        text: TextSpan(
+                          style: Theme.of(context).textTheme.headline5,
+                          children: [
+                            TextSpan(text: S.of(context).terms1),
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                launchUrl(Uri.parse(Constants.tcUrl));
+                                },
+                              text: S.of(context).terms_clickable,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  ?.copyWith(color: WlColors.primary),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),

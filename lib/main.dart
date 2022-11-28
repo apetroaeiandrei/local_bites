@@ -25,7 +25,6 @@ import 'package:local/settings/settings_cubit.dart';
 import 'package:local/settings/settings_screen.dart';
 import 'package:local/theme/theme.dart';
 import 'package:models/food_model.dart';
-import 'package:models/order.dart';
 import 'package:models/restaurant_model.dart';
 import 'package:models/user_order.dart';
 
