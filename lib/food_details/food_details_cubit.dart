@@ -12,10 +12,12 @@ class FoodDetailsCubit extends Cubit<FoodDetailsState> {
   FoodDetailsCubit(this._restaurantsRepo, this._cartRepo, FoodModel foodModel)
       : super(FoodDetailsState(
             food: foodModel,
-            options: [],
-            selectedOptions: {},
+            options: const [],
+            selectedOptions: const {},
+            invalidOptions: const {},
             price: foodModel.price,
-            quantity: 1)) {
+            quantity: 1,
+            status: FoodDetailsStatus.initial)) {
     _init();
   }
 
@@ -25,16 +27,26 @@ class FoodDetailsCubit extends Cubit<FoodDetailsState> {
   void _init() async {
     final optionCategories =
         await _restaurantsRepo.getFoodOptionsAsync(state.food.optionIds);
-    print(optionCategories);
     emit(state.copyWith(
       options: optionCategories,
     ));
   }
 
   void addOption(FoodOption option) {
+    final category =
+        state.options.firstWhere((element) => element.options.contains(option));
+    final selectedCount = category.options
+        .where((element) => state.selectedOptions.contains(element.id))
+        .length;
+
+    if (selectedCount >= category.maxSelection) {
+      return;
+    }
+
     emit(state.copyWith(
       selectedOptions: Set.from(state.selectedOptions)..add(option.id),
       price: state.price + option.price * state.quantity,
+      status: FoodDetailsStatus.initial,
     ));
   }
 
@@ -42,10 +54,18 @@ class FoodDetailsCubit extends Cubit<FoodDetailsState> {
     emit(state.copyWith(
       selectedOptions: Set.from(state.selectedOptions)..remove(option.id),
       price: state.price - option.price * state.quantity,
+      status: FoodDetailsStatus.initial,
     ));
   }
 
   void addFood() {
+    final invalidOptions = _getInvalidOptions();
+    if (invalidOptions.isNotEmpty) {
+      emit(state.copyWith(
+          invalidOptions: invalidOptions,
+          status: FoodDetailsStatus.optionsError));
+      return;
+    }
     Map<String, List<String>> orderSelectedOptions = {};
     for (var element in state.options) {
       for (var option in element.options) {
@@ -60,6 +80,7 @@ class FoodDetailsCubit extends Cubit<FoodDetailsState> {
     }
     _cartRepo.addToCart(
         state.food, state.quantity, orderSelectedOptions, state.price);
+    emit(state.copyWith(status: FoodDetailsStatus.addSuccess));
   }
 
   void incrementQuantity() {
@@ -70,5 +91,18 @@ class FoodDetailsCubit extends Cubit<FoodDetailsState> {
   void decrementQuantity() {
     final newPrice = state.price / state.quantity * (state.quantity - 1);
     emit(state.copyWith(quantity: state.quantity - 1, price: newPrice));
+  }
+
+  Set<FoodOptionCategory> _getInvalidOptions() {
+    final invalidOptions = <FoodOptionCategory>{};
+    for (var element in state.options) {
+      final selectedCount = element.options
+          .where((element) => state.selectedOptions.contains(element.id))
+          .length;
+      if (selectedCount < element.minSelection) {
+        invalidOptions.add(element);
+      }
+    }
+    return invalidOptions;
   }
 }

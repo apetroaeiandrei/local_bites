@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/food_details/food_details_cubit.dart';
+import 'package:local/theme/wl_colors.dart';
 import 'package:models/food_option.dart';
 
 import '../generated/l10n.dart';
@@ -18,7 +19,18 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<FoodDetailsCubit, FoodDetailsState>(
       listener: (context, state) {
-        // TODO: implement listener
+        switch (state.status) {
+          case FoodDetailsStatus.initial:
+            break;
+          case FoodDetailsStatus.loading:
+            break;
+          case FoodDetailsStatus.addSuccess:
+            Navigator.of(context).pop();
+            break;
+          case FoodDetailsStatus.optionsError:
+            _showInvalidOptionsSnackBar(context);
+            break;
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -83,7 +95,6 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     context.read<FoodDetailsCubit>().addFood();
-                    Navigator.of(context).pop();
                   },
                   child: Text(
                     S
@@ -101,19 +112,33 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
 
   Iterable<Widget> _getOptions(FoodDetailsState state) {
     print(state.options);
-    return state.options.map((e) => Padding(
-          padding: const EdgeInsets.all(Dimens.defaultPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                e.name,
-                style: Theme.of(context).textTheme.headline2,
-              ),
-              ...e.options.map((option) => _buildOption(option, state)),
-            ],
-          ),
-        ));
+    return state.options.map(
+      (e) => Padding(
+        padding: const EdgeInsets.all(Dimens.defaultPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              e.name,
+              style: Theme.of(context).textTheme.headline2,
+            ),
+            const SizedBox(
+              height: 4,
+            ),
+            Text(
+              S
+                  .of(context)
+                  .food_details_min_max(e.minSelection, e.maxSelection),
+              style: Theme.of(context).textTheme.headline5?.copyWith(
+                  color: state.invalidOptions.contains(e)
+                      ? WlColors.error
+                      : WlColors.secondary),
+            ),
+            ...e.options.map((option) => _buildOption(option, state)),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildOption(FoodOption option, FoodDetailsState state) {
@@ -167,6 +192,14 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
           },
         ),
       ],
+    );
+  }
+
+  _showInvalidOptionsSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(S.of(context).food_details_invalid_options),
+      ),
     );
   }
 }

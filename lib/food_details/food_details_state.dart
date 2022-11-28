@@ -1,15 +1,27 @@
 part of 'food_details_cubit.dart';
 
+enum FoodDetailsStatus { initial, loading, addSuccess, optionsError }
+
 class FoodDetailsState extends Equatable {
   final FoodModel food;
   final List<FoodOptionCategory> options;
   final Set<String> selectedOptions;
   final double price;
   final int quantity;
+  final Set<FoodOptionCategory> invalidOptions;
+  final FoodDetailsStatus status;
 
   @override
-  List<Object> get props =>
-      [food, options, price, quantity, selectedOptions, options];
+  List<Object> get props => [
+        food,
+        options,
+        price,
+        quantity,
+        selectedOptions,
+        options,
+        invalidOptions,
+        status
+      ];
 
   const FoodDetailsState({
     required this.food,
@@ -17,6 +29,8 @@ class FoodDetailsState extends Equatable {
     required this.selectedOptions,
     required this.price,
     required this.quantity,
+    required this.invalidOptions,
+    required this.status,
   });
 
   FoodDetailsState copyWith({
@@ -25,6 +39,8 @@ class FoodDetailsState extends Equatable {
     Set<String>? selectedOptions,
     double? price,
     int? quantity,
+    Set<FoodOptionCategory>? invalidOptions,
+    FoodDetailsStatus? status,
   }) {
     return FoodDetailsState(
       food: food ?? this.food,
@@ -32,6 +48,8 @@ class FoodDetailsState extends Equatable {
       selectedOptions: selectedOptions ?? this.selectedOptions,
       price: price ?? this.price,
       quantity: quantity ?? this.quantity,
+      invalidOptions: invalidOptions ?? this.invalidOptions,
+      status: status ?? this.status,
     );
   }
 }
