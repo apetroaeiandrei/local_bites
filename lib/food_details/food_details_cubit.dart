@@ -33,14 +33,14 @@ class FoodDetailsCubit extends Cubit<FoodDetailsState> {
 
   void addOption(FoodOption option) {
     emit(state.copyWith(
-      selectedOptions: state.selectedOptions..add(option.id),
+      selectedOptions: Set.from(state.selectedOptions)..add(option.id),
       price: state.price + option.price * state.quantity,
     ));
   }
 
   void removeOption(FoodOption option) {
     emit(state.copyWith(
-      selectedOptions: state.selectedOptions..remove(option.id),
+      selectedOptions: Set.from(state.selectedOptions)..remove(option.id),
       price: state.price - option.price * state.quantity,
     ));
   }
