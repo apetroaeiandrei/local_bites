@@ -42,14 +42,14 @@ class SettingsScreen extends StatelessWidget {
                         Navigator.of(context).pushNamed(Routes.profile);
                       }),
                   CustomMenuItem(
-                      name: S.of(context).settings_logout,
-                      onTap: () {
-                        context.read<SettingsCubit>().logout();
-                      }),
-                  CustomMenuItem(
                       name: S.of(context).settings_orders,
                       onTap: () {
                         Navigator.of(context).pushNamed(Routes.orders);
+                      }),
+                  CustomMenuItem(
+                      name: S.of(context).settings_logout,
+                      onTap: () {
+                        context.read<SettingsCubit>().logout();
                       }),
                 ],
               ),

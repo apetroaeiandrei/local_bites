@@ -88,5 +88,6 @@ class UserRepo {
 
   void logout() {
     _user = null;
+    _address = null;
   }
 }

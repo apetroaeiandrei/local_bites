@@ -98,6 +98,7 @@ class MyApp extends StatelessWidget {
         Routes.auth: (context) => BlocProvider<AuthCubit>(
               create: (context) => AuthCubit(
                 RepositoryProvider.of<AuthRepo>(context),
+                RepositoryProvider.of<UserRepo>(context),
               ),
               child: AuthScreen(),
             ),

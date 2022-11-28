@@ -16,6 +16,9 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
+        print("name ${state.name}");
+        _nameController.text = state.name;
+        _phoneController.text = state.phoneNumber;
         if (state.status == ProfileStatus.success) {
           Navigator.of(context).pop();
         }
@@ -23,7 +26,7 @@ class ProfileScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            leading: const SizedBox(),
+            leading: state.name.isEmpty ? const SizedBox() : null,
             title: Text(
               S.of(context).profile_user_details,
             ),
