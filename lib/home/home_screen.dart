@@ -159,6 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
+              const SizedBox(width: 4),
               const Icon(Icons.keyboard_arrow_down),
             ],
           ),

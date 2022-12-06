@@ -18,7 +18,7 @@
   "price_currency_ron" : "{price} RON",
   "home_welcome": "Bun venit",
   "home_address": "Adresa ta",
-  "home_address_empty": "Vă rugăm să introduceți adresa pentru livrare",
+  "home_address_empty": "Alege adresa pentru livrare",
   "home_restaurants_empty": "Ne pare rău! Nu am găsit restaurante care livrează la această adresă",
   "home_restaurants_empty_no_address": "Trebuie să introduceți adresa pentru a vedea restaurantele din apropiere",
 
