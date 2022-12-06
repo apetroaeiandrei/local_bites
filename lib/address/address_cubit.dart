@@ -12,8 +12,8 @@ class AddressCubit extends Cubit<AddressState> {
           status: AddressStatus.initial,
           street: _userRepo.address?.street ?? '',
           propertyDetails: _userRepo.address?.propertyDetails ?? '',
-          latitude: _userRepo.address?.latitude ?? 0,
-          longitude: _userRepo.address?.longitude ?? 0,
+          latitude: _userRepo.address?.latitude ?? 47.529476,
+          longitude: _userRepo.address?.longitude ?? 25.558950,
         )) {
     _init();
   }
