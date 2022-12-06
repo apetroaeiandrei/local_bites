@@ -41,127 +41,124 @@ class AuthScreen extends StatelessWidget {
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(Dimens.defaultPadding),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 500),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(
-                      height: 32,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  Text(
+                    S.of(context).auth_subtitle,
+                    style: Theme.of(context).textTheme.headline4,
+                    textAlign: TextAlign.start,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 22),
+                    child: TextField(
+                      controller: _emailController,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: textFieldDecoration(
+                          S.of(context).auth_email_placeholder),
                     ),
-                    Text(
-                      S.of(context).auth_subtitle,
-                      style: Theme.of(context).textTheme.headline4,
-                      textAlign: TextAlign.start,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: TextField(
+                      controller: _passwordController,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                      autocorrect: false,
+                      decoration: textFieldDecoration(
+                          S.of(context).auth_password_placeholder),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 22),
-                      child: TextField(
-                        controller: _emailController,
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: textFieldDecoration(
-                            S.of(context).auth_email_placeholder),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12),
-                      child: TextField(
-                        controller: _passwordController,
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: true,
-                        autocorrect: false,
-                        decoration: textFieldDecoration(
-                            S.of(context).auth_password_placeholder),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<AuthCubit>().login(
-                              _emailController.text,
-                              _passwordController.text,
-                            );
-                      },
-                      child: Text(S.of(context).auth_login),
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<AuthCubit>().register(
-                              _emailController.text,
-                              _passwordController.text,
-                            );
-                      },
-                      child: Text(S.of(context).auth_register),
-                    ),
-                    const SizedBox(
-                      height: 44,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 1,
-                            color: WlColors.textColor,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12, right: 12),
-                          child: Text(
-                            S.of(context).auth_divider,
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            height: 1,
-                            color: WlColors.textColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<AuthCubit>().loginAnonymously();
-                      },
-                      child: Text(S.of(context).auth_anonymous),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(40.0),
-                      child: RichText(
-                        text: TextSpan(
-                          style: Theme.of(context).textTheme.headline5,
-                          children: [
-                            TextSpan(text: S.of(context).terms1),
-                            TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                launchUrl(Uri.parse(Constants.tcUrl));
-                                },
-                              text: S.of(context).terms_clickable,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  ?.copyWith(color: WlColors.primary),
-                            ),
-                          ],
+                  ),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<AuthCubit>().login(
+                            _emailController.text,
+                            _passwordController.text,
+                          );
+                    },
+                    child: Text(S.of(context).auth_login),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<AuthCubit>().register(
+                            _emailController.text,
+                            _passwordController.text,
+                          );
+                    },
+                    child: Text(S.of(context).auth_register),
+                  ),
+                  const SizedBox(
+                    height: 44,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: WlColors.textColor,
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12, right: 12),
+                        child: Text(
+                          S.of(context).auth_divider,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: WlColors.textColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<AuthCubit>().loginAnonymously();
+                    },
+                    child: Text(S.of(context).auth_anonymous),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(40.0),
+                    child: RichText(
+                      text: TextSpan(
+                        style: Theme.of(context).textTheme.headline5,
+                        children: [
+                          TextSpan(text: S.of(context).terms1),
+                          TextSpan(
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                              launchUrl(Uri.parse(Constants.tcUrl));
+                              },
+                            text: S.of(context).terms_clickable,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5
+                                ?.copyWith(color: WlColors.primary),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
