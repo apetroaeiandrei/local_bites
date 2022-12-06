@@ -46,7 +46,6 @@ dependencies:
   equatable: ^2.0.3
   flutter_typeahead: ^4.0.0
   another_flushbar: ^1.10.29
-  image_picker: ^0.8.5+3
   geoflutterfire: ^3.0.3
   google_maps_flutter: ^2.1.8
   geocoding: ^2.0.4
