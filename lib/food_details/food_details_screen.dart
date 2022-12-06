@@ -67,6 +67,20 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                   SliverAppBar(
                     pinned: true,
                     expandedHeight: Dimens.sliverImageHeight,
+                    leadingWidth: 45,
+                    leading: Container(
+                      margin: const EdgeInsets.only(left: 5),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
                     title: AnimatedOpacity(
                       opacity: _titleVisible ? 1 : 0,
                       duration: const Duration(milliseconds: 200),
@@ -144,7 +158,6 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   }
 
   Iterable<Widget> _getOptions(FoodDetailsState state) {
-    print(state.options);
     return state.options.map(
       (e) => Padding(
         padding: const EdgeInsets.all(Dimens.defaultPadding),
