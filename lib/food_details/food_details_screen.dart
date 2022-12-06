@@ -15,6 +15,31 @@ class FoodDetailsScreen extends StatefulWidget {
 }
 
 class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
+  final _headerKey = GlobalKey();
+  final _scrollController = ScrollController();
+  bool _titleVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      final headerPosition = _getHeaderPosition();
+      if (headerPosition < 0) {
+        if (!_titleVisible) {
+          setState(() {
+            _titleVisible = true;
+          });
+        }
+      } else {
+        if (_titleVisible) {
+          setState(() {
+            _titleVisible = false;
+          });
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FoodDetailsCubit, FoodDetailsState>(
@@ -37,11 +62,18 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
           body: Stack(
             children: [
               CustomScrollView(
+                controller: _scrollController,
                 slivers: [
                   SliverAppBar(
                     pinned: true,
                     expandedHeight: Dimens.sliverImageHeight,
-                    title: Text(state.food.name),
+                    title: AnimatedOpacity(
+                      opacity: _titleVisible ? 1 : 0,
+                      duration: const Duration(milliseconds: 200),
+                      child: Text(
+                        state.food.name,
+                      ),
+                    ),
                     flexibleSpace: FlexibleSpaceBar(
                       background: Image.network(
                         state.food.imageUrl,
@@ -52,6 +84,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                   SliverList(
                     delegate: SliverChildListDelegate([
                       Padding(
+                        key: _headerKey,
                         padding: const EdgeInsets.only(
                             left: Dimens.defaultPadding,
                             top: Dimens.defaultPadding),
@@ -201,5 +234,12 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
         content: Text(S.of(context).food_details_invalid_options),
       ),
     );
+  }
+
+  double _getHeaderPosition() {
+    final RenderBox renderBox =
+        _headerKey.currentContext!.findRenderObject() as RenderBox;
+    final position = renderBox.localToGlobal(Offset.zero);
+    return position.dy - MediaQuery.of(context).padding.top - kToolbarHeight;
   }
 }
