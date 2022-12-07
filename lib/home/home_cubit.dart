@@ -43,9 +43,16 @@ class HomeCubit extends Cubit<HomeState> {
     final success = await _restaurantsRepo.getNearbyRestaurants(
         address.latitude, address.longitude);
     if (success) {
+      List<RestaurantModel> restaurants = _restaurantsRepo.restaurants
+          .where((element) => element.open)
+          .toList();
+      restaurants.sort((a, b) => a.name.compareTo(b.name));
+      restaurants.addAll(
+          _restaurantsRepo.restaurants.where((element) => !element.open));
+
       emit(state.copyWith(
         status: HomeStatus.loaded,
-        restaurants: _restaurantsRepo.restaurants,
+        restaurants: restaurants,
         address: address.street,
       ));
     } else {
