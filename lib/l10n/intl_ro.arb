@@ -21,6 +21,10 @@
   "home_address_empty": "Alege adresa pentru livrare",
   "home_restaurants_empty": "Ne pare rău! Nu am găsit restaurante care livrează la această adresă",
   "home_restaurants_empty_no_address": "Trebuie să introduceți adresa pentru a vedea restaurantele din apropiere",
+  "home_cart_different_restaurant_title": "Coșul nu este gol",
+  "home_cart_different_restaurant_content": "Ai produse de la alt restaurant în coș. Dacă schimbi restaurantul coșul va fi golit.",
+  "home_cart_different_restaurant_cancel": "Renunță",
+  "home_cart_different_restaurant_ok": "Schimbă",
 
   "settings_title": "Setări",
   "settings_welcome": "Salut, {name}!",

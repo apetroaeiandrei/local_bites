@@ -95,7 +95,7 @@ class AppThemeData {
           ),
         ),
         dialogTheme: const DialogTheme(
-          backgroundColor: WlColors.secondary,
+          backgroundColor: WlColors.surface,
           titleTextStyle: TextStyle(
               fontSize: 20, fontWeight: FontWeight.w700, color: textColor),
         ),

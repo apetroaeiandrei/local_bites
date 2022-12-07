@@ -19,8 +19,8 @@ class RestaurantCubit extends Cubit<RestaurantState> {
           status: RestaurantStatus.initial,
           foods: [],
           categories: [],
-          cartCount: 0,
-          cartTotal: 0,
+          cartCount: _cartRepo.cartCount,
+          cartTotal: _cartRepo.cartTotal,
         )) {
     _init();
   }
@@ -58,6 +58,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   }
 
   void refreshCart() {
+    print("refreshCart");
     emit(state.copyWith(
       cartCount: _cartRepo.cartCount,
       cartTotal: _cartRepo.cartTotal,

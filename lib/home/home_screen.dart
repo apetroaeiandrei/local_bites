@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/home/home_cubit.dart';
 import 'package:local/widgets/order_mini.dart';
+import 'package:models/restaurant_model.dart';
 
 import '../generated/l10n.dart';
 import '../img.dart';
@@ -178,13 +182,60 @@ class _HomeScreenState extends State<HomeScreen> {
     final restaurant = state.restaurants[i];
     return GestureDetector(
       onTap: () {
-        Navigator.of(context)
-            .pushNamed(Routes.restaurant, arguments: restaurant);
+        if (context
+            .read<HomeCubit>()
+            .hasCartOnDifferentRestaurant(restaurant.id)) {
+          _showExistingCartDialog(context.read<HomeCubit>(), restaurant);
+        } else {
+          context.read<HomeCubit>().setRestaurantId(restaurant.id);
+          Navigator.of(context)
+              .pushNamed(Routes.restaurant, arguments: restaurant);
+        }
       },
       child: HomeScreenCard(
         imageUrl: restaurant.imageUrl,
         name: restaurant.name,
       ),
     );
+  }
+
+  _showExistingCartDialog(HomeCubit cubit, RestaurantModel restaurant) {
+    final List<Widget> actions = [
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: Text(S.of(context).home_cart_different_restaurant_cancel),
+      ),
+      TextButton(
+        onPressed: () {
+          cubit.setRestaurantId(restaurant.id);
+          Navigator.of(context).pop();
+          Navigator.of(context)
+              .pushNamed(Routes.restaurant, arguments: restaurant);
+        },
+        child: Text(S.of(context).home_cart_different_restaurant_ok),
+      ),
+    ];
+
+    if (Platform.isIOS) {
+      showDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: Text(S.of(context).home_cart_different_restaurant_title),
+          content: Text(S.of(context).home_cart_different_restaurant_content),
+          actions: actions,
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(S.of(context).home_cart_different_restaurant_title),
+          content: Text(S.of(context).home_cart_different_restaurant_content),
+          actions: actions,
+        ),
+      );
+    }
   }
 }

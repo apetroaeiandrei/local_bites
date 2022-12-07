@@ -25,9 +25,14 @@ class CartRepo {
     return instance!;
   }
 
-  set selectedRestaurantId(String restaurantId) {
-    clearSelectedRestaurantData();
-    _selectedRestaurantId = restaurantId;
+  String? get selectedRestaurantId => _selectedRestaurantId;
+
+  set selectedRestaurantId(String? restaurantId) {
+    if (_selectedRestaurantId == null ||
+        _selectedRestaurantId != restaurantId) {
+      _selectedRestaurantId = restaurantId;
+      clearSelectedRestaurantData();
+    }
   }
 
   addToCart(FoodModel food, int quantity,
