@@ -10,21 +10,32 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   CartCubit(this._cartRepo, this._restaurantsRepo, this._userRepo)
       : super(CartState(
-          status: CartStatus.initial,
-          cartCount: _cartRepo.cartCount,
-          cartTotal: _cartRepo.cartTotal,
-          cartItems: _cartRepo.cartItems,
-          mentions: "",
-          restaurantName: _restaurantsRepo.selectedRestaurant.name,
-          deliveryStreet: _userRepo.address?.street ?? "",
-          deliveryPropertyDetails: _userRepo.address?.propertyDetails ?? "",
-          deliveryLatitude: _userRepo.address?.latitude ?? 0.0,
-          deliveryLongitude: _userRepo.address?.longitude ?? 0.0,
-        ));
+            status: CartStatus.initial,
+            cartCount: _cartRepo.cartCount,
+            cartTotal: _cartRepo.cartTotal,
+            cartItems: _cartRepo.cartItems,
+            mentions: "",
+            restaurantName: _restaurantsRepo.selectedRestaurant.name,
+            deliveryStreet: _userRepo.address?.street ?? "",
+            deliveryPropertyDetails: _userRepo.address?.propertyDetails ?? "",
+            deliveryLatitude: _userRepo.address?.latitude ?? 0.0,
+            deliveryLongitude: _userRepo.address?.longitude ?? 0.0,
+            minOrder: _restaurantsRepo.selectedRestaurant.minimumOrder)) {
+    init();
+  }
 
   final CartRepo _cartRepo;
   final RestaurantsRepo _restaurantsRepo;
   final UserRepo _userRepo;
+
+  void init() {
+    Future.delayed(
+        const Duration(
+          milliseconds: 10,
+        ), () {
+      _refreshCart();
+    });
+  }
 
   Future<void> checkout() async {
     final success = await _cartRepo.placeOrder(state.mentions);
@@ -50,9 +61,18 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void _refreshCart() {
+    print("refreshing cart");
     emit(state.copyWith(
         cartCount: _cartRepo.cartCount,
         cartTotal: _cartRepo.cartTotal,
-        cartItems: _cartRepo.cartItems));
+        cartItems: _cartRepo.cartItems,
+        status: _isNotMinimumOrder()
+            ? CartStatus.minimumOrderError
+            : CartStatus.initial));
+  }
+
+  bool _isNotMinimumOrder() {
+    return _cartRepo.cartTotal <
+        _restaurantsRepo.selectedRestaurant.minimumOrder;
   }
 }

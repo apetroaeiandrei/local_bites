@@ -4,6 +4,7 @@ enum CartStatus {
   initial,
   orderSuccess,
   orderError,
+  minimumOrderError,
 }
 
 class CartState extends Equatable {
@@ -17,6 +18,7 @@ class CartState extends Equatable {
   final String deliveryPropertyDetails;
   final double deliveryLatitude;
   final double deliveryLongitude;
+  final num minOrder;
 
   @override
   List<Object> get props => [
@@ -29,7 +31,8 @@ class CartState extends Equatable {
         deliveryStreet,
         deliveryPropertyDetails,
         deliveryLatitude,
-        deliveryLongitude
+        deliveryLongitude,
+        minOrder,
       ];
 
   const CartState({
@@ -43,6 +46,7 @@ class CartState extends Equatable {
     required this.deliveryPropertyDetails,
     required this.deliveryLatitude,
     required this.deliveryLongitude,
+    required this.minOrder,
   });
 
   CartState copyWith({
@@ -56,6 +60,7 @@ class CartState extends Equatable {
     String? deliveryPropertyDetails,
     double? deliveryLatitude,
     double? deliveryLongitude,
+    num? minOrder,
   }) {
     return CartState(
       status: status ?? this.status,
@@ -69,6 +74,7 @@ class CartState extends Equatable {
           deliveryPropertyDetails ?? this.deliveryPropertyDetails,
       deliveryLatitude: deliveryLatitude ?? this.deliveryLatitude,
       deliveryLongitude: deliveryLongitude ?? this.deliveryLongitude,
+      minOrder: minOrder ?? this.minOrder,
     );
   }
 }

@@ -178,10 +178,14 @@ class _CartScreenState extends State<CartScreen> {
                 left: Dimens.defaultPadding,
                 right: Dimens.defaultPadding,
                 child: ElevatedButton(
-                  onPressed: () {
-                    context.read<CartCubit>().checkout();
-                  },
-                  child: Text(S.of(context).cart_confirm_button),
+                  onPressed: state.status == CartStatus.minimumOrderError
+                      ? null
+                      : () {
+                          context.read<CartCubit>().checkout();
+                        },
+                  child: Text(state.status == CartStatus.minimumOrderError
+                      ? S.of(context).cart_button_min_order(state.minOrder)
+                      : S.of(context).cart_confirm_button),
                 ),
               ),
             ],
