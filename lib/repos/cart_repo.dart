@@ -6,6 +6,7 @@ import 'package:models/food_model.dart';
 import 'package:models/food_order.dart';
 import 'package:models/order.dart';
 import 'package:models/order_status.dart';
+import 'package:collection/collection.dart';
 
 class CartRepo {
   static CartRepo? instance;
@@ -31,10 +32,11 @@ class CartRepo {
 
   addToCart(FoodModel food, int quantity,
       Map<String, List<String>> selectedOptions, double price) {
-    final foodOrder = _foodOrders.firstWhere(
-        (element) =>
-            element.food == food && element.selectedOptions == selectedOptions,
-        orElse: () {
+    final foodOrder = _foodOrders.firstWhere((element) {
+      return element.food == food &&
+          const DeepCollectionEquality()
+              .equals(element.selectedOptions, selectedOptions);
+    }, orElse: () {
       return FoodOrder(
         id: food.id,
         food: food,
