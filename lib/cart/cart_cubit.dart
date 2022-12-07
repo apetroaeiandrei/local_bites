@@ -27,17 +27,22 @@ class CartCubit extends Cubit<CartState> {
   final CartRepo _cartRepo;
   final RestaurantsRepo _restaurantsRepo;
   final UserRepo _userRepo;
+  final _delayedDuration = const Duration(milliseconds: 10);
 
   void init() {
-    Future.delayed(
-        const Duration(
-          milliseconds: 10,
-        ), () {
+    Future.delayed(_delayedDuration, () {
       _refreshCart();
     });
   }
 
   Future<void> checkout() async {
+    if (!_restaurantsRepo.selectedRestaurant.open) {
+      emit(state.copyWith(status: CartStatus.restaurantClosed));
+      Future.delayed(_delayedDuration, () {
+        emit(state.copyWith(status: CartStatus.initial));
+      });
+      return;
+    }
     final success = await _cartRepo.placeOrder(state.mentions);
     if (success) {
       emit(state.copyWith(status: CartStatus.orderSuccess));
@@ -61,7 +66,6 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void _refreshCart() {
-    print("refreshing cart");
     emit(state.copyWith(
         cartCount: _cartRepo.cartCount,
         cartTotal: _cartRepo.cartTotal,

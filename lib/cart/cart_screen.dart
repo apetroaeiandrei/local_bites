@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:local/cart/cart_cubit.dart';
 import 'package:local/routes.dart';
 import 'package:local/theme/wl_colors.dart';
+import 'package:local/widgets/dialog_utils.dart';
 
 import '../generated/l10n.dart';
 import '../img.dart';
@@ -27,6 +28,8 @@ class _CartScreenState extends State<CartScreen> {
       listener: (context, state) {
         if (state.status == CartStatus.orderSuccess) {
           Navigator.of(context).popUntil((route) => route.isFirst);
+        } else if (state.status == CartStatus.restaurantClosed) {
+          _showRestaurantClosedDialog(context);
         }
       },
       builder: (context, state) {
@@ -192,6 +195,22 @@ class _CartScreenState extends State<CartScreen> {
           ),
         );
       },
+    );
+  }
+
+  void _showRestaurantClosedDialog(BuildContext context) {
+    showPlatformDialog(
+      context: context,
+      title: S.of(context).cart_restaurant_closed_title,
+      content: S.of(context).cart_restaurant_closed_content,
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(S.of(context).cart_restaurant_closed_ok),
+        ),
+      ],
     );
   }
 }

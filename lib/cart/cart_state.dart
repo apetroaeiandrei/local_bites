@@ -5,6 +5,7 @@ enum CartStatus {
   orderSuccess,
   orderError,
   minimumOrderError,
+  restaurantClosed,
 }
 
 class CartState extends Equatable {

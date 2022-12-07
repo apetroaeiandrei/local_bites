@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:models/food_category_model.dart';
@@ -23,6 +25,7 @@ class RestaurantsRepo {
   final List<FoodCategoryModel> _categories = [];
   String? _selectedRestaurantId;
   RestaurantModel? _selectedRestaurant;
+  StreamSubscription<DocumentSnapshot>? _currentRestaurantSubscription;
 
   RestaurantsRepo._privateConstructor();
 
@@ -37,11 +40,23 @@ class RestaurantsRepo {
     _selectedRestaurant = _restaurants.firstWhere(
       (element) => element.id == restaurantId,
     );
+    _listenForChangesInCurrentRestaurant();
   }
 
   List<RestaurantModel> get restaurants => _restaurants;
 
   RestaurantModel get selectedRestaurant => _selectedRestaurant!;
+
+  _listenForChangesInCurrentRestaurant() async {
+    await _currentRestaurantSubscription?.cancel();
+    _currentRestaurantSubscription = _firestore
+        .collection(_collectionRestaurants)
+        .doc(_selectedRestaurantId)
+        .snapshots()
+        .listen((restaurantSnapshot) {
+      _handleChangedRestaurant(restaurantSnapshot);
+    });
+  }
 
   DocumentReference<Map<String, dynamic>> _getRestaurantDoc() {
     return _firestore
@@ -111,7 +126,7 @@ class RestaurantsRepo {
     return _foods.where((element) => element.categoryId == id).toList();
   }
 
-  void clearSelectedRestaurantData() {
+  void clearSelectedRestaurantData() async {
     _foods.clear();
     _categories.clear();
   }
@@ -141,5 +156,11 @@ class RestaurantsRepo {
     final List<FoodOption> items =
         itemsSnapshot.docs.map((e) => FoodOption.fromMap(e.data())).toList();
     return category.copyWith(options: items);
+  }
+
+  void _handleChangedRestaurant(
+      DocumentSnapshot<Map<String, dynamic>> restaurantSnapshot) {
+    final restaurant = RestaurantModel.fromMap(restaurantSnapshot.data()!);
+    _selectedRestaurant = restaurant;
   }
 }
