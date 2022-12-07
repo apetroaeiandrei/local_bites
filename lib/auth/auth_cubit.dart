@@ -33,4 +33,8 @@ class AuthCubit extends Cubit<AuthState> {
       status: success ? AuthStatus.authorized : AuthStatus.unauthorized,
     ));
   }
+
+  onFocusChanged() {
+    emit(state.copyWith(status: AuthStatus.initial));
+  }
 }

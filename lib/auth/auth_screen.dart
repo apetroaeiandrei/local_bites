@@ -62,6 +62,9 @@ class AuthScreen extends StatelessWidget {
                       keyboardType: TextInputType.emailAddress,
                       decoration: textFieldDecoration(
                           S.of(context).auth_email_placeholder),
+                      onChanged: (value) {
+                        context.read<AuthCubit>().onFocusChanged();
+                      },
                     ),
                   ),
                   Padding(
@@ -74,6 +77,24 @@ class AuthScreen extends StatelessWidget {
                       autocorrect: false,
                       decoration: textFieldDecoration(
                           S.of(context).auth_password_placeholder),
+                      onChanged: (value) {
+                        context.read<AuthCubit>().onFocusChanged();
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: state.status == AuthStatus.unauthorized ? 4 : 0,
+                  ),
+                  Center(
+                    child: Visibility(
+                      visible: state.status == AuthStatus.unauthorized,
+                      child: Text(
+                        S.of(context).auth_error,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline6
+                            ?.copyWith(color: WlColors.error),
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -146,7 +167,7 @@ class AuthScreen extends StatelessWidget {
                           TextSpan(
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                              launchUrl(Uri.parse(Constants.tcUrl));
+                                launchUrl(Uri.parse(Constants.tcUrl));
                               },
                             text: S.of(context).terms_clickable,
                             style: Theme.of(context)

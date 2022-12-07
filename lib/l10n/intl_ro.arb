@@ -10,6 +10,8 @@
   "auth_password_placeholder": "Parolă",
   "auth_forgot_password": "Ai uitat parola?",
   "auth_reset_password": "Resetare parolă",
+  "auth_error": "E-mail sau parolă incorecte",
+
   "profile_phone_number": "Număr de telefon",
   "profile_name": "Nume și prenume",
   "profile_address": "Adresa",
