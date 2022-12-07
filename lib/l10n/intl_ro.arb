@@ -27,6 +27,7 @@
   "home_cart_different_restaurant_content": "Ai produse de la alt restaurant în coș. Dacă schimbi restaurantul coșul va fi golit.",
   "home_cart_different_restaurant_cancel": "Renunță",
   "home_cart_different_restaurant_ok": "Schimbă",
+  "home_restaurant_closed" : "Nu livrează momentan",
 
   "settings_title": "Setări",
   "settings_welcome": "Salut, {name}!",
