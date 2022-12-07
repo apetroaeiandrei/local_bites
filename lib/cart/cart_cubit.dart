@@ -10,16 +10,17 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   CartCubit(this._cartRepo, this._restaurantsRepo, this._userRepo)
       : super(CartState(
-            status: CartStatus.initial,
-            cartCount: _cartRepo.cartCount,
-            cartTotal: _cartRepo.cartTotal,
-            cartItems: _cartRepo.cartItems,
-            mentions: "",
-            restaurantName: _restaurantsRepo.selectedRestaurant.name,
-            deliveryStreet: _userRepo.address?.street ?? "",
-            deliveryPropertyDetails: _userRepo.address?.propertyDetails ?? "",
-            deliveryLatitude: _userRepo.address?.latitude ?? 0.0,
-            deliveryLongitude: _userRepo.address?.longitude ?? 0.0,));
+          status: CartStatus.initial,
+          cartCount: _cartRepo.cartCount,
+          cartTotal: _cartRepo.cartTotal,
+          cartItems: _cartRepo.cartItems,
+          mentions: "",
+          restaurantName: _restaurantsRepo.selectedRestaurant.name,
+          deliveryStreet: _userRepo.address?.street ?? "",
+          deliveryPropertyDetails: _userRepo.address?.propertyDetails ?? "",
+          deliveryLatitude: _userRepo.address?.latitude ?? 0.0,
+          deliveryLongitude: _userRepo.address?.longitude ?? 0.0,
+        ));
 
   final CartRepo _cartRepo;
   final RestaurantsRepo _restaurantsRepo;
@@ -36,5 +37,22 @@ class CartCubit extends Cubit<CartState> {
 
   void updateMentions(String? mentions) {
     emit(state.copyWith(mentions: mentions));
+  }
+
+  void add(FoodOrder item) {
+    _cartRepo.increaseItemQuantity(item);
+    _refreshCart();
+  }
+
+  void remove(FoodOrder item) {
+    _cartRepo.decreaseItemQuantity(item);
+    _refreshCart();
+  }
+
+  void _refreshCart() {
+    emit(state.copyWith(
+        cartCount: _cartRepo.cartCount,
+        cartTotal: _cartRepo.cartTotal,
+        cartItems: _cartRepo.cartItems));
   }
 }

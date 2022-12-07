@@ -46,7 +46,6 @@ class CartRepo {
     _foodOrders.remove(foodOrder);
     _foodOrders
         .add(foodOrder.copyWith(quantity: foodOrder.quantity + quantity));
-    print("addToCart: ${foodOrder.food.name}");
   }
 
   get cartCount =>
@@ -55,7 +54,18 @@ class CartRepo {
   get cartTotal =>
       _foodOrders.fold<double>(0, (sum, element) => sum + element.price);
 
-  List<FoodOrder> get cartItems => List.from(_foodOrders);
+  List<FoodOrder> get cartItems {
+    final sortedFoods = List<FoodOrder>.from(_foodOrders);
+    sortedFoods.sort((a, b) {
+      if (a.food.name == b.food.name) {
+        return a.selectedOptions
+            .toString()
+            .compareTo(b.selectedOptions.toString());
+      }
+      return a.food.name.compareTo(b.food.name);
+    });
+    return sortedFoods;
+  }
 
   Future<bool> placeOrder(String mentions) async {
     final address = _userRepo.address!;
@@ -89,5 +99,27 @@ class CartRepo {
 
   void clearSelectedRestaurantData() {
     _foodOrders.clear();
+  }
+
+  void increaseItemQuantity(FoodOrder item) {
+    final foodOrder = _foodOrders.firstWhere((element) => element == item);
+    final itemPrice = foodOrder.price / foodOrder.quantity;
+    _foodOrders.remove(foodOrder);
+    _foodOrders.add(foodOrder.copyWith(
+      quantity: foodOrder.quantity + 1,
+      price: foodOrder.price + itemPrice,
+    ));
+  }
+
+  void decreaseItemQuantity(FoodOrder item) {
+    final foodOrder = _foodOrders.firstWhere((element) => element == item);
+    final itemPrice = foodOrder.price / foodOrder.quantity;
+    _foodOrders.remove(foodOrder);
+    if (foodOrder.quantity > 1) {
+      _foodOrders.add(foodOrder.copyWith(
+        quantity: foodOrder.quantity - 1,
+        price: foodOrder.price - itemPrice,
+      ));
+    }
   }
 }

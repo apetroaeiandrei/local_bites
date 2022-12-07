@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:local/widgets/circular_icon_button.dart';
 import 'package:models/food_model.dart';
 
 import '../generated/l10n.dart';
@@ -94,12 +95,9 @@ class FoodCard extends StatelessWidget {
           Positioned(
             right: 0,
             bottom: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).iconTheme.color!.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: const Icon(Icons.add),
+            child: CircularIconButton(
+              icon: Icons.add,
+              onTap: () {},
             ),
           ),
         ],

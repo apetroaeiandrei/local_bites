@@ -50,7 +50,16 @@ class _CartScreenState extends State<CartScreen> {
                           style: Theme.of(context).textTheme.bodyText2),
                       const SizedBox(height: 32),
                       ...state.cartItems.map((item) {
-                        return CartItem(item: item);
+                        return CartItem(
+                          item: item,
+                          showAddRemoveButtons: true,
+                          onAdd: () {
+                            context.read<CartCubit>().add(item);
+                          },
+                          onRemove: () {
+                            context.read<CartCubit>().remove(item);
+                          },
+                        );
                       }),
                       const SizedBox(height: 4),
                       GestureDetector(
