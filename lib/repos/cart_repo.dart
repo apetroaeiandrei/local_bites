@@ -50,9 +50,11 @@ class CartRepo {
         price: price,
       );
     });
-    _foodOrders.remove(foodOrder);
-    _foodOrders
-        .add(foodOrder.copyWith(quantity: foodOrder.quantity + quantity));
+
+    bool elementExists = _foodOrders.remove(foodOrder);
+    _foodOrders.add(foodOrder.copyWith(
+        quantity: foodOrder.quantity + quantity,
+        price: elementExists ? foodOrder.price + price : price));
   }
 
   get cartCount =>
