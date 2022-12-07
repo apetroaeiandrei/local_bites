@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -127,8 +128,11 @@ class _AddressScreenState extends State<AddressScreen> {
     final RenderBox renderBox =
         _mapsKey.currentContext?.findRenderObject() as RenderBox;
     final Size size = renderBox.size;
-    final coordinates = await controller
-        .getLatLng(ScreenCoordinate(x: size.width ~/ 2, y: size.height ~/ 2));
+    final devicePixelRatio =
+        Platform.isAndroid ? MediaQuery.of(context).devicePixelRatio : 1.0;
+    final coordinates = await controller.getLatLng(ScreenCoordinate(
+        x: size.width * devicePixelRatio ~/ 2,
+        y: size.height * devicePixelRatio ~/ 2));
     context.read<AddressCubit>().onLocationChanged(coordinates);
   }
 
