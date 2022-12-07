@@ -16,7 +16,6 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
-        print("name ${state.name}");
         _nameController.text = state.name;
         _phoneController.text = state.phoneNumber;
         if (state.status == ProfileStatus.success) {
@@ -24,52 +23,57 @@ class ProfileScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            leading: state.name.isEmpty ? const SizedBox() : null,
-            title: Text(
-              S.of(context).profile_user_details,
+        return WillPopScope(
+          onWillPop: () async {
+            return state.name.isNotEmpty && state.phoneNumber.isNotEmpty;
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              leading: state.name.isEmpty ? const SizedBox() : null,
+              title: Text(
+                S.of(context).profile_user_details,
+              ),
             ),
-          ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(Dimens.defaultPadding),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32),
-                    child: TextField(
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.name,
-                      decoration:
-                          textFieldDecoration(S.of(context).profile_name),
-                      controller: _nameController,
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(Dimens.defaultPadding),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 32),
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.name,
+                        decoration:
+                            textFieldDecoration(S.of(context).profile_name),
+                        controller: _nameController,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 32),
-                    child: TextField(
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.number,
-                      decoration: textFieldDecoration(
-                          S.of(context).profile_phone_number),
-                      controller: _phoneController,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 32),
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        decoration: textFieldDecoration(
+                            S.of(context).profile_phone_number),
+                        controller: _phoneController,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<ProfileCubit>().setUserDetails(
-                          _nameController.text, _phoneController.text);
-                    },
-                    child: Text(S.of(context).generic_save),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<ProfileCubit>().setUserDetails(
+                            _nameController.text, _phoneController.text);
+                      },
+                      child: Text(S.of(context).generic_save),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
