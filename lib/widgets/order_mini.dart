@@ -51,6 +51,13 @@ class OrderMini extends StatelessWidget {
                           style: Theme.of(context).textTheme.headline3,
                         ),
                         const SizedBox(
+                          height: 2,
+                        ),
+                        Text(
+                          order.date.toUserString(),
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
+                        const SizedBox(
                           height: 12,
                         ),
                         Text(
