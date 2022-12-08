@@ -31,7 +31,7 @@ class CartRepo {
     if (_selectedRestaurantId == null ||
         _selectedRestaurantId != restaurantId) {
       _selectedRestaurantId = restaurantId;
-      clearSelectedRestaurantData();
+      clearCart();
     }
   }
 
@@ -103,10 +103,11 @@ class CartRepo {
       total: cartTotal,
     );
     await orderDoc.set(order.toMap());
+    clearCart();
     return true;
   }
 
-  void clearSelectedRestaurantData() {
+  void clearCart() {
     _foodOrders.clear();
   }
 
