@@ -63,9 +63,11 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
             children: [
               CustomScrollView(
                 controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
                   SliverAppBar(
                     pinned: true,
+                    stretch: true,
                     expandedHeight: Dimens.sliverImageHeight,
                     leadingWidth: 45,
                     leading: Container(
@@ -120,7 +122,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                         padding: const EdgeInsets.only(
                             left: Dimens.defaultPadding,
                             top: Dimens.defaultPadding,
-                            bottom: 50),
+                            bottom: 12),
                         child: Text(
                           S.of(context).price_currency_ron(state.food.price),
                           style: Theme.of(context).textTheme.headline3,

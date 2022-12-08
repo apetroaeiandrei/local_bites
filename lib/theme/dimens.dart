@@ -22,7 +22,7 @@ abstract class Dimens {
   static const space_30 = 30.0;
 
   static const sliverAppBarHeight = 170.0;
-  static const sliverImageHeight = 230.0;
+  static const sliverImageHeight = 270.0;
   static const actionIconSize = 40.0;
   static const actionIconSidePadding = 16.0;
   static const locationPinHeight = 50.0;
@@ -34,5 +34,4 @@ abstract class Dimens {
   static double getGoldenRatioFromWidth(BuildContext context) {
     return MediaQuery.of(context).size.width / goldenRatio;
   }
-
 }
