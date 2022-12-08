@@ -17,7 +17,7 @@ class FoodDetailsCubit extends Cubit<FoodDetailsState> {
             invalidOptions: const {},
             price: foodModel.price,
             quantity: 1,
-            status: FoodDetailsStatus.initial)) {
+            status: FoodDetailsStatus.loading)) {
     _init();
   }
 
@@ -29,6 +29,7 @@ class FoodDetailsCubit extends Cubit<FoodDetailsState> {
         await _restaurantsRepo.getFoodOptionsAsync(state.food.optionIds);
     emit(state.copyWith(
       options: optionCategories,
+      status: FoodDetailsStatus.initial,
     ));
   }
 

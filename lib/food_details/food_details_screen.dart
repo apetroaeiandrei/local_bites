@@ -44,6 +44,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<FoodDetailsCubit, FoodDetailsState>(
       listener: (context, state) {
+        print(state.status);
         switch (state.status) {
           case FoodDetailsStatus.initial:
             break;
@@ -137,8 +138,11 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                   ),
                 ],
               ),
-              Positioned(
-                bottom: Dimens.defaultPadding,
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 200),
+                bottom: state.status == FoodDetailsStatus.loading
+                    ? -50
+                    : Dimens.defaultPadding,
                 left: Dimens.defaultPadding,
                 right: Dimens.defaultPadding,
                 child: ElevatedButton(
