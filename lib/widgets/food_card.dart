@@ -92,12 +92,12 @@ class FoodCard extends StatelessWidget {
               ),
             ],
           ),
-          Positioned(
+          const Positioned(
             right: 0,
             bottom: 0,
             child: CircularIconButton(
               icon: Icons.add,
-              onTap: () {},
+              onTap: null,
             ),
           ),
         ],
