@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     options: CarouselOptions(
                       height: _orderMiniHeight,
                       viewportFraction: 1,
-                      enableInfiniteScroll: true,
+                      enableInfiniteScroll: state.currentOrders.length > 1,
                       autoPlay: state.currentOrders.length > 1,
                       autoPlayInterval: const Duration(seconds: 8),
                       initialPage: 0,
