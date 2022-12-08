@@ -82,12 +82,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     return categoryContent.foods.map(
       (food) => GestureDetector(
         onTap: () {
-          if (food.hasOptions) {
-            Navigator.pushNamed(context, Routes.foodDetails, arguments: food)
-                .then((value) => context.read<RestaurantCubit>().refreshCart());
-          } else {
-            context.read<RestaurantCubit>().addToCart(food);
-          }
+          Navigator.pushNamed(context, Routes.foodDetails, arguments: food)
+              .then((value) => context.read<RestaurantCubit>().refreshCart());
         },
         child: FoodCard(
           foodModel: food,
