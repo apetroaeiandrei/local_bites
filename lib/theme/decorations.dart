@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:local/theme/wl_colors.dart';
 
 OutlineInputBorder outlineInputBorder() => OutlineInputBorder(
       borderSide:

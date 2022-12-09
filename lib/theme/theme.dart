@@ -34,7 +34,7 @@ class AppThemeData {
         ),
         indicatorColor: WlColors.secondary,
         scaffoldBackgroundColor: WlColors.surface,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: WlColors.primary,
         ),
         fontFamily: "SanFrancisco",

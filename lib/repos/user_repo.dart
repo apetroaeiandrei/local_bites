@@ -40,7 +40,6 @@ class UserRepo {
 
   Future<bool> isProfileCompleted() async {
     bool isCompleted = user != null;
-    print("UserRepo isProfileCompleted $isCompleted");
     return isCompleted;
   }
 

@@ -26,6 +26,7 @@ class CartCubit extends Cubit<CartState> {
 
   final CartRepo _cartRepo;
   final RestaurantsRepo _restaurantsRepo;
+  // ignore: unused_field
   final UserRepo _userRepo;
   final _delayedDuration = const Duration(milliseconds: 10);
 
