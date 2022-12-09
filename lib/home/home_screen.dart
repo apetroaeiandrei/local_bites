@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
       listener: (BuildContext context, HomeState state) {
         switch (state.status) {
           case HomeStatus.profileIncomplete:
-            Navigator.of(context).pushNamed(Routes.profile);
+            _showProfileScreen(context);
             break;
           case HomeStatus.initial:
             break;
@@ -172,12 +172,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showAddressScreen(BuildContext context) {
-    Navigator.of(context)
-        .pushNamed(Routes.address)
-        .then((value) => context.read<HomeCubit>().init());
-  }
-
   Widget _getRestaurantCard(BuildContext context, HomeState state, int i) {
     final restaurant = state.restaurants[i];
     return GestureDetector(
@@ -238,5 +232,17 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
+  }
+
+  void _showProfileScreen(BuildContext context) {
+    Navigator.of(context)
+        .pushNamed(Routes.profile)
+        .then((value) => context.read<HomeCubit>().init());
+  }
+
+  void _showAddressScreen(BuildContext context) {
+    Navigator.of(context)
+        .pushNamed(Routes.address)
+        .then((value) => context.read<HomeCubit>().init());
   }
 }
