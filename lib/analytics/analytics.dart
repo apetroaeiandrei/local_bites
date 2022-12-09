@@ -9,7 +9,7 @@ class Analytics {
     return instance!;
   }
 
-  static _privateConstructor() {
+  Analytics._privateConstructor() {
     _firebaseAnalytics = FirebaseAnalytics.instance;
   }
 
