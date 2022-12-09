@@ -7,6 +7,7 @@ enum AddressStatus {
   streetError,
   saveSuccess,
   saveError,
+  locationChanged
 }
 
 class AddressState extends Equatable {

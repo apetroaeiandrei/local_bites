@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:local/repos/user_repo.dart';
 
@@ -48,6 +49,15 @@ class AddressCubit extends Cubit<AddressState> {
         state.latitude, state.longitude, street, propertyDetails);
     emit(state.copyWith(
       status: success ? AddressStatus.saveSuccess : AddressStatus.saveError,
+    ));
+  }
+
+  Future<void> getCurrentLocation() async {
+    final position = await Geolocator.getCurrentPosition();
+    emit(state.copyWith(
+      latitude: position.latitude,
+      longitude: position.longitude,
+      status: AddressStatus.locationChanged,
     ));
   }
 }

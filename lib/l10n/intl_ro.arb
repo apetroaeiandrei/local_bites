@@ -41,8 +41,11 @@
   "address_property_label": "Bloc, apartament, etc.",
   "address_street_error": "Vă rugăm să introduceți o adresă validă",
   "address_property_error": "Vă rugăm să completați cu informatii de ajutor pentru curierul nostru",
+  "address_location_permission_error_title": "Nu am putut găsi adresa ta",
+  "address_location_permission_error_content": "Deoarece nu ai permis accesul la locație va trebui să o găsești manual. Mută pinul pe hartă până la adresa ta.",
 
   "generic_save": "Salvează",
+  "generic_ok": "OK",
 
   "food_option_price_extra" : " + {price} RON",
   "food_details_add_button" : "Adaugă {quantity} pentru {price} RON",

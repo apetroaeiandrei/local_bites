@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:local/img.dart';
 import 'package:local/theme/dimens.dart';
+import 'package:local/widgets/dialog_utils.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../generated/l10n.dart';
 import 'address_cubit.dart';
@@ -18,12 +20,20 @@ class AddressScreen extends StatefulWidget {
 }
 
 class _AddressScreenState extends State<AddressScreen> {
-  final _mapsKey = GlobalKey();
-  final Completer<GoogleMapController> _controller = Completer();
+  static const double defaultCameraZoom = 16;
+
+  var _mapsKey = GlobalKey();
+  Completer<GoogleMapController> _controller = Completer();
   final _addressController = TextEditingController();
   final _propertyController = TextEditingController();
   String? _addressError;
   String? _propertyDetailsError;
+
+  @override
+  void initState() {
+    super.initState();
+    _requestAndHandleLocationPermission();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +56,7 @@ class _AddressScreenState extends State<AddressScreen> {
                       mapType: MapType.normal,
                       initialCameraPosition: CameraPosition(
                         target: LatLng(state.latitude, state.longitude),
-                        zoom: 16,
+                        zoom: defaultCameraZoom,
                       ),
                       myLocationButtonEnabled: true,
                       myLocationEnabled: true,
@@ -161,6 +171,9 @@ class _AddressScreenState extends State<AddressScreen> {
       case AddressStatus.saveError:
         // TODO: Handle this case.
         break;
+      case AddressStatus.locationChanged:
+        _animateMapCamera(state.latitude, state.longitude);
+        break;
     }
   }
 
@@ -190,5 +203,56 @@ class _AddressScreenState extends State<AddressScreen> {
       _propertyDetailsError = null;
     }
     return valid;
+  }
+
+  _requestAndHandleLocationPermission() async {
+    bool permissionGranted = await Permission.location.isGranted;
+    if (permissionGranted) {
+      _getCurrentLocation();
+    } else {
+      permissionGranted = await Permission.location.request().isGranted;
+      if (permissionGranted) {
+        setState(() {
+          //Set new key to rebuild the widget so that myLocationButton becomes visible
+          _mapsKey = GlobalKey();
+          _controller = Completer();
+        });
+        _getCurrentLocation();
+      } else {
+        _showPermissionNotGrantedDialog();
+      }
+    }
+  }
+
+  Future<void> _animateMapCamera(double latitude, double longitude) async {
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(latitude, longitude),
+          zoom: defaultCameraZoom,
+        ),
+      ),
+    );
+  }
+
+  _showPermissionNotGrantedDialog() {
+    showPlatformDialog(
+      context: context,
+      title: S.of(context).address_location_permission_error_title,
+      content: S.of(context).address_location_permission_error_content,
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(S.of(context).generic_ok),
+        ),
+      ],
+    );
+  }
+
+  _getCurrentLocation() {
+    context.read<AddressCubit>().getCurrentLocation();
   }
 }
