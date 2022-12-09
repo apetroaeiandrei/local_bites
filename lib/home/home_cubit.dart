@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:local/analytics/analytics.dart';
 import 'package:local/repos/cart_repo.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
@@ -9,11 +10,14 @@ import 'package:local/repos/user_repo.dart';
 import 'package:models/restaurant_model.dart';
 import 'package:models/user_order.dart';
 
+import '../analytics/metric.dart';
+import '../routes.dart';
+
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit(
-      this._userRepo, this._restaurantsRepo, this._ordersRepo, this._cartRepo)
+  HomeCubit(this._userRepo, this._restaurantsRepo, this._ordersRepo,
+      this._cartRepo, this._analytics)
       : super(const HomeState(
             status: HomeStatus.initial,
             restaurants: [],
@@ -26,16 +30,20 @@ class HomeCubit extends Cubit<HomeState> {
   final RestaurantsRepo _restaurantsRepo;
   final OrdersRepo _ordersRepo;
   final CartRepo _cartRepo;
+  final Analytics _analytics;
   StreamSubscription? _currentOrderSubscription;
 
   init() async {
+    _analytics.setCurrentScreen(screenName: Routes.home);
     if (!await _userRepo.isProfileCompleted()) {
+      _analytics.setCurrentScreen(screenName: Routes.profile);
       emit(state.copyWith(status: HomeStatus.profileIncomplete));
       return;
     }
 
     final address = _userRepo.address;
     if (address == null) {
+      _analytics.setCurrentScreen(screenName: Routes.address);
       emit(state.copyWith(status: HomeStatus.addressError));
       return;
     }
@@ -50,20 +58,34 @@ class HomeCubit extends Cubit<HomeState> {
       restaurants.addAll(
           _restaurantsRepo.restaurants.where((element) => !element.open));
 
+      _analytics.logEventWithParams(
+        name: Metric.eventRestaurantsLoaded,
+        parameters: {
+          Metric.propertyRestaurantsCount: restaurants.length,
+        },
+      );
+
       emit(state.copyWith(
         status: HomeStatus.loaded,
         restaurants: restaurants,
         address: address.street,
       ));
     } else {
+      _analytics.logEvent(name: Metric.eventRestaurantsError);
       emit(state.copyWith(
         status: HomeStatus.restaurantsError,
       ));
     }
 
-    _currentOrderSubscription = _ordersRepo.currentOrderStream.listen((event) {
+    _currentOrderSubscription = _ordersRepo.currentOrderStream.listen((orders) {
+      _analytics
+          .logEventWithParams(name: Metric.eventOrderUpdate, parameters: {
+        Metric.propertyOrderStatus: orders.map((e) => e.status).join(','),
+        Metric.propertyOrderCount: orders.length,
+      });
+
       emit(state.copyWith(
-          currentOrders: event, showCurrentOrder: event.isNotEmpty));
+          currentOrders: orders, showCurrentOrder: orders.isNotEmpty));
     });
     _ordersRepo.listenForOrderInProgress();
   }
@@ -75,6 +97,10 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void rateOrder(UserOrder currentOrder, bool? liked) {
+    _analytics.logEventWithParams(name: Metric.eventOrderRate, parameters: {
+      Metric.propertyOrderLiked:
+          liked?.toString() ?? Metric.propertyValueOrderClosed,
+    });
     _ordersRepo.rateOrder(currentOrder, liked);
   }
 
@@ -83,7 +109,12 @@ class HomeCubit extends Cubit<HomeState> {
         _cartRepo.selectedRestaurantId == restaurantId) {
       return false;
     } else {
-      return _cartRepo.cartCount > 0 ? true : false;
+      if (_cartRepo.cartCount > 0) {
+        _analytics.logEvent(name: Metric.eventProductsInCartDialog);
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 

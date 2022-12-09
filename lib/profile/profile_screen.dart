@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/profile/profile_cubit.dart';
 import 'package:local/profile/profile_state.dart';
 
+import '../analytics/analytics.dart';
+import '../analytics/metric.dart';
 import '../generated/l10n.dart';
 import '../theme/decorations.dart';
 import '../theme/dimens.dart';
@@ -11,6 +13,7 @@ class ProfileScreen extends StatelessWidget {
   ProfileScreen({Key? key}) : super(key: key);
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _analytics = Analytics();
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +22,21 @@ class ProfileScreen extends StatelessWidget {
         _nameController.text = state.name;
         _phoneController.text = state.phoneNumber;
         if (state.status == ProfileStatus.success) {
+          _analytics.logEvent(name: Metric.eventProfileSaveSuccess);
           Navigator.of(context).pop();
+        } else {
+          _analytics.logEvent(name: Metric.eventProfileSaveError);
         }
       },
       builder: (context, state) {
         return WillPopScope(
           onWillPop: () async {
-            return state.name.isNotEmpty && state.phoneNumber.isNotEmpty;
+            final canGoBack =
+                state.name.isNotEmpty && state.phoneNumber.isNotEmpty;
+            if (!canGoBack) {
+              _analytics.logEvent(name: Metric.eventProfileNavigateBackBlock);
+            }
+            return canGoBack;
           },
           child: Scaffold(
             appBar: AppBar(

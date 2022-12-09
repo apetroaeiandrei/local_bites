@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:local/analytics/metric.dart';
 import 'package:local/img.dart';
 import 'package:local/theme/dimens.dart';
 import 'package:local/widgets/dialog_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../analytics/analytics.dart';
 import '../generated/l10n.dart';
 import 'address_cubit.dart';
 
@@ -22,10 +24,12 @@ class AddressScreen extends StatefulWidget {
 class _AddressScreenState extends State<AddressScreen> {
   static const double defaultCameraZoom = 16;
 
-  var _mapsKey = GlobalKey();
-  Completer<GoogleMapController> _controller = Completer();
   final _addressController = TextEditingController();
   final _propertyController = TextEditingController();
+  final _analytics = Analytics();
+
+  GlobalKey _mapsKey = GlobalKey();
+  Completer<GoogleMapController> _controller = Completer();
   String? _addressError;
   String? _propertyDetailsError;
 
@@ -193,12 +197,18 @@ class _AddressScreenState extends State<AddressScreen> {
     if (_addressController.text.isEmpty) {
       _addressError = S.of(context).address_street_error;
       valid = false;
+      _analytics.logEvent(
+        name: Metric.eventAddressStreetError,
+      );
     } else {
       _addressError = null;
     }
     if (_propertyController.text.isEmpty) {
       _propertyDetailsError = S.of(context).address_property_error;
       valid = false;
+      _analytics.logEvent(
+        name: Metric.eventAddressPropertyError,
+      );
     } else {
       _propertyDetailsError = null;
     }
@@ -208,10 +218,13 @@ class _AddressScreenState extends State<AddressScreen> {
   _requestAndHandleLocationPermission() async {
     bool permissionGranted = await Permission.location.isGranted;
     if (permissionGranted) {
+      _analytics.logEvent(name: Metric.eventAddressPermissionExistedGranted);
       _getCurrentLocation();
     } else {
+      _analytics.logEvent(name: Metric.eventAddressPermissionRequesting);
       permissionGranted = await Permission.location.request().isGranted;
       if (permissionGranted) {
+        _analytics.logEvent(name: Metric.eventAddressPermissionGranted);
         setState(() {
           //Set new key to rebuild the widget so that myLocationButton becomes visible
           _mapsKey = GlobalKey();
@@ -219,6 +232,7 @@ class _AddressScreenState extends State<AddressScreen> {
         });
         _getCurrentLocation();
       } else {
+        _analytics.logEvent(name: Metric.eventAddressPermissionDenied);
         _showPermissionNotGrantedDialog();
       }
     }

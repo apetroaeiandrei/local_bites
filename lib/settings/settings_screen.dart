@@ -5,12 +5,15 @@ import 'package:local/settings/settings_cubit.dart';
 import 'package:local/widgets/custom_menu_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../analytics/analytics.dart';
+import '../analytics/metric.dart';
 import '../constants.dart';
 import '../generated/l10n.dart';
 import '../theme/dimens.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  SettingsScreen({Key? key}) : super(key: key);
+  final _analytics = Analytics();
 
   @override
   Widget build(BuildContext context) {
@@ -41,21 +44,29 @@ class SettingsScreen extends StatelessWidget {
                   CustomMenuItem(
                       name: S.of(context).settings_profile,
                       onTap: () {
-                        Navigator.of(context).pushNamed(Routes.profile);
+                        _analytics.setCurrentScreen(screenName: Routes.profile);
+                        Navigator.of(context).pushNamed(Routes.profile).then(
+                            (value) => _analytics.setCurrentScreen(
+                                screenName: Routes.settings));
                       }),
                   CustomMenuItem(
                       name: S.of(context).settings_orders,
                       onTap: () {
-                        Navigator.of(context).pushNamed(Routes.orders);
+                        _analytics.setCurrentScreen(screenName: Routes.orders);
+                        Navigator.of(context).pushNamed(Routes.orders).then(
+                            (value) => _analytics.setCurrentScreen(
+                                screenName: Routes.settings));
                       }),
                   CustomMenuItem(
                       name: S.of(context).settings_terms,
                       onTap: () {
+                        _analytics.logEvent(name: Metric.eventTC);
                         launchUrl(Uri.parse(Constants.tcUrl));
                       }),
                   CustomMenuItem(
                       name: S.of(context).settings_logout,
                       onTap: () {
+                        _analytics.logEvent(name: Metric.eventLogout);
                         context.read<SettingsCubit>().logout();
                       }),
                 ],

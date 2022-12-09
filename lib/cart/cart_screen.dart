@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:local/analytics/metric.dart';
 import 'package:local/cart/cart_cubit.dart';
 import 'package:local/routes.dart';
 import 'package:local/theme/wl_colors.dart';
 import 'package:local/widgets/dialog_utils.dart';
 
+import '../analytics/analytics.dart';
 import '../generated/l10n.dart';
 import '../img.dart';
 import '../theme/dimens.dart';
@@ -21,6 +23,7 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   static const _mapHeight = 150.0;
   static const _pinTopDistance = _mapHeight / 2 - Dimens.locationPinHeight;
+  final _analytics = Analytics();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,10 @@ class _CartScreenState extends State<CartScreen> {
         if (state.status == CartStatus.orderSuccess) {
           Navigator.of(context).popUntil((route) => route.isFirst);
         } else if (state.status == CartStatus.restaurantClosed) {
+          _analytics.logEvent(name: Metric.eventCartRestaurantClosed);
           _showRestaurantClosedDialog(context);
+        } else if (state.status == CartStatus.minimumOrderError) {
+          _analytics.logEvent(name: Metric.eventCartMinOrder);
         }
       },
       builder: (context, state) {
@@ -57,9 +63,13 @@ class _CartScreenState extends State<CartScreen> {
                           item: item,
                           showAddRemoveButtons: true,
                           onAdd: () {
+                            _analytics.logEvent(
+                                name: Metric.eventCartIncreaseQuantity);
                             context.read<CartCubit>().add(item);
                           },
                           onRemove: () {
+                            _analytics.logEvent(
+                                name: Metric.eventCartDecreaseQuantity);
                             context.read<CartCubit>().remove(item);
                           },
                         );
@@ -67,12 +77,18 @@ class _CartScreenState extends State<CartScreen> {
                       const SizedBox(height: 4),
                       GestureDetector(
                         onTap: () {
+                          _analytics.setCurrentScreen(
+                              screenName: Routes.mentions);
                           Navigator.of(context)
                               .pushNamed(Routes.mentions,
                                   arguments: state.mentions)
-                              .then((value) => context
-                                  .read<CartCubit>()
-                                  .updateMentions(value as String?));
+                              .then((value) {
+                            _analytics.setCurrentScreen(
+                                screenName: Routes.cart);
+                            context
+                                .read<CartCubit>()
+                                .updateMentions(value as String?);
+                          });
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,9 +121,7 @@ class _CartScreenState extends State<CartScreen> {
                               myLocationButtonEnabled: false,
                               myLocationEnabled: false,
                               mapType: MapType.normal,
-                              onMapCreated: (GoogleMapController controller) {
-                                //_controller.complete(controller);
-                              },
+                              onMapCreated: (GoogleMapController controller) {},
                               initialCameraPosition: CameraPosition(
                                 target: LatLng(state.deliveryLatitude,
                                     state.deliveryLongitude),
@@ -184,6 +198,11 @@ class _CartScreenState extends State<CartScreen> {
                   onPressed: state.status == CartStatus.minimumOrderError
                       ? null
                       : () {
+                          _analytics.logEventWithParams(
+                              name: Metric.eventCartPlaceOrder,
+                              parameters: {
+                                Metric.propertyOrderPrice: state.cartTotal,
+                              });
                           context.read<CartCubit>().checkout();
                         },
                   child: Text(state.status == CartStatus.minimumOrderError

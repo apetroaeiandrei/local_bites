@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:local/address/address_cubit.dart';
 import 'package:local/address/address_screen.dart';
+import 'package:local/analytics/analytics.dart';
 import 'package:local/cart/mentions_screen.dart';
 import 'package:local/food_details/food_details_cubit.dart';
 import 'package:local/food_details/food_details_screen.dart';
@@ -28,6 +29,7 @@ import 'package:models/food_model.dart';
 import 'package:models/restaurant_model.dart';
 import 'package:models/user_order.dart';
 
+import 'analytics/metric.dart';
 import 'auth/auth_cubit.dart';
 import 'auth/auth_screen.dart';
 import 'cart/cart_cubit.dart';
@@ -38,18 +40,30 @@ import 'order/order_cubit.dart';
 import 'order/order_screen.dart';
 
 Future<void> main() async {
+  final startTime = DateTime.now();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final analytics = Analytics();
   final authRepo = AuthRepo();
   final userRepo = UserRepo();
   final ordersRepo = OrdersRepo();
   final isLoggedIn = await authRepo.isLoggedIn();
   await userRepo.getUser();
 
+  final finishTime = DateTime.now();
+  final appStartDuration = finishTime.difference(startTime).inMilliseconds;
+  analytics.logEventWithParams(name: Metric.eventAppStart, parameters: {
+    Metric.propertyAppStartDuration: appStartDuration,
+    Metric.propertyAppStartLoggedIn: isLoggedIn,
+  });
+
   runApp(MultiRepositoryProvider(
     providers: [
+      RepositoryProvider<Analytics>(
+        create: (context) => analytics,
+      ),
       RepositoryProvider<AuthRepo>(
         create: (context) => authRepo,
       ),
@@ -113,6 +127,7 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<RestaurantsRepo>(context),
                 RepositoryProvider.of<OrdersRepo>(context),
                 RepositoryProvider.of<CartRepo>(context),
+                RepositoryProvider.of<Analytics>(context),
               ),
               child: const HomeScreen(),
             ),
@@ -121,7 +136,7 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<AuthRepo>(context),
                 RepositoryProvider.of<UserRepo>(context),
               ),
-              child: const SettingsScreen(),
+              child: SettingsScreen(),
             ),
         Routes.address: (context) => BlocProvider<AddressCubit>(
               create: (context) => AddressCubit(

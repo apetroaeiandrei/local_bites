@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:local/analytics/analytics.dart';
+import 'package:local/analytics/metric.dart';
 import 'package:local/theme/wl_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,6 +18,7 @@ class AuthScreen extends StatelessWidget {
   AuthScreen({Key? key}) : super(key: key);
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _analytics = Analytics();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class AuthScreen extends StatelessWidget {
             // TODO: Handle this case.
             break;
           case AuthStatus.unauthorized:
-            // TODO: Handle this case.
+            _analytics.logEvent(name: Metric.eventAuthError);
             break;
         }
       },
@@ -102,6 +105,7 @@ class AuthScreen extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      _analytics.logEvent(name: Metric.eventAuthLogin);
                       context.read<AuthCubit>().login(
                             _emailController.text,
                             _passwordController.text,
@@ -114,6 +118,7 @@ class AuthScreen extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      _analytics.logEvent(name: Metric.eventAuthRegister);
                       context.read<AuthCubit>().register(
                             _emailController.text,
                             _passwordController.text,
@@ -153,6 +158,8 @@ class AuthScreen extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      _analytics.logEvent(
+                          name: Metric.eventAuthLoginAnonymously);
                       context.read<AuthCubit>().loginAnonymously();
                     },
                     child: Text(S.of(context).auth_anonymous),

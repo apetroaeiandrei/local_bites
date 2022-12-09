@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/restaurant/restaurant_cubit.dart';
 import 'package:local/routes.dart';
 
+import '../analytics/analytics.dart';
 import '../generated/l10n.dart';
 import '../theme/dimens.dart';
 import '../widgets/food_card.dart';
@@ -16,6 +17,8 @@ class RestaurantScreen extends StatefulWidget {
 }
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
+  final _analytics = Analytics();
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RestaurantCubit, RestaurantState>(
@@ -61,9 +64,14 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   right: Dimens.defaultPadding,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamed(Routes.cart).then(
-                          (value) =>
-                              context.read<RestaurantCubit>().refreshCart());
+                      _analytics.setCurrentScreen(screenName: Routes.cart);
+                      Navigator.of(context)
+                          .pushNamed(Routes.cart)
+                          .then((value) {
+                        _analytics.setCurrentScreen(
+                            screenName: Routes.restaurant);
+                        context.read<RestaurantCubit>().refreshCart();
+                      });
                     },
                     child: Text(
                       S
@@ -82,8 +90,12 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     return categoryContent.foods.map(
       (food) => GestureDetector(
         onTap: () {
+          _analytics.setCurrentScreen(screenName: Routes.foodDetails);
           Navigator.pushNamed(context, Routes.foodDetails, arguments: food)
-              .then((value) => context.read<RestaurantCubit>().refreshCart());
+              .then((value) {
+            _analytics.setCurrentScreen(screenName: Routes.restaurant);
+            context.read<RestaurantCubit>().refreshCart();
+          });
         },
         child: FoodCard(
           foodModel: food,

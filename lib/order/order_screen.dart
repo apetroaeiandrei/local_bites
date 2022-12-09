@@ -6,6 +6,8 @@ import 'package:local/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:models/order_status.dart';
 
+import '../analytics/analytics.dart';
+import '../analytics/metric.dart';
 import '../generated/l10n.dart';
 import '../img.dart';
 import '../routes.dart';
@@ -23,6 +25,7 @@ class OrderScreen extends StatefulWidget {
 class _OrderScreenState extends State<OrderScreen> {
   static const _mapHeight = 150.0;
   static const _pinTopDistance = _mapHeight / 2 - Dimens.locationPinHeight;
+  final _analytics = Analytics();
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +51,12 @@ class _OrderScreenState extends State<OrderScreen> {
                             ),
                             IconButton(
                                 onPressed: () {
+                                  _analytics.logEventWithParams(
+                                      name: Metric.eventOrderDetailsCall,
+                                      parameters: {
+                                        Metric.propertyOrderCallStatus:
+                                            state.order!.status.toSimpleString()
+                                      });
                                   Utils.launchCall(state.restaurant!.phone);
                                 },
                                 icon: const Icon(Icons.phone)),
@@ -58,10 +67,15 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.of(context).pushNamed(
-                              Routes.restaurant,
-                              arguments: state.restaurant,
-                            );
+                            _analytics.setCurrentScreen(
+                                screenName: Routes.restaurant);
+                            Navigator.of(context)
+                                .pushNamed(
+                                  Routes.restaurant,
+                                  arguments: state.restaurant,
+                                )
+                                .then((value) => _analytics.setCurrentScreen(
+                                    screenName: Routes.orderDetails));
                           },
                           child: Text(
                             S.of(context).order_details_restaurant_see_menu,

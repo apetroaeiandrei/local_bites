@@ -1,13 +1,13 @@
-import 'dart:io';
-
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/home/home_cubit.dart';
+import 'package:local/widgets/dialog_utils.dart';
 import 'package:local/widgets/order_mini.dart';
 import 'package:models/restaurant_model.dart';
 
+import '../analytics/analytics.dart';
+import '../analytics/metric.dart';
 import '../generated/l10n.dart';
 import '../img.dart';
 import '../routes.dart';
@@ -23,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   static const _orderMiniHeight = 200.0;
+  final _analytics = Analytics();
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
               IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () {
-                  Navigator.of(context).pushNamed(Routes.settings);
+                  Navigator.of(context).pushNamed(Routes.settings).then(
+                      (value) =>
+                          _analytics.setCurrentScreen(screenName: Routes.home));
                 },
               ),
             ],
@@ -95,8 +98,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       return GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
-                          Navigator.of(context).pushNamed(Routes.orderDetails,
-                              arguments: state.currentOrders[index]);
+                          _analytics.setCurrentScreen(
+                              screenName: Routes.orderDetails);
+                          Navigator.of(context)
+                              .pushNamed(Routes.orderDetails,
+                                  arguments: state.currentOrders[index])
+                              .then((value) => _analytics.setCurrentScreen(
+                                  screenName: Routes.home));
                         },
                         child: OrderMini(
                           order: state.currentOrders[index],
@@ -183,7 +191,9 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           context.read<HomeCubit>().setRestaurantId(restaurant.id);
           Navigator.of(context)
-              .pushNamed(Routes.restaurant, arguments: restaurant);
+              .pushNamed(Routes.restaurant, arguments: restaurant)
+              .then((value) =>
+                  _analytics.setCurrentScreen(screenName: Routes.home));
         }
       },
       child: HomeScreenCard(
@@ -199,6 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
       TextButton(
         onPressed: () {
           Navigator.of(context).pop();
+          _analytics.logEvent(name: Metric.eventProductsInCartDialogCancel);
         },
         child: Text(S.of(context).home_cart_different_restaurant_cancel),
       ),
@@ -206,32 +217,22 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           cubit.setRestaurantId(restaurant.id);
           Navigator.of(context).pop();
+          _analytics.logEvent(name: Metric.eventProductsInCartDialogConfirm);
           Navigator.of(context)
-              .pushNamed(Routes.restaurant, arguments: restaurant);
+              .pushNamed(Routes.restaurant, arguments: restaurant)
+              .then((value) =>
+                  _analytics.setCurrentScreen(screenName: Routes.home));
         },
         child: Text(S.of(context).home_cart_different_restaurant_ok),
       ),
     ];
 
-    if (Platform.isIOS) {
-      showDialog(
-        context: context,
-        builder: (context) => CupertinoAlertDialog(
-          title: Text(S.of(context).home_cart_different_restaurant_title),
-          content: Text(S.of(context).home_cart_different_restaurant_content),
-          actions: actions,
-        ),
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(S.of(context).home_cart_different_restaurant_title),
-          content: Text(S.of(context).home_cart_different_restaurant_content),
-          actions: actions,
-        ),
-      );
-    }
+    showPlatformDialog(
+      context: context,
+      title: S.of(context).home_cart_different_restaurant_title,
+      content: S.of(context).home_cart_different_restaurant_content,
+      actions: actions,
+    );
   }
 
   void _showProfileScreen(BuildContext context) {

@@ -4,6 +4,8 @@ import 'package:local/food_details/food_details_cubit.dart';
 import 'package:local/theme/wl_colors.dart';
 import 'package:models/food_option.dart';
 
+import '../analytics/analytics.dart';
+import '../analytics/metric.dart';
 import '../generated/l10n.dart';
 import '../theme/dimens.dart';
 
@@ -17,6 +19,7 @@ class FoodDetailsScreen extends StatefulWidget {
 class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   final _headerKey = GlobalKey();
   final _scrollController = ScrollController();
+  final _analytics = Analytics();
   bool _titleVisible = false;
 
   @override
@@ -44,7 +47,6 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<FoodDetailsCubit, FoodDetailsState>(
       listener: (context, state) {
-        print(state.status);
         switch (state.status) {
           case FoodDetailsStatus.initial:
             break;
@@ -147,6 +149,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 right: Dimens.defaultPadding,
                 child: ElevatedButton(
                   onPressed: () {
+                    _analytics.logEvent(name: Metric.eventFoodAddToCart);
                     context.read<FoodDetailsCubit>().addFood();
                   },
                   child: Text(
@@ -230,6 +233,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
           onPressed: state.quantity == 1
               ? null
               : () {
+                  _analytics.logEvent(name: Metric.eventFoodDecreaseQuantity);
                   context.read<FoodDetailsCubit>().decrementQuantity();
                 },
         ),
@@ -240,6 +244,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
         IconButton(
           icon: const Icon(Icons.add),
           onPressed: () {
+            _analytics.logEvent(name: Metric.eventFoodIncreaseQuantity);
             context.read<FoodDetailsCubit>().incrementQuantity();
           },
         ),
@@ -248,6 +253,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   }
 
   _showInvalidOptionsSnackBar(BuildContext context) {
+    _analytics.logEvent(name: Metric.eventFoodInvalidOptions);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(S.of(context).food_details_invalid_options),
