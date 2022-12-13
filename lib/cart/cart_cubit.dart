@@ -20,7 +20,17 @@ class CartCubit extends Cubit<CartState> {
             deliveryPropertyDetails: _userRepo.address?.propertyDetails ?? "",
             deliveryLatitude: _userRepo.address?.latitude ?? 0.0,
             deliveryLongitude: _userRepo.address?.longitude ?? 0.0,
-            minOrder: _restaurantsRepo.selectedRestaurant.minimumOrder)) {
+            restaurantLatitude: _restaurantsRepo.selectedRestaurant.location.latitude,
+            restaurantLongitude: _restaurantsRepo.selectedRestaurant.location.longitude,
+            restaurantAddress: _restaurantsRepo.selectedRestaurant.address,
+            minOrder: _restaurantsRepo.selectedRestaurant.minimumOrder,
+            deliveryFee: _restaurantsRepo.selectedRestaurant.deliveryFee,
+            hasDelivery: _restaurantsRepo.selectedRestaurant.hasDelivery,
+            hasPickup: _restaurantsRepo.selectedRestaurant.hasPickup,
+            hasDeliveryCash: _restaurantsRepo.selectedRestaurant.hasDeliveryCash,
+            hasDeliveryCard: _restaurantsRepo.selectedRestaurant.hasDeliveryCard,
+            hasPickupCash: _restaurantsRepo.selectedRestaurant.hasPickupCash,
+            hasPickupCard: _restaurantsRepo.selectedRestaurant.hasPickupCard)) {
     init();
   }
 

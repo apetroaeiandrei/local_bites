@@ -74,6 +74,16 @@
   "cart_restaurant_closed_title" : "S-a închis",
   "cart_restaurant_closed_content" : "Ne pare rău, dar restaurantul nu primește comenzi momentan. Te rugăm să alegi alt restaurant sau să încerci mai târziu.",
   "cart_restaurant_closed_ok" : "OK",
+  "cart_pickup_button" : "Doresc ridicare personală",
+  "cart_delivery_button" : "Doresc livrare la adresa mea",
+  "cart_pickup_headline" : "Ridicare personală",
+
+  "cart_pay_delivery_cash_and_card" : "Plătești la livrare cu numerar sau card",
+  "cart_pay_delivery_cash" : "Plătești la livrare cu numerar",
+  "cart_pay_delivery_card" : "Plătești la livrare cu card",
+  "cart_pay_pickup_cash_and_card" : "Plătești la ridicare cu numerar sau card",
+  "cart_pay_pickup_cash" : "Plătești la ridicare cu numerar",
+  "cart_pay_pickup_card" : "Plătești la ridicare cu card",
 
   "order_mini_title" : "Comanda ta la {restaurant} este",
   "order_mini_status_pending" : "În așteptare",

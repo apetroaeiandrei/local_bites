@@ -19,7 +19,17 @@ class CartState extends Equatable {
   final String deliveryPropertyDetails;
   final double deliveryLatitude;
   final double deliveryLongitude;
+  final double restaurantLatitude;
+  final double restaurantLongitude;
+  final String restaurantAddress;
   final num minOrder;
+  final num deliveryFee;
+  final bool hasDelivery;
+  final bool hasPickup;
+  final bool hasDeliveryCash;
+  final bool hasDeliveryCard;
+  final bool hasPickupCash;
+  final bool hasPickupCard;
 
   @override
   List<Object> get props => [
@@ -33,7 +43,17 @@ class CartState extends Equatable {
         deliveryPropertyDetails,
         deliveryLatitude,
         deliveryLongitude,
+        restaurantLatitude,
+        restaurantLongitude,
+        restaurantAddress,
         minOrder,
+        deliveryFee,
+        hasDelivery,
+        hasPickup,
+        hasDeliveryCash,
+        hasDeliveryCard,
+        hasPickupCash,
+        hasPickupCard,
       ];
 
   const CartState({
@@ -47,7 +67,17 @@ class CartState extends Equatable {
     required this.deliveryPropertyDetails,
     required this.deliveryLatitude,
     required this.deliveryLongitude,
+    required this.restaurantLatitude,
+    required this.restaurantLongitude,
+    required this.restaurantAddress,
     required this.minOrder,
+    required this.deliveryFee,
+    required this.hasDelivery,
+    required this.hasPickup,
+    required this.hasDeliveryCash,
+    required this.hasDeliveryCard,
+    required this.hasPickupCash,
+    required this.hasPickupCard,
   });
 
   CartState copyWith({
@@ -61,7 +91,17 @@ class CartState extends Equatable {
     String? deliveryPropertyDetails,
     double? deliveryLatitude,
     double? deliveryLongitude,
+    double? restaurantLatitude,
+    double? restaurantLongitude,
+    String? restaurantAddress,
     num? minOrder,
+    num? deliveryFee,
+    bool? hasDelivery,
+    bool? hasPickup,
+    bool? hasDeliveryCash,
+    bool? hasDeliveryCard,
+    bool? hasPickupCash,
+    bool? hasPickupCard,
   }) {
     return CartState(
       status: status ?? this.status,
@@ -75,7 +115,17 @@ class CartState extends Equatable {
           deliveryPropertyDetails ?? this.deliveryPropertyDetails,
       deliveryLatitude: deliveryLatitude ?? this.deliveryLatitude,
       deliveryLongitude: deliveryLongitude ?? this.deliveryLongitude,
+      restaurantLatitude: restaurantLatitude ?? this.restaurantLatitude,
+      restaurantLongitude: restaurantLongitude ?? this.restaurantLongitude,
+      restaurantAddress: restaurantAddress ?? this.restaurantAddress,
       minOrder: minOrder ?? this.minOrder,
+      deliveryFee: deliveryFee ?? this.deliveryFee,
+      hasDelivery: hasDelivery ?? this.hasDelivery,
+      hasPickup: hasPickup ?? this.hasPickup,
+      hasDeliveryCash: hasDeliveryCash ?? this.hasDeliveryCash,
+      hasDeliveryCard: hasDeliveryCard ?? this.hasDeliveryCard,
+      hasPickupCash: hasPickupCash ?? this.hasPickupCash,
+      hasPickupCard: hasPickupCard ?? this.hasPickupCard,
     );
   }
 }

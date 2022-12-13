@@ -24,6 +24,10 @@ class _CartScreenState extends State<CartScreen> {
   static const _mapHeight = 150.0;
   static const _pinTopDistance = _mapHeight / 2 - Dimens.locationPinHeight;
   final _analytics = Analytics();
+  final _deliveryKey = GlobalKey();
+  final _pickupKey = GlobalKey();
+
+  bool _deliverySelected = true;
 
   @override
   Widget build(BuildContext context) {
@@ -109,47 +113,12 @@ class _CartScreenState extends State<CartScreen> {
                         child: Text(state.mentions,
                             style: Theme.of(context).textTheme.bodyText2),
                       ),
-                      const SizedBox(height: 12),
-                      Text(S.of(context).cart_delivery_headline,
-                          style: Theme.of(context).textTheme.headline3),
-                      Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        height: _mapHeight,
-                        child: Stack(
-                          children: [
-                            GoogleMap(
-                              myLocationButtonEnabled: false,
-                              myLocationEnabled: false,
-                              mapType: MapType.normal,
-                              onMapCreated: (GoogleMapController controller) {},
-                              initialCameraPosition: CameraPosition(
-                                target: LatLng(state.deliveryLatitude,
-                                    state.deliveryLongitude),
-                                zoom: 15,
-                              ),
-                            ),
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              top: _pinTopDistance,
-                              child: Image.asset(
-                                Img.locationPin,
-                                height: Dimens.locationPinHeight,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(state.deliveryStreet,
-                          style: Theme.of(context).textTheme.headline5),
-                      const SizedBox(height: 8),
-                      Text(state.deliveryPropertyDetails,
-                          style: Theme.of(context).textTheme.bodyText2),
+                      const SizedBox(height: Dimens.defaultPadding),
+                      _getConfiguration(state),
                       Container(
                         height: 1,
                         color: WlColors.onSurface,
-                        margin: const EdgeInsets.fromLTRB(0, 40, 0, 20),
+                        margin: const EdgeInsets.fromLTRB(0, 28, 0, 20),
                       ),
                       Text(S.of(context).cart_summary,
                           style: Theme.of(context).textTheme.headline3),
@@ -231,5 +200,176 @@ class _CartScreenState extends State<CartScreen> {
         ),
       ],
     );
+  }
+
+  Widget _getConfiguration(CartState state) {
+    if (state.hasDelivery && state.hasPickup) {
+      if (_deliverySelected) {
+        return Column(
+          children: [
+            _getDeliveryConfigurationWidget(state),
+            _getSwitchConfigurationButton(S.of(context).cart_pickup_button),
+          ],
+        );
+      } else {
+        return Column(
+          children: [
+            _getPickupConfigurationWidget(state),
+            _getSwitchConfigurationButton(S.of(context).cart_delivery_button)
+          ],
+        );
+      }
+    } else if (state.hasDelivery) {
+      return _getDeliveryConfigurationWidget(state);
+    } else if (state.hasPickup) {
+      return _getPickupConfigurationWidget(state);
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+
+  Widget _getDeliveryConfigurationWidget(CartState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(S.of(context).cart_delivery_headline,
+            style: Theme.of(context).textTheme.headline3),
+        const SizedBox(height: 4),
+        _getPaymentInfoWidget(_getDeliveryPaymentInfo(state)),
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          height: _mapHeight,
+          child: Stack(
+            children: [
+              GoogleMap(
+                key: _deliveryKey,
+                myLocationButtonEnabled: false,
+                myLocationEnabled: false,
+                mapType: MapType.normal,
+                onMapCreated: (GoogleMapController controller) {},
+                initialCameraPosition: CameraPosition(
+                  target:
+                      LatLng(state.deliveryLatitude, state.deliveryLongitude),
+                  zoom: 15,
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: _pinTopDistance,
+                child: Image.asset(
+                  Img.locationPin,
+                  height: Dimens.locationPinHeight,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(state.deliveryStreet,
+            style: Theme.of(context).textTheme.headline5),
+        const SizedBox(height: 8),
+        Text(state.deliveryPropertyDetails,
+            style: Theme.of(context).textTheme.bodyText2),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _getPickupConfigurationWidget(CartState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(S.of(context).cart_pickup_headline,
+            style: Theme.of(context).textTheme.headline3),
+        const SizedBox(
+          height: 4,
+        ),
+        _getPaymentInfoWidget(_getPickupPaymentInfo(state)),
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          height: _mapHeight,
+          child: Stack(
+            children: [
+              GoogleMap(
+                key: _pickupKey,
+                myLocationButtonEnabled: false,
+                myLocationEnabled: false,
+                mapType: MapType.normal,
+                onMapCreated: (GoogleMapController controller) {},
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(
+                      state.restaurantLatitude, state.restaurantLongitude),
+                  zoom: 15,
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: _pinTopDistance,
+                child: Image.asset(
+                  Img.locationPin,
+                  height: Dimens.locationPinHeight,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(state.restaurantAddress,
+            style: Theme.of(context).textTheme.headline5),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _getPaymentInfoWidget(String text) {
+    return Text(
+      text,
+      style: Theme.of(context)
+          .textTheme
+          .headline5
+          ?.copyWith(color: Theme.of(context).colorScheme.secondary),
+    );
+  }
+
+  Widget _getSwitchConfigurationButton(String buttonText) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: WlColors.secondary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            _deliverySelected = !_deliverySelected;
+          });
+        },
+        child: Text(buttonText),
+      ),
+    );
+  }
+
+  String _getDeliveryPaymentInfo(CartState state) {
+    if (state.hasDeliveryCash && state.hasDeliveryCard) {
+      return S.of(context).cart_pay_delivery_cash_and_card;
+    } else if (state.hasDeliveryCash) {
+      return S.of(context).cart_pay_delivery_cash;
+    } else {
+      return S.of(context).cart_pay_delivery_card;
+    }
+  }
+
+  String _getPickupPaymentInfo(CartState state) {
+    if (state.hasPickupCash && state.hasPickupCard) {
+      return S.of(context).cart_pay_pickup_cash_and_card;
+    } else if (state.hasPickupCash) {
+      return S.of(context).cart_pay_pickup_cash;
+    } else {
+      return S.of(context).cart_pay_pickup_card;
+    }
   }
 }
