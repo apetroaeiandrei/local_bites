@@ -27,7 +27,7 @@
   "home_cart_different_restaurant_content": "Ai produse de la alt restaurant în coș. Dacă schimbi restaurantul coșul va fi golit.",
   "home_cart_different_restaurant_cancel": "Renunță",
   "home_cart_different_restaurant_ok": "Schimbă",
-  "home_restaurant_closed" : "Nu livrează momentan",
+  "home_restaurant_closed" : "Nu acceptă comenzi",
 
   "settings_title": "Setări",
   "settings_welcome": "Salut, {name}!",
@@ -69,7 +69,7 @@
   "cart_delivery_fee" : "Taxă livrare",
   "cart_delivery_fee_free" : "GRATUIT",
   "cart_restaurant_closed_title" : "S-a închis",
-  "cart_restaurant_closed_content" : "Ne pare rău, dar restaurantul nu livrează momentan. Te rugăm să alegi alt restaurant sau să încerci mai târziu.",
+  "cart_restaurant_closed_content" : "Ne pare rău, dar restaurantul nu primește comenzi momentan. Te rugăm să alegi alt restaurant sau să încerci mai târziu.",
   "cart_restaurant_closed_ok" : "OK",
 
   "order_mini_title" : "Comanda ta la {restaurant} este",
@@ -78,7 +78,7 @@
   "order_mini_status_ready_for_delivery" : "Gata pentru livrare",
   "order_mini_status_in_delivery" : "În drum spre tine",
   "order_mini_status_completed" : "Livrată",
-  "order_mini_status_canceled" : "Anulată",
+  "order_mini_status_canceled" : "Respinsă",
 
   "order_details_title" : "Comanda ta",
   "order_details_restaurant_see_menu" : "Vezi meniul",
