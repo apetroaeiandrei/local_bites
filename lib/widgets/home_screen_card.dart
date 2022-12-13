@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:models/restaurant_model.dart';
 
 import '../generated/l10n.dart';
 import '../theme/dimens.dart';
@@ -6,14 +7,10 @@ import '../theme/dimens.dart';
 class HomeScreenCard extends StatelessWidget {
   const HomeScreenCard({
     Key? key,
-    required this.name,
-    required this.imageUrl,
-    required this.open,
+    required this.restaurant,
   }) : super(key: key);
 
-  final String name;
-  final String imageUrl;
-  final bool open;
+  final RestaurantModel restaurant;
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +29,12 @@ class HomeScreenCard extends StatelessWidget {
             //crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Image.network(
-                imageUrl,
+                restaurant.imageUrl,
                 fit: BoxFit.cover,
               ),
               Center(
                 child: Text(
-                  name,
+                  restaurant.name,
                   style: Theme.of(context).textTheme.headline1!.copyWith(
                         foreground: Paint()
                           ..style = PaintingStyle.stroke
@@ -48,14 +45,22 @@ class HomeScreenCard extends StatelessWidget {
               ),
               Center(
                 child: Text(
-                  name,
+                  restaurant.name,
                   style: Theme.of(context).textTheme.headline1!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
                 ),
               ),
               Visibility(
-                visible: !open,
+                visible: restaurant.open,
+                child: Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: _getDeliveryLabel(context),
+                ),
+              ),
+              Visibility(
+                visible: !restaurant.open,
                 child: Container(
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
@@ -84,6 +89,34 @@ class HomeScreenCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _getDeliveryLabel(BuildContext context) {
+    String labelText;
+    Color labelColor;
+    if (!restaurant.hasDelivery) {
+      labelText = S.of(context).home_restaurant_pickup;
+      labelColor = Theme.of(context).colorScheme.primary;
+    } else if (restaurant.deliveryFee == 0) {
+      labelText = S.of(context).home_restaurant_delivery_free;
+      labelColor = Theme.of(context).colorScheme.secondary;
+    } else {
+      labelText =
+          S.of(context).home_restaurant_delivery_fee(restaurant.deliveryFee);
+      labelColor = Theme.of(context).colorScheme.secondary;
+    }
+    return Container(
+      padding: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: labelColor,
+      ),
+      child: Text(
+        labelText,
+        style: Theme.of(context).textTheme.headline6!.copyWith(
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
       ),
     );
   }

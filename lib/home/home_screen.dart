@@ -197,9 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: HomeScreenCard(
-        imageUrl: restaurant.imageUrl,
-        name: restaurant.name,
-        open: restaurant.open,
+        restaurant: restaurant,
       ),
     );
   }
