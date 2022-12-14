@@ -62,13 +62,15 @@ Future<void> main() async {
     return true;
   };
 
-
   final analytics = Analytics();
   final authRepo = AuthRepo();
   final userRepo = UserRepo();
   final ordersRepo = OrdersRepo();
   final isLoggedIn = await authRepo.isLoggedIn();
-  await userRepo.getUser();
+
+  if (isLoggedIn) {
+    await userRepo.getUser();
+  }
 
   final finishTime = DateTime.now();
   final appStartDuration = finishTime.difference(startTime).inMilliseconds;

@@ -34,7 +34,7 @@ class UserRepo {
       _user = LocalUser.fromMap(doc);
       _address = DeliveryAddress.fromMap(doc);
     } catch (e) {
-      print(e);
+      print("user_repo/getUser: $e");
     }
   }
 
