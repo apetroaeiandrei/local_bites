@@ -76,7 +76,8 @@ class CartRepo {
     return sortedFoods;
   }
 
-  Future<bool> placeOrder(String mentions) async {
+  Future<bool> placeOrder(
+      String mentions, bool isDelivery, num deliveryFee) async {
     final address = _userRepo.address!;
     final user = _userRepo.user!;
 
@@ -92,6 +93,8 @@ class CartRepo {
       status: OrderStatus.pending,
       mentions: mentions,
       settled: false,
+      isDelivery: isDelivery,
+      deliveryFee: deliveryFee,
       latitude: address.latitude,
       longitude: address.longitude,
       street: address.street,
@@ -100,7 +103,8 @@ class CartRepo {
       name: user.name,
       phoneNumber: user.phoneNumber,
       number: Random().nextInt(1000).toString(),
-      total: cartTotal,
+      totalProducts: cartTotal,
+      total: cartTotal + (isDelivery ? deliveryFee : 0),
     );
     await orderDoc.set(order.toMap());
     clearCart();

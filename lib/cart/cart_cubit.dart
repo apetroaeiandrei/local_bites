@@ -20,15 +20,19 @@ class CartCubit extends Cubit<CartState> {
             deliveryPropertyDetails: _userRepo.address?.propertyDetails ?? "",
             deliveryLatitude: _userRepo.address?.latitude ?? 0.0,
             deliveryLongitude: _userRepo.address?.longitude ?? 0.0,
-            restaurantLatitude: _restaurantsRepo.selectedRestaurant.location.latitude,
-            restaurantLongitude: _restaurantsRepo.selectedRestaurant.location.longitude,
+            restaurantLatitude:
+                _restaurantsRepo.selectedRestaurant.location.latitude,
+            restaurantLongitude:
+                _restaurantsRepo.selectedRestaurant.location.longitude,
             restaurantAddress: _restaurantsRepo.selectedRestaurant.address,
             minOrder: _restaurantsRepo.selectedRestaurant.minimumOrder,
             deliveryFee: _restaurantsRepo.selectedRestaurant.deliveryFee,
             hasDelivery: _restaurantsRepo.selectedRestaurant.hasDelivery,
             hasPickup: _restaurantsRepo.selectedRestaurant.hasPickup,
-            hasDeliveryCash: _restaurantsRepo.selectedRestaurant.hasDeliveryCash,
-            hasDeliveryCard: _restaurantsRepo.selectedRestaurant.hasDeliveryCard,
+            hasDeliveryCash:
+                _restaurantsRepo.selectedRestaurant.hasDeliveryCash,
+            hasDeliveryCard:
+                _restaurantsRepo.selectedRestaurant.hasDeliveryCard,
             hasPickupCash: _restaurantsRepo.selectedRestaurant.hasPickupCash,
             hasPickupCard: _restaurantsRepo.selectedRestaurant.hasPickupCard)) {
     init();
@@ -36,6 +40,7 @@ class CartCubit extends Cubit<CartState> {
 
   final CartRepo _cartRepo;
   final RestaurantsRepo _restaurantsRepo;
+
   // ignore: unused_field
   final UserRepo _userRepo;
   final _delayedDuration = const Duration(milliseconds: 10);
@@ -46,7 +51,7 @@ class CartCubit extends Cubit<CartState> {
     });
   }
 
-  Future<void> checkout() async {
+  Future<void> checkout(bool deliverySelected) async {
     if (!_restaurantsRepo.selectedRestaurant.open) {
       emit(state.copyWith(status: CartStatus.restaurantClosed));
       Future.delayed(_delayedDuration, () {
@@ -54,7 +59,8 @@ class CartCubit extends Cubit<CartState> {
       });
       return;
     }
-    final success = await _cartRepo.placeOrder(state.mentions);
+    final success = await _cartRepo.placeOrder(state.mentions,
+        deliverySelected && state.hasDelivery, state.deliveryFee);
     if (success) {
       emit(state.copyWith(status: CartStatus.orderSuccess));
     } else {

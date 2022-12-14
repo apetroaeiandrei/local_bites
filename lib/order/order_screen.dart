@@ -178,21 +178,29 @@ class _OrderScreenState extends State<OrderScreen> {
                             Text(S.of(context).cart_products,
                                 style: Theme.of(context).textTheme.subtitle1),
                             Text(
-                                S
-                                    .of(context)
-                                    .price_currency_ron(state.order!.total),
+                                S.of(context).price_currency_ron(
+                                    state.order!.totalProducts),
                                 style: Theme.of(context).textTheme.subtitle1),
                           ],
                         ),
                         const SizedBox(height: 2),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(S.of(context).cart_delivery_fee,
-                                style: Theme.of(context).textTheme.subtitle1),
-                            Text(S.of(context).cart_delivery_fee_free,
-                                style: Theme.of(context).textTheme.subtitle1),
-                          ],
+                        Visibility(
+                          visible: state.order!.isDelivery,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(S.of(context).cart_delivery_fee,
+                                  style: Theme.of(context).textTheme.subtitle1),
+                              Text(
+                                  state.order!.deliveryFee > 0
+                                      ? S
+                                          .of(context)
+                                          .cart_delivery_fee_currency(
+                                              state.order!.deliveryFee)
+                                      : S.of(context).cart_delivery_fee_free,
+                                  style: Theme.of(context).textTheme.subtitle1),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Row(

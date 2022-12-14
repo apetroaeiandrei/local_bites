@@ -134,14 +134,21 @@ class _CartScreenState extends State<CartScreen> {
                         ],
                       ),
                       const SizedBox(height: 2),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.of(context).cart_delivery_fee,
-                              style: Theme.of(context).textTheme.subtitle1),
-                          Text(S.of(context).cart_delivery_fee_free,
-                              style: Theme.of(context).textTheme.subtitle1),
-                        ],
+                      Visibility(
+                        visible: state.hasDelivery && _deliverySelected,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(S.of(context).cart_delivery_fee,
+                                style: Theme.of(context).textTheme.subtitle1),
+                            Text(
+                                state.deliveryFee > 0
+                                    ? S.of(context).cart_delivery_fee_currency(
+                                        state.deliveryFee)
+                                    : S.of(context).cart_delivery_fee_free,
+                                style: Theme.of(context).textTheme.subtitle1),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Row(
@@ -150,7 +157,8 @@ class _CartScreenState extends State<CartScreen> {
                           Text(S.of(context).cart_total.toUpperCase(),
                               style: Theme.of(context).textTheme.headline4),
                           Text(
-                              S.of(context).price_currency_ron(state.cartTotal),
+                              S.of(context).price_currency_ron(
+                                  _getTotalWithDelivery(state)),
                               style: Theme.of(context).textTheme.headline4),
                         ],
                       ),
@@ -170,9 +178,10 @@ class _CartScreenState extends State<CartScreen> {
                           _analytics.logEventWithParams(
                               name: Metric.eventCartPlaceOrder,
                               parameters: {
-                                Metric.propertyOrderPrice: state.cartTotal,
+                                Metric.propertyOrderPrice:
+                                    _getTotalWithDelivery(state),
                               });
-                          context.read<CartCubit>().checkout();
+                          context.read<CartCubit>().checkout(_deliverySelected);
                         },
                   child: Text(state.status == CartStatus.minimumOrderError
                       ? S.of(context).cart_button_min_order(state.minOrder)
@@ -184,6 +193,12 @@ class _CartScreenState extends State<CartScreen> {
         );
       },
     );
+  }
+
+  double _getTotalWithDelivery(CartState state) {
+    return state.hasDelivery && _deliverySelected
+        ? state.cartTotal + state.deliveryFee
+        : state.cartTotal;
   }
 
   void _showRestaurantClosedDialog(BuildContext context) {
