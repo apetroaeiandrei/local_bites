@@ -27,6 +27,9 @@ class _OrderScreenState extends State<OrderScreen> {
   static const _pinTopDistance = _mapHeight / 2 - Dimens.locationPinHeight;
   final _analytics = Analytics();
 
+  final _pickupKey = GlobalKey();
+  final _deliveryKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OrderCubit, OrderState>(
@@ -117,57 +120,23 @@ class _OrderScreenState extends State<OrderScreen> {
                           child: Text(S.of(context).cart_mentions,
                               style: Theme.of(context).textTheme.headline3),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 4.0,
-                            right: 50,
-                          ),
-                          child: Text(state.order!.mentions,
-                              style: Theme.of(context).textTheme.bodyText2),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(S.of(context).cart_delivery_headline,
-                            style: Theme.of(context).textTheme.headline3),
-                        Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          height: _mapHeight,
-                          child: Stack(
-                            children: [
-                              GoogleMap(
-                                myLocationButtonEnabled: false,
-                                myLocationEnabled: false,
-                                mapType: MapType.normal,
-                                onMapCreated: (GoogleMapController controller) {
-                                  //_controller.complete(controller);
-                                },
-                                initialCameraPosition: CameraPosition(
-                                  target: LatLng(state.order!.latitude,
-                                      state.order!.longitude),
-                                  zoom: 15,
-                                ),
-                              ),
-                              Positioned(
-                                left: 0,
-                                right: 0,
-                                top: _pinTopDistance,
-                                child: Image.asset(
-                                  Img.locationPin,
-                                  height: Dimens.locationPinHeight,
-                                ),
-                              ),
-                            ],
+                        Visibility(
+                          visible: state.order!.mentions.isNotEmpty,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 4.0,
+                              right: 50,
+                              bottom: Dimens.defaultPadding,
+                            ),
+                            child: Text(state.order!.mentions,
+                                style: Theme.of(context).textTheme.bodyText2),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Text(state.order!.street,
-                            style: Theme.of(context).textTheme.headline5),
-                        const SizedBox(height: 8),
-                        Text(state.order!.propertyDetails,
-                            style: Theme.of(context).textTheme.bodyText2),
+                        _getConfiguration(state),
                         Container(
                           height: 1,
                           color: WlColors.onSurface,
-                          margin: const EdgeInsets.fromLTRB(0, 40, 0, 20),
+                          margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                         ),
                         Text(S.of(context).cart_summary,
                             style: Theme.of(context).textTheme.headline3),
@@ -222,6 +191,107 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
         );
       },
+    );
+  }
+
+  Widget _getConfiguration(OrderState state) {
+    if (state.order!.isDelivery) {
+      return _getDeliveryConfigurationWidget(state);
+    } else {
+      return _getPickupConfigurationWidget(state);
+    }
+  }
+
+  Widget _getDeliveryConfigurationWidget(OrderState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(S.of(context).cart_delivery_headline,
+            style: Theme.of(context).textTheme.headline3),
+        const SizedBox(height: 4),
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          height: _mapHeight,
+          child: Stack(
+            children: [
+              GoogleMap(
+                key: _deliveryKey,
+                myLocationButtonEnabled: false,
+                myLocationEnabled: false,
+                mapType: MapType.normal,
+                onMapCreated: (GoogleMapController controller) {},
+                initialCameraPosition: CameraPosition(
+                  target:
+                      LatLng(state.deliveryLatitude, state.deliveryLongitude),
+                  zoom: 15,
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: _pinTopDistance,
+                child: Image.asset(
+                  Img.locationPin,
+                  height: Dimens.locationPinHeight,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(state.deliveryStreet,
+            style: Theme.of(context).textTheme.headline5),
+        const SizedBox(height: 8),
+        Text(state.deliveryPropertyDetails,
+            style: Theme.of(context).textTheme.bodyText2),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _getPickupConfigurationWidget(OrderState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(S.of(context).cart_pickup_headline,
+            style: Theme.of(context).textTheme.headline3),
+        const SizedBox(
+          height: 4,
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          height: _mapHeight,
+          child: Stack(
+            children: [
+              GoogleMap(
+                key: _pickupKey,
+                myLocationButtonEnabled: false,
+                myLocationEnabled: false,
+                mapType: MapType.normal,
+                onMapCreated: (GoogleMapController controller) {},
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(
+                      state.restaurantLatitude, state.restaurantLongitude),
+                  zoom: 15,
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: _pinTopDistance,
+                child: Image.asset(
+                  Img.locationPin,
+                  height: Dimens.locationPinHeight,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(state.restaurantAddress,
+            style: Theme.of(context).textTheme.headline5),
+        const SizedBox(height: 8),
+      ],
     );
   }
 }

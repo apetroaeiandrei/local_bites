@@ -194,6 +194,7 @@ class MyApp extends StatelessWidget {
               create: (context) => OrderCubit(
                 RepositoryProvider.of<OrdersRepo>(context),
                 RepositoryProvider.of<RestaurantsRepo>(context),
+                RepositoryProvider.of<UserRepo>(context),
                 userOrder.orderId,
                 userOrder.restaurantId,
               ),
