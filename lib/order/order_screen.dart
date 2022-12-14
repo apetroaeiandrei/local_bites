@@ -164,8 +164,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                   state.order!.deliveryFee > 0
                                       ? S
                                           .of(context)
-                                          .cart_delivery_fee_currency(
-                                              state.order!.deliveryFee)
+                                          .cart_delivery_fee_currency(state
+                                              .order!.deliveryFee
+                                              .toStringAsFixed(1))
                                       : S.of(context).cart_delivery_fee_free,
                                   style: Theme.of(context).textTheme.subtitle1),
                             ],

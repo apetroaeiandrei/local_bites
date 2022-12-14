@@ -144,7 +144,7 @@ class _CartScreenState extends State<CartScreen> {
                             Text(
                                 state.deliveryFee > 0
                                     ? S.of(context).cart_delivery_fee_currency(
-                                        state.deliveryFee)
+                                        state.deliveryFee.toStringAsFixed(1))
                                     : S.of(context).cart_delivery_fee_free,
                                 style: Theme.of(context).textTheme.subtitle1),
                           ],

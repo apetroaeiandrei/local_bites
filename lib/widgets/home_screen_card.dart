@@ -103,8 +103,8 @@ class HomeScreenCard extends StatelessWidget {
       labelText = S.of(context).home_restaurant_delivery_free;
       labelColor = Theme.of(context).colorScheme.secondary;
     } else {
-      labelText =
-          S.of(context).home_restaurant_delivery_fee(restaurant.deliveryFee);
+      labelText = S.of(context).home_restaurant_delivery_fee(
+          restaurant.deliveryFee.toStringAsFixed(1));
       labelColor = Theme.of(context).colorScheme.secondary;
     }
     return Container(
