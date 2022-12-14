@@ -39,6 +39,8 @@ extension OrderStatusExtension on OrderStatus {
         return S.of(context).order_mini_status_completed;
       case OrderStatus.cancelled:
         return S.of(context).order_mini_status_canceled;
+      case OrderStatus.readyToPickup:
+        return S.of(context).order_mini_status_ready_for_pickup;
     }
   }
 
@@ -48,6 +50,7 @@ extension OrderStatusExtension on OrderStatus {
         return Img.lottiePendingFood;
       case OrderStatus.cooking:
         return Img.lottiePreparingFood;
+      case OrderStatus.readyToPickup:
       case OrderStatus.readyForDelivery:
         return Img.lottieReadyForDelivery;
       case OrderStatus.inDelivery:
@@ -65,6 +68,7 @@ extension OrderStatusExtension on OrderStatus {
         return Colors.orange;
       case OrderStatus.cooking:
         return WlColors.primary;
+      case OrderStatus.readyToPickup:
       case OrderStatus.readyForDelivery:
         return Colors.orangeAccent;
       case OrderStatus.inDelivery:
