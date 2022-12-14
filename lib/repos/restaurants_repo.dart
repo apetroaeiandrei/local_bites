@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:models/food_category_model.dart';
 import 'package:models/food_model.dart';
 import 'package:models/food_option.dart';
@@ -17,7 +17,7 @@ class RestaurantsRepo {
   static const String _collectionOptionCategories = "foodOptionCategories";
   static const String _collectionFoodOptionItem = "foodOptionItems";
 
-  final _geo = Geoflutterfire();
+  final _geo = GeoFlutterFire();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final List<RestaurantModel> _restaurants = [];
@@ -84,8 +84,10 @@ class RestaurantsRepo {
         );
     final docs = await query.first;
     _restaurants.clear();
-    _restaurants.addAll(
-        docs.map((doc) => RestaurantModel.fromMap(doc.data()!)).toList());
+    _restaurants.addAll(docs
+        .map((doc) =>
+            RestaurantModel.fromMap(doc.data() as Map<String, dynamic>))
+        .toList());
     return true;
   }
 

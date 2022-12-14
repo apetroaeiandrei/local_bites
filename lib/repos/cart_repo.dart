@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:models/food_model.dart';
 import 'package:models/food_order.dart';
-import 'package:models/order.dart';
+import 'package:models/order.dart'as o;
 import 'package:models/order_status.dart';
 import 'package:collection/collection.dart';
 
@@ -86,7 +86,7 @@ class CartRepo {
         .doc(_selectedRestaurantId);
     final orderDoc = restaurantDoc.collection(_collectionOrders).doc();
 
-    final Order order = Order(
+    final o.Order order = o.Order(
       id: orderDoc.id,
       date: DateTime.now(),
       foods: _foodOrders,

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:models/order.dart';
+import 'package:models/order.dart' as o;
 import 'package:models/user_order.dart';
 
 class OrdersRepo {
@@ -43,14 +43,14 @@ class OrdersRepo {
   Stream<List<UserOrder>> get currentOrderStream =>
       _currentOrderController.stream;
 
-  Future<Order> getOrder(String orderId, String restaurantId) async {
+  Future<o.Order> getOrder(String orderId, String restaurantId) async {
     final orderSnapshot = await _firestore
         .collection(_collectionRestaurants)
         .doc(restaurantId)
         .collection(_collectionOrders)
         .doc(orderId)
         .get();
-    return Order.fromMap(orderSnapshot.data()!);
+    return o.Order.fromMap(orderSnapshot.data()!);
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getOrderSnapshotsStream(
