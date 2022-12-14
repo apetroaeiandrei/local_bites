@@ -69,7 +69,9 @@ class OrdersRepo {
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection(_collectionOrders)
         .get();
-    return snapshot.docs.map((e) => UserOrder.fromMap(e.data())).toList();
+    final orders = snapshot.docs.map((e) => UserOrder.fromMap(e.data())).toList();
+    orders.sort((a, b) => b.date.compareTo(a.date));
+    return orders;
   }
 
   void rateOrder(UserOrder currentOrder, bool? liked) {
