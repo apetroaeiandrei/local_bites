@@ -83,6 +83,11 @@ extension OrderStatusExtension on OrderStatus {
 
 extension DateUtils on DateTime {
   String toUserString() {
-    return DateFormat.MMMd().format(this) + " " + DateFormat.Hm().format(this);
+    return "${DateFormat.MMMd().format(this)} ${DateFormat.Hm().format(this)}";
   }
 }
+
+Widget defaultFoodImage() => Image.asset(
+  Img.foodPlaceholder,
+  fit: BoxFit.cover,
+);

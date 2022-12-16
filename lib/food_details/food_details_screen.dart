@@ -8,6 +8,7 @@ import '../analytics/analytics.dart';
 import '../analytics/metric.dart';
 import '../generated/l10n.dart';
 import '../theme/dimens.dart';
+import '../utils.dart';
 
 class FoodDetailsScreen extends StatefulWidget {
   const FoodDetailsScreen({Key? key}) : super(key: key);
@@ -97,6 +98,9 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                       background: Image.network(
                         state.food.imageUrl,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stack) {
+                          return defaultFoodImage();
+                        },
                       ),
                     ),
                   ),

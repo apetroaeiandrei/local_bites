@@ -5,6 +5,7 @@ import 'package:models/food_model.dart';
 import '../generated/l10n.dart';
 import '../img.dart';
 import '../theme/dimens.dart';
+import '../utils.dart';
 
 class FoodCard extends StatelessWidget {
   const FoodCard({
@@ -46,10 +47,10 @@ class FoodCard extends StatelessWidget {
                         foodModel.imageUrl,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stack) {
-                          return defaultImage();
+                          return defaultFoodImage();
                         },
                       )
-                    : defaultImage(),
+                    : defaultFoodImage(),
               ),
               Expanded(
                 child: Padding(
@@ -104,9 +105,4 @@ class FoodCard extends StatelessWidget {
       ),
     );
   }
-
-  Widget defaultImage() => Image.asset(
-        Img.foodPlaceholder,
-        fit: BoxFit.cover,
-      );
 }
