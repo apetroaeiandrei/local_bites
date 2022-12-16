@@ -57,4 +57,6 @@ abstract class Metric {
   static const String eventAddressStreetError = "address_street_error";
   static const String eventAddressOtherError = "address_other_error";
 
+  static const String eventRestaurantInfoCall = "restaurant_info_call";
+
 }

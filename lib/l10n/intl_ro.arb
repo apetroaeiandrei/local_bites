@@ -106,5 +106,11 @@
   "orders_title" : "Comenzile tale",
 
   "terms_clickable" : "termenii și condițiile",
-  "terms1" : "Folosind aceasta aplicație, sunteți de acord cu "
+  "terms1" : "Folosind aceasta aplicație, sunteți de acord cu ",
+
+  "restaurant_info_address": "Adresa",
+  "restaurant_info_phone": "Telefon",
+  "restaurant_info_website": "Website",
+  "restaurant_info_email": "Email",
+  "restaurant_info_services": "Servicii"
 }

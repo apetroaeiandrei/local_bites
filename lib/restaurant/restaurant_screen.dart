@@ -27,6 +27,14 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           return Scaffold(
             appBar: AppBar(
               title: Text(state.name),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.info_outline),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(Routes.restaurantInfo);
+                  },
+                ),
+              ],
             ),
             body: Stack(
               fit: StackFit.expand,

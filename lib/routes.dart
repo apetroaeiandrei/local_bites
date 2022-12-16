@@ -5,6 +5,7 @@ abstract class Routes {
   static const home = '/home';
   static const restaurant = '/restaurant';
   static const foodDetails = '/restaurant/food';
+  static const restaurantInfo = '/restaurant/info';
   static const orderDetails = '/order/details';
 
   static const settings = '/settings';

@@ -91,3 +91,8 @@ Widget defaultFoodImage() => Image.asset(
   Img.foodPlaceholder,
   fit: BoxFit.cover,
 );
+
+Widget defaultRestaurantImage() => Image.asset(
+  Img.foodPlaceholder,
+  fit: BoxFit.cover,
+);

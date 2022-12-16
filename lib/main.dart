@@ -22,6 +22,8 @@ import 'package:local/repos/cart_repo.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
+import 'package:local/restaurant/info/restaurant_info_cubit.dart';
+import 'package:local/restaurant/info/restaurant_info_screen.dart';
 import 'package:local/restaurant/restaurant_cubit.dart';
 import 'package:local/restaurant/restaurant_screen.dart';
 import 'package:local/routes.dart';
@@ -178,6 +180,12 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<OrdersRepo>(context),
               ),
               child: const OrdersScreen(),
+            ),
+        Routes.restaurantInfo: (context) => BlocProvider<RestaurantInfoCubit>(
+              create: (context) => RestaurantInfoCubit(
+                RepositoryProvider.of<RestaurantsRepo>(context),
+              ),
+              child: const RestaurantInfoScreen(),
             ),
       },
       onGenerateRoute: (settings) {
