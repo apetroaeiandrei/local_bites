@@ -3,6 +3,7 @@ import 'package:models/restaurant_model.dart';
 
 import '../generated/l10n.dart';
 import '../theme/dimens.dart';
+import '../utils.dart';
 
 class HomeScreenCard extends StatelessWidget {
   const HomeScreenCard({
@@ -31,6 +32,9 @@ class HomeScreenCard extends StatelessWidget {
               Image.network(
                 restaurant.imageUrl,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stack) {
+                  return defaultRestaurantImage();
+                },
               ),
               Center(
                 child: Text(
