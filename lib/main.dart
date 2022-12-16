@@ -1,7 +1,3 @@
-import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -39,7 +35,7 @@ import 'auth/auth_cubit.dart';
 import 'auth/auth_screen.dart';
 import 'cart/cart_cubit.dart';
 import 'cart/cart_screen.dart';
-import 'firebase_options.dart';
+import 'environment/app_config.dart';
 import 'generated/l10n.dart';
 import 'order/order_cubit.dart';
 import 'order/order_screen.dart';
@@ -47,22 +43,7 @@ import 'order/order_screen.dart';
 Future<void> main() async {
   final startTime = DateTime.now();
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await FirebaseAppCheck.instance.activate(
-    webRecaptchaSiteKey: 'recaptcha-v3-site-key',
-    androidProvider: AndroidProvider.playIntegrity,
-  );
-
-  FlutterError.onError = (errorDetails) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  };
-  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+  await AppConfig.init();
 
   final analytics = Analytics();
   final authRepo = AuthRepo();
