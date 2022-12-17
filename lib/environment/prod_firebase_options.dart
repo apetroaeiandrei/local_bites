@@ -8,16 +8,19 @@ import 'package:flutter/foundation.dart'
 ///
 /// Example:
 /// ```dart
-/// import 'firebase_options.dart';
+/// import 'prod_firebase_options.dart';
 /// // ...
 /// await Firebase.initializeApp(
 ///   options: DefaultFirebaseOptions.currentPlatform,
 /// );
 /// ```
-class DefaultFirebaseOptions {
+class ProdFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -46,31 +49,21 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'FIREBASE_KEY_WEB',
-    appId: '1:GCM_DEV:web:b3e9742bd686e96c2105f3',
-    messagingSenderId: 'GCM_DEV',
-    projectId: 'FIREBASE_PROJ',
-    authDomain: 'FIREBASE_PROJ.firebaseapp.com',
-    storageBucket: 'FIREBASE_PROJ.appspot.com',
-    measurementId: 'G-W8NB7GT7Z8',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'FIREBASE_KEY_DEV',
-    appId: '1:GCM_DEV:android:aaff574616d9a9482105f3',
-    messagingSenderId: 'GCM_DEV',
-    projectId: 'FIREBASE_PROJ',
-    storageBucket: 'FIREBASE_PROJ.appspot.com',
+    apiKey: 'FIREBASE_KEY_PROD',
+    appId: '1:GCM_PROD:android:a4a7a27eb6a428916bef9f',
+    messagingSenderId: 'GCM_PROD',
+    projectId: 'FIREBASE_PROJ_PROD',
+    storageBucket: 'FIREBASE_PROJ_PROD.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'FIREBASE_KEY_DEV_IOS',
-    appId: '1:GCM_DEV:ios:a921922926c0d5082105f3',
-    messagingSenderId: 'GCM_DEV',
-    projectId: 'FIREBASE_PROJ',
-    storageBucket: 'FIREBASE_PROJ.appspot.com',
-    iosClientId: 'GCM_DEV-3mq8ueigur3t0unnieaoiquuuf3gojr1.apps.googleusercontent.com',
+    apiKey: 'FIREBASE_KEY_PROD_IOS',
+    appId: '1:GCM_PROD:ios:5811dd740037aedb6bef9f',
+    messagingSenderId: 'GCM_PROD',
+    projectId: 'FIREBASE_PROJ_PROD',
+    storageBucket: 'FIREBASE_PROJ_PROD.appspot.com',
+    iosClientId: 'GCM_PROD-o75t3c8gbdaue7m0iuir4il1jauorfe6.apps.googleusercontent.com',
     iosBundleId: 'com.kotsukotsu.local',
   );
 }

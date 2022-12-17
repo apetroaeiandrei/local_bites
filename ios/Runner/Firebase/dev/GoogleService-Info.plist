@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>GCM_PROD-o75t3c8gbdaue7m0iuir4il1jauorfe6.apps.googleusercontent.com</string>
+	<string>GCM_DEV-3mq8ueigur3t0unnieaoiquuuf3gojr1.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.GCM_PROD-o75t3c8gbdaue7m0iuir4il1jauorfe6</string>
+	<string>com.googleusercontent.apps.GCM_DEV-3mq8ueigur3t0unnieaoiquuuf3gojr1</string>
 	<key>API_KEY</key>
-	<string>FIREBASE_KEY_PROD_IOS</string>
+	<string>FIREBASE_KEY_DEV_IOS</string>
 	<key>GCM_SENDER_ID</key>
-	<string>GCM_PROD</string>
+	<string>GCM_DEV</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.kotsukotsu.local</string>
 	<key>PROJECT_ID</key>
-	<string>FIREBASE_PROJ_PROD</string>
+	<string>FIREBASE_PROJ</string>
 	<key>STORAGE_BUCKET</key>
-	<string>FIREBASE_PROJ_PROD.appspot.com</string>
+	<string>FIREBASE_PROJ.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:GCM_PROD:ios:5811dd740037aedb6bef9f</string>
+	<string>1:GCM_DEV:ios:a921922926c0d5082105f3</string>
 </dict>
 </plist>

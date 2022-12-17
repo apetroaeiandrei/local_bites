@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "GCM_PROD",
+    "project_id": "FIREBASE_PROJ_PROD",
+    "storage_bucket": "FIREBASE_PROJ_PROD.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:GCM_PROD:android:a4a7a27eb6a428916bef9f",
+        "android_client_info": {
+          "package_name": "com.kotsukotsu.local"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "GCM_PROD-7mik6atc6emvs5h4dsi20j4g58at59bm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "FIREBASE_KEY_PROD"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "GCM_PROD-7mik6atc6emvs5h4dsi20j4g58at59bm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "GCM_PROD-o75t3c8gbdaue7m0iuir4il1jauorfe6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kotsukotsu.local",
+                "app_store_id": "1658342286"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
