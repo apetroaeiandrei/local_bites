@@ -14,7 +14,6 @@ class AppConfig {
   static Future<void> init() async {
     final flavor =
         await const MethodChannel('flavor').invokeMethod<String>('getFlavor');
-    print('STARTED WITH FLAVOR $flavor');
 
     await Firebase.initializeApp(
       options: flavor == flavorProd
@@ -26,10 +25,10 @@ class AppConfig {
   }
 
   static _initAppCheck(bool isProd) async {
-    //todo switch android provider based on isProd
     await FirebaseAppCheck.instance.activate(
       webRecaptchaSiteKey: 'recaptcha-v3-site-key',
-      androidProvider: AndroidProvider.debug,
+      androidProvider:
+          isProd ? AndroidProvider.playIntegrity : AndroidProvider.debug,
     );
   }
 
