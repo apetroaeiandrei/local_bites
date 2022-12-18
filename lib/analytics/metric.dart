@@ -6,6 +6,8 @@ abstract class Metric {
   static const String event_ = "";
   static const String eventRestaurantsLoaded = "restaurants_loaded";
   static const String eventRestaurantsError = "restaurants_loading_error";
+  static const String eventRestaurantsEnter = "restaurants_enter";
+  static const String propertyRestaurantsName = "name";
   static const String propertyRestaurantsCount = "count";
 
   static const String eventOrderUpdate = "order_update";

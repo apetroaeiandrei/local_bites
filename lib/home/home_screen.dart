@@ -190,6 +190,11 @@ class _HomeScreenState extends State<HomeScreen> {
           _showExistingCartDialog(context.read<HomeCubit>(), restaurant);
         } else {
           context.read<HomeCubit>().setRestaurantId(restaurant.id);
+          _analytics.logEventWithParams(
+              name: Metric.eventRestaurantsEnter,
+              parameters: {
+                Metric.propertyRestaurantsName: restaurant.name,
+              });
           Navigator.of(context)
               .pushNamed(Routes.restaurant, arguments: restaurant)
               .then((value) =>
@@ -216,6 +221,12 @@ class _HomeScreenState extends State<HomeScreen> {
           cubit.setRestaurantId(restaurant.id);
           Navigator.of(context).pop();
           _analytics.logEvent(name: Metric.eventProductsInCartDialogConfirm);
+          _analytics.logEventWithParams(
+              name: Metric.eventRestaurantsEnter,
+              parameters: {
+                Metric.propertyRestaurantsName: restaurant.name,
+              });
+
           Navigator.of(context)
               .pushNamed(Routes.restaurant, arguments: restaurant)
               .then((value) =>

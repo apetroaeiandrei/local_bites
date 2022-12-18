@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:local/analytics/analytics.dart';
 import 'package:models/delivery_address.dart';
 import 'package:models/local_user.dart';
 
@@ -33,6 +34,7 @@ class UserRepo {
       final doc = firebaseUser.data()!;
       _user = LocalUser.fromMap(doc);
       _address = DeliveryAddress.fromMap(doc);
+      Analytics().setUserId(_user!.uid);
     } catch (e) {
       print("user_repo/getUser: $e");
     }
