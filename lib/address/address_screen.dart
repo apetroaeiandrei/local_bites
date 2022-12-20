@@ -216,7 +216,7 @@ class _AddressScreenState extends State<AddressScreen> {
   }
 
   _requestAndHandleLocationPermission() async {
-    bool permissionGranted = await Permission.location.isGranted;
+    bool permissionGranted = await Permission.locationWhenInUse.isGranted;
     if (permissionGranted) {
       _analytics.logEvent(name: Metric.eventAddressPermissionExistedGranted);
       _getCurrentLocation();

@@ -33,13 +33,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Always and when in use!</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Can I have location always?</string>
+	<string>Folosim locația dvs. pentru a putea găsi restaurante din apropiere și pentru a permite livrarea la adresa exactă.</string>
 	<key>NSLocationUsageDescription</key>
-	<string>Older devices need location.</string>
+	<string>Folosim locația dvs. pentru a putea găsi restaurante din apropiere și pentru a permite livrarea la adresa exactă.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs location when in use</string>
+	<string>Folosim locația dvs. pentru a putea găsi restaurante din apropiere și pentru a permite livrarea la adresa exactă.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
