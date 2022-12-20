@@ -165,4 +165,9 @@ class RestaurantsRepo {
     final restaurant = RestaurantModel.fromMap(restaurantSnapshot.data()!);
     _selectedRestaurant = restaurant;
   }
+
+  cancelSubscriptions() {
+    _currentRestaurantSubscription?.cancel();
+    _currentRestaurantSubscription = null;
+  }
 }

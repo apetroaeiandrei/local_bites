@@ -9,7 +9,7 @@ class OrdersRepo {
   static const _collectionOrders = "orders";
   static const _collectionUsers = "users";
   static const _collectionRestaurants = "restaurants";
-
+  StreamSubscription? _orderSubscription;
   OrdersRepo._privateConstructor();
 
   static OrdersRepo? _instance;
@@ -82,5 +82,9 @@ class OrdersRepo {
         .collection(_collectionOrders)
         .doc(currentOrder.orderId)
         .update({"settled": true});
+  }
+
+  void stopListeningForOrderInProgress() {
+    _orderSubscription?.cancel();
   }
 }

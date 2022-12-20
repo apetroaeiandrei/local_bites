@@ -78,8 +78,7 @@ class HomeCubit extends Cubit<HomeState> {
     }
 
     _currentOrderSubscription = _ordersRepo.currentOrderStream.listen((orders) {
-      _analytics
-          .logEventWithParams(name: Metric.eventOrderUpdate, parameters: {
+      _analytics.logEventWithParams(name: Metric.eventOrderUpdate, parameters: {
         Metric.propertyOrderStatus: orders.map((e) => e.status).join(','),
         Metric.propertyOrderCount: orders.length,
       });
@@ -93,6 +92,7 @@ class HomeCubit extends Cubit<HomeState> {
   @override
   Future<void> close() {
     _currentOrderSubscription?.cancel();
+    _ordersRepo.stopListeningForOrderInProgress();
     return super.close();
   }
 

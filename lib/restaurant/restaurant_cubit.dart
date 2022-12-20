@@ -63,4 +63,11 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       cartTotal: _cartRepo.cartTotal,
     ));
   }
+
+  @override
+  Future<void> close() {
+    print("close() restaurant_cubit $hashCode");
+    _restaurantsRepo.cancelSubscriptions();
+    return super.close();
+  }
 }
