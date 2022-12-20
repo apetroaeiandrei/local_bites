@@ -16,6 +16,9 @@
   "profile_name": "Nume și prenume",
   "profile_address": "Adresa",
   "profile_user_details": "Date personale",
+  "profile_delete_account_headline": "Ștergere date cont",
+  "profile_delete_account_info": "Contul tău va fi șters definitiv. Nu vei mai putea să te autentifici și vei pierde toate datele tale inclusiv istoricul comenzilor.",
+  "profile_delete_account_button": "Șterge contul",
 
   "price_currency_ron" : "{price} RON",
   "home_welcome": "Bun venit",

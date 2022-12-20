@@ -27,4 +27,9 @@ class ProfileCubit extends Cubit<ProfileState> {
       status: success ? ProfileStatus.success : ProfileStatus.failure,
     ));
   }
+
+  Future<void> deleteUser() async {
+    final success = await _userRepo.deleteUser();
+    emit(state.copyWith(status:success? ProfileStatus.deleted : ProfileStatus.deletedFailure));
+  }
 }

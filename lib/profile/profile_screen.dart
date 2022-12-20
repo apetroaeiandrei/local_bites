@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/profile/profile_cubit.dart';
 import 'package:local/profile/profile_state.dart';
+import 'package:local/routes.dart';
 
 import '../analytics/analytics.dart';
 import '../analytics/metric.dart';
@@ -24,8 +25,14 @@ class ProfileScreen extends StatelessWidget {
         if (state.status == ProfileStatus.success) {
           _analytics.logEvent(name: Metric.eventProfileSaveSuccess);
           Navigator.of(context).pop();
-        } else {
+        } else if (state.status == ProfileStatus.failure) {
           _analytics.logEvent(name: Metric.eventProfileSaveError);
+        } else if (state.status == ProfileStatus.deleted) {
+          _analytics.logEvent(name: Metric.eventProfileDelete);
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(Routes.auth, (route) => false);
+        } else if (state.status == ProfileStatus.deletedFailure) {
+          _analytics.logEvent(name: Metric.eventProfileDeleteError);
         }
       },
       builder: (context, state) {
@@ -82,6 +89,29 @@ class ProfileScreen extends StatelessWidget {
                             _nameController.text, _phoneController.text);
                       },
                       child: Text(S.of(context).generic_save),
+                    ),
+                    const SizedBox(
+                      height: Dimens.defaultPadding,
+                    ),
+                    const Divider(),
+                    Text(
+                      S.of(context).profile_delete_account_headline,
+                      style: Theme.of(context).textTheme.headline3,
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(S.of(context).profile_delete_account_info,
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                    const SizedBox(
+                      height: Dimens.defaultPadding,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<ProfileCubit>().deleteUser();
+                      },
+                      child: Text(S.of(context).profile_delete_account_button),
                     ),
                   ],
                 ),

@@ -50,6 +50,8 @@ abstract class Metric {
   static const String eventProfileNavigateBackBlock = "profile_navigate_back_block";
   static const String eventProfileSaveSuccess = "profile_save_success";
   static const String eventProfileSaveError = "profile_save_error";
+  static const String eventProfileDelete = "profile_delete";
+  static const String eventProfileDeleteError = "profile_delete_error";
 
   static const String eventAddressPermissionExistedGranted = "address_permission_existed_granted";
   static const String eventAddressPermissionRequesting = "address_permission_requesting";
@@ -60,5 +62,4 @@ abstract class Metric {
   static const String eventAddressOtherError = "address_other_error";
 
   static const String eventRestaurantInfoCall = "restaurant_info_call";
-
 }

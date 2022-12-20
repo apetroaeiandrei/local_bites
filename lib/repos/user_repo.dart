@@ -91,4 +91,20 @@ class UserRepo {
     _user = null;
     _address = null;
   }
+
+  Future<bool> deleteUser() async {
+    try {
+      await _firestore
+          .collection(_collectionUsers)
+          .doc(_auth.currentUser?.uid)
+          .delete();
+      await _auth.currentUser?.delete();
+      _user = null;
+      _address = null;
+      return true;
+    } catch (e) {
+
+    }
+    return false;
+  }
 }
