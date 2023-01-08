@@ -204,16 +204,17 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
     final bool selected = state.selectedOptions.contains(option.id);
     return Row(
       children: [
-        Text(
-          option.name,
-          style: Theme.of(context).textTheme.subtitle1,
+        Expanded(
+          child: Text(
+            option.name,
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
         ),
         const SizedBox(
           width: 4,
         ),
         Text(S.of(context).food_option_price_extra(option.price),
             style: Theme.of(context).textTheme.subtitle2),
-        const Spacer(),
         IconButton(
           icon: Icon(selected ? Icons.check_circle : Icons.add),
           onPressed: () {
