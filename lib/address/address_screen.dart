@@ -96,7 +96,6 @@ class _AddressScreenState extends State<AddressScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     TextField(
-                      enabled: false,
                       controller: _addressController,
                       decoration: InputDecoration(
                         labelText: S.of(context).address_street_label,
