@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -7,6 +8,7 @@ import 'package:local/repos/cart_repo.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
+import 'package:models/delivery_address.dart';
 import 'package:models/restaurant_model.dart';
 import 'package:models/user_order.dart';
 
@@ -32,6 +34,7 @@ class HomeCubit extends Cubit<HomeState> {
   final CartRepo _cartRepo;
   final Analytics _analytics;
   StreamSubscription? _currentOrderSubscription;
+  StreamSubscription? _restaurantsSubscription;
 
   init() async {
     _analytics.setCurrentScreen(screenName: Routes.home);
@@ -48,29 +51,14 @@ class HomeCubit extends Cubit<HomeState> {
       return;
     }
 
-    final success = await _restaurantsRepo.getNearbyRestaurants(
-        address.latitude, address.longitude);
-    if (success) {
-      List<RestaurantModel> restaurants = _restaurantsRepo.restaurants
-          .where((element) => element.open)
-          .toList();
-      restaurants.sort((a, b) => a.name.compareTo(b.name));
-      restaurants.addAll(
-          _restaurantsRepo.restaurants.where((element) => !element.open));
-
-      _analytics.logEventWithParams(
-        name: Metric.eventRestaurantsLoaded,
-        parameters: {
-          Metric.propertyRestaurantsCount: restaurants.length,
-        },
-      );
-
-      emit(state.copyWith(
-        status: HomeStatus.loaded,
-        restaurants: restaurants,
-        address: address.street,
-      ));
-    } else {
+    try {
+      _restaurantsRepo.listenForNearbyRestaurants(
+          address.latitude, address.longitude);
+      _restaurantsSubscription =
+          _restaurantsRepo.restaurantsStream.listen((restaurants) {
+        _handleRestaurantsLoaded(address);
+      });
+    } catch (e) {
       _analytics.logEvent(name: Metric.eventRestaurantsError);
       emit(state.copyWith(
         status: HomeStatus.restaurantsError,
@@ -89,10 +77,33 @@ class HomeCubit extends Cubit<HomeState> {
     _ordersRepo.listenForOrderInProgress();
   }
 
+  void _handleRestaurantsLoaded(DeliveryAddress address) {
+    List<RestaurantModel> restaurants =
+        _restaurantsRepo.restaurants.where((element) => element.open).toList();
+    restaurants.sort((a, b) => a.name.compareTo(b.name));
+    restaurants
+        .addAll(_restaurantsRepo.restaurants.where((element) => !element.open));
+
+    _analytics.logEventWithParams(
+      name: Metric.eventRestaurantsLoaded,
+      parameters: {
+        Metric.propertyRestaurantsCount: restaurants.length,
+      },
+    );
+
+    emit(state.copyWith(
+      status: HomeStatus.loaded,
+      restaurants: restaurants,
+      address: address.street,
+    ));
+  }
+
   @override
   Future<void> close() {
     _currentOrderSubscription?.cancel();
+    _restaurantsSubscription?.cancel();
     _ordersRepo.stopListeningForOrderInProgress();
+    _restaurantsRepo.cancelAllRestaurantsSubscriptions();
     return super.close();
   }
 
@@ -120,5 +131,18 @@ class HomeCubit extends Cubit<HomeState> {
 
   void setRestaurantId(String restaurantId) {
     _cartRepo.selectedRestaurantId = restaurantId;
+  }
+
+  void onAppLifecycleStateChanged(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _restaurantsSubscription?.cancel();
+      _restaurantsSubscription = null;
+      _restaurantsRepo.cancelAllRestaurantsSubscriptions();
+    }
+
+    if (state == AppLifecycleState.resumed &&
+        _restaurantsSubscription == null) {
+      init();
+    }
   }
 }

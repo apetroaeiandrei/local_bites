@@ -26,6 +26,9 @@ class RestaurantsRepo {
   String? _selectedRestaurantId;
   RestaurantModel? _selectedRestaurant;
   StreamSubscription<DocumentSnapshot>? _currentRestaurantSubscription;
+  StreamSubscription<List<DocumentSnapshot>>? _restaurantsSubscription;
+  final StreamController<List<RestaurantModel>> _restaurantsController =
+      StreamController<List<RestaurantModel>>.broadcast();
 
   RestaurantsRepo._privateConstructor();
 
@@ -46,6 +49,9 @@ class RestaurantsRepo {
   List<RestaurantModel> get restaurants => _restaurants;
 
   RestaurantModel get selectedRestaurant => _selectedRestaurant!;
+
+  Stream<List<RestaurantModel>> get restaurantsStream =>
+      _restaurantsController.stream;
 
   _listenForChangesInCurrentRestaurant() async {
     await _currentRestaurantSubscription?.cancel();
@@ -72,7 +78,7 @@ class RestaurantsRepo {
     return RestaurantModel.fromMap(restaurantSnapshot.data()!);
   }
 
-  Future<bool> getNearbyRestaurants(double latitude, double longitude) async {
+  listenForNearbyRestaurants(double latitude, double longitude) {
     var collectionReference = _firestore.collection(_collectionRestaurants);
     GeoFirePoint center = _geo.point(latitude: latitude, longitude: longitude);
 
@@ -82,13 +88,14 @@ class RestaurantsRepo {
           field: 'location',
           strictMode: true,
         );
-    final docs = await query.first;
-    _restaurants.clear();
-    _restaurants.addAll(docs
-        .map((doc) =>
-            RestaurantModel.fromMap(doc.data() as Map<String, dynamic>))
-        .toList());
-    return true;
+    _restaurantsSubscription = query.listen((docs) {
+      _restaurants.clear();
+      _restaurants.addAll(docs
+          .map((doc) =>
+              RestaurantModel.fromMap(doc.data() as Map<String, dynamic>))
+          .toList());
+      _restaurantsController.add(List.of(_restaurants));
+    });
   }
 
   Future<List<FoodCategoryModel>> getCategoriesAsync() async {
@@ -169,5 +176,10 @@ class RestaurantsRepo {
   cancelSubscriptions() {
     _currentRestaurantSubscription?.cancel();
     _currentRestaurantSubscription = null;
+  }
+
+  cancelAllRestaurantsSubscriptions() {
+    _restaurantsSubscription?.cancel();
+    _restaurantsSubscription = null;
   }
 }
