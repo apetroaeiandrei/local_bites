@@ -97,14 +97,17 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   Iterable<Widget> getFoodsInCategory(CategoryContent categoryContent) {
     return categoryContent.foods.map(
       (food) => GestureDetector(
-        onTap: () {
-          _analytics.setCurrentScreen(screenName: Routes.foodDetails);
-          Navigator.pushNamed(context, Routes.foodDetails, arguments: food)
-              .then((value) {
-            _analytics.setCurrentScreen(screenName: Routes.restaurant);
-            context.read<RestaurantCubit>().refreshCart();
-          });
-        },
+        onTap: food.available
+            ? () {
+                _analytics.setCurrentScreen(screenName: Routes.foodDetails);
+                Navigator.pushNamed(context, Routes.foodDetails,
+                        arguments: food)
+                    .then((value) {
+                  _analytics.setCurrentScreen(screenName: Routes.restaurant);
+                  context.read<RestaurantCubit>().refreshCart();
+                });
+              }
+            : null,
         child: FoodCard(
           foodModel: food,
         ),
