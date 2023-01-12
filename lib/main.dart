@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:local/address/address_cubit.dart';
@@ -46,6 +47,9 @@ Future<void> main() async {
   final startTime = DateTime.now();
   WidgetsFlutterBinding.ensureInitialized();
   await AppConfig.init();
+
+  SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarColor: Colors.white));
 
   final analytics = Analytics();
   final authRepo = AuthRepo();
