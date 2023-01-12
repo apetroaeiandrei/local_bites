@@ -12,13 +12,6 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRepo _authRepo;
   final UserRepo _userRepo;
 
-  register(String email, String password) async {
-    final success = await _authRepo.register(email, password);
-    emit(state.copyWith(
-      status: success ? AuthStatus.authorized : AuthStatus.unauthorized,
-    ));
-  }
-
   login(String email, String password) async {
     final success = await _authRepo.login(email, password);
     await _userRepo.getUser();

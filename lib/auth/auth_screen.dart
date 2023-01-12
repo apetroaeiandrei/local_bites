@@ -64,7 +64,7 @@ class AuthScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.emailAddress,
                       decoration: textFieldDecoration(
-                          S.of(context).auth_email_placeholder),
+                          label: S.of(context).auth_email_placeholder),
                       onChanged: (value) {
                         context.read<AuthCubit>().onFocusChanged();
                       },
@@ -79,7 +79,7 @@ class AuthScreen extends StatelessWidget {
                       obscureText: true,
                       autocorrect: false,
                       decoration: textFieldDecoration(
-                          S.of(context).auth_password_placeholder),
+                          label: S.of(context).auth_password_placeholder),
                       onChanged: (value) {
                         context.read<AuthCubit>().onFocusChanged();
                       },
@@ -118,11 +118,7 @@ class AuthScreen extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      _analytics.logEvent(name: Metric.eventAuthRegister);
-                      context.read<AuthCubit>().register(
-                            _emailController.text,
-                            _passwordController.text,
-                          );
+                      Navigator.of(context).pushNamed(Routes.register);
                     },
                     child: Text(S.of(context).auth_register),
                   ),

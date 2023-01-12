@@ -65,8 +65,8 @@ class ProfileScreen extends StatelessWidget {
                       child: TextField(
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.name,
-                        decoration:
-                            textFieldDecoration(S.of(context).profile_name),
+                        decoration: textFieldDecoration(
+                            label: S.of(context).profile_name),
                         controller: _nameController,
                       ),
                     ),
@@ -76,7 +76,7 @@ class ProfileScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.number,
                         decoration: textFieldDecoration(
-                            S.of(context).profile_phone_number),
+                            label: S.of(context).profile_phone_number),
                         controller: _phoneController,
                       ),
                     ),
@@ -101,7 +101,8 @@ class ProfileScreen extends StatelessWidget {
                     const SizedBox(
                       height: 8,
                     ),
-                    Text(S.of(context).profile_delete_account_info,
+                    Text(
+                      S.of(context).profile_delete_account_info,
                       style: Theme.of(context).textTheme.bodyText2,
                     ),
                     const SizedBox(

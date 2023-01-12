@@ -6,11 +6,11 @@ OutlineInputBorder outlineInputBorder() => OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
     );
 
-InputDecoration textFieldDecoration(String hintText) => InputDecoration(
+InputDecoration textFieldDecoration({required String label, String? error}) =>
+    InputDecoration(
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(90.0),
+        borderRadius: BorderRadius.circular(10.0),
       ),
-      filled: true,
-      fillColor: Colors.white70,
-      hintText: hintText,
+      labelText: label,
+      errorText: error,
     );

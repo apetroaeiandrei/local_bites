@@ -1,6 +1,7 @@
 abstract class Routes {
   static const admin = '/admin';
   static const auth = '/auth';
+  static const register = '/auth/register';
   static const profile = '/profile';
   static const home = '/home';
   static const restaurant = '/restaurant';

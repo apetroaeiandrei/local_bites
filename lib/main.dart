@@ -4,6 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:local/address/address_cubit.dart';
 import 'package:local/address/address_screen.dart';
 import 'package:local/analytics/analytics.dart';
+import 'package:local/auth/register/register_cubit.dart';
+import 'package:local/auth/register/register_screen.dart';
 import 'package:local/cart/mentions_screen.dart';
 import 'package:local/food_details/food_details_cubit.dart';
 import 'package:local/food_details/food_details_screen.dart';
@@ -117,6 +119,13 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<UserRepo>(context),
               ),
               child: AuthScreen(),
+            ),
+        Routes.register: (context) => BlocProvider<RegisterCubit>(
+              create: (context) => RegisterCubit(
+                RepositoryProvider.of<AuthRepo>(context),
+                RepositoryProvider.of<UserRepo>(context),
+              ),
+              child: const RegisterScreen(),
             ),
         Routes.profile: (context) => BlocProvider<ProfileCubit>(
               create: (context) => ProfileCubit(
