@@ -46,80 +46,85 @@ class _AddressScreenState extends State<AddressScreen> {
         _handleStateChanged(state);
       },
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(S.of(context).address_title),
-          ),
-          body: Column(
-            children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    GoogleMap(
-                      key: _mapsKey,
-                      mapType: MapType.normal,
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(state.latitude, state.longitude),
-                        zoom: defaultCameraZoom,
+        return GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(S.of(context).address_title),
+            ),
+            body: Column(
+              children: [
+                Expanded(
+                  child: Stack(
+                    children: [
+                      GoogleMap(
+                        key: _mapsKey,
+                        mapType: MapType.normal,
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(state.latitude, state.longitude),
+                          zoom: defaultCameraZoom,
+                        ),
+                        myLocationButtonEnabled: true,
+                        myLocationEnabled: true,
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller.complete(controller);
+                        },
+                        onCameraIdle: () {
+                          Future.delayed(
+                              const Duration(
+                                milliseconds: 500,
+                              ), () {
+                            _onLocationChanged();
+                          });
+                        },
                       ),
-                      myLocationButtonEnabled: true,
-                      myLocationEnabled: true,
-                      onMapCreated: (GoogleMapController controller) {
-                        _controller.complete(controller);
-                      },
-                      onCameraIdle: () {
-                        Future.delayed(
-                            const Duration(
-                              milliseconds: 500,
-                            ), () {
-                          _onLocationChanged();
-                        });
-                      },
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: _topPinDistance,
-                      child: Image.asset(
-                        Img.locationPin,
-                        height: Dimens.locationPinHeight,
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        top: _topPinDistance,
+                        child: Image.asset(
+                          Img.locationPin,
+                          height: Dimens.locationPinHeight,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.35,
-                padding: const EdgeInsets.all(Dimens.defaultPadding),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    TextField(
-                      controller: _addressController,
-                      decoration: InputDecoration(
-                        labelText: S.of(context).address_street_label,
-                        errorText: _addressError,
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  padding: const EdgeInsets.all(Dimens.defaultPadding),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextField(
+                        controller: _addressController,
+                        decoration: InputDecoration(
+                          labelText: S.of(context).address_street_label,
+                          errorText: _addressError,
+                            errorMaxLines: 2
+                        ),
                       ),
-                    ),
-                    TextField(
-                      controller: _propertyController,
-                      decoration: InputDecoration(
-                        labelText: S.of(context).address_property_label,
-                        errorText: _propertyDetailsError,
+                      TextField(
+                        controller: _propertyController,
+                        decoration: InputDecoration(
+                          labelText: S.of(context).address_property_label,
+                          errorText: _propertyDetailsError,
+                          errorMaxLines: 2
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    ElevatedButton(
-                      onPressed: () {
-                        _onSave();
-                      },
-                      child: Text(S.of(context).generic_save),
-                    ),
-                  ],
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () {
+                          _onSave();
+                        },
+                        child: Text(S.of(context).generic_save),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
