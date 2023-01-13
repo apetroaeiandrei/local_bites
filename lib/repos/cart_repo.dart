@@ -95,6 +95,7 @@ class CartRepo {
       settled: false,
       isDelivery: isDelivery,
       deliveryFee: deliveryFee,
+      eta: 0,
       latitude: address.latitude,
       longitude: address.longitude,
       street: address.street,
@@ -104,7 +105,8 @@ class CartRepo {
       phoneNumber: user.phoneNumber,
       number: Random().nextInt(1000).toString(),
       totalProducts: cartTotal,
-      total: cartTotal + (isDelivery ? deliveryFee : 0),
+      total: cartTotal + (isDelivery ? deliveryFee : 0
+      ),
     );
     await orderDoc.set(order.toMap());
     clearCart();

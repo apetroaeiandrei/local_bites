@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:local/theme/wl_colors.dart';
 import 'package:local/utils.dart';
 import 'package:lottie/lottie.dart';
+import 'package:models/order.dart';
 import 'package:models/order_status.dart';
 import 'package:models/user_order.dart';
 
@@ -53,18 +55,22 @@ class OrderMini extends StatelessWidget {
                         const SizedBox(
                           height: 2,
                         ),
-                        Text(
-                          order.date.toUserString(),
-                          style: Theme.of(context).textTheme.headline5,
+                        Visibility(
+                          visible: _isEtaVisible(),
+                          child: Text(
+                            _getEta(context, order),
+                            style: Theme.of(context).textTheme.headline5,
+                          ),
                         ),
                         const SizedBox(
                           height: 12,
                         ),
                         Text(
                           order.status.toUserString(context),
-                          style: Theme.of(context).textTheme.headline3?.copyWith(
-                                color: order.status.toTextColor(),
-                              ),
+                          style:
+                              Theme.of(context).textTheme.headline3?.copyWith(
+                                    color: order.status.toTextColor(),
+                                  ),
                         ),
                         const SizedBox(
                           height: 4,
@@ -109,5 +115,21 @@ class OrderMini extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  bool _isEtaVisible() {
+    return order.eta != 0 && order.status != OrderStatus.completed ||
+        order.status == OrderStatus.cancelled;
+  }
+
+  String _getEta(BuildContext context, UserOrder order) {
+    final eta = order.date.add(Duration(minutes: order.eta));
+    DateFormat dateFormat = DateFormat('HH:mm');
+    final etaString = dateFormat.format(eta);
+    if (order.isDelivery) {
+      return S.of(context).order_mini_delivery_eta(etaString);
+    } else {
+      return S.of(context).order_mini_pickup_eta(etaString);
+    }
   }
 }
