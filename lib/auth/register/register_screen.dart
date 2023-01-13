@@ -6,6 +6,7 @@ import 'package:local/generated/l10n.dart';
 import 'package:local/routes.dart';
 import 'package:local/theme/decorations.dart';
 import 'package:local/theme/dimens.dart';
+import 'package:local/widgets/button_loading.dart';
 import 'package:local/widgets/dialog_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -205,14 +206,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         }
                       },
                       child: state.status == RegisterStatus.loading
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
+                          ? const ButtonLoading()
                           : Text(S.of(context).auth_register),
                     )
                   ],

@@ -8,11 +8,13 @@ import 'auth_status.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit(this._authRepo, this._userRepo) : super(const AuthState(status: AuthStatus.initial));
+  AuthCubit(this._authRepo, this._userRepo)
+      : super(const AuthState(status: AuthStatus.initial));
   final AuthRepo _authRepo;
   final UserRepo _userRepo;
 
   login(String email, String password) async {
+    emit(const AuthState(status: AuthStatus.loadingEmail));
     final success = await _authRepo.login(email, password);
     await _userRepo.getUser();
     emit(state.copyWith(
@@ -21,6 +23,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   loginAnonymously() async {
+    emit(const AuthState(status: AuthStatus.loadingAnonymously));
     final success = await _authRepo.loginAnonymously();
     emit(state.copyWith(
       status: success ? AuthStatus.authorized : AuthStatus.unauthorized,

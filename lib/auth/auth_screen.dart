@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/analytics/analytics.dart';
 import 'package:local/analytics/metric.dart';
 import 'package:local/theme/wl_colors.dart';
+import 'package:local/widgets/button_loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../constants.dart';
@@ -28,11 +29,12 @@ class AuthScreen extends StatelessWidget {
           case AuthStatus.authorized:
             Navigator.of(context).pushReplacementNamed(Routes.home);
             break;
-          case AuthStatus.initial:
-            // TODO: Handle this case.
-            break;
           case AuthStatus.unauthorized:
             _analytics.logEvent(name: Metric.eventAuthError);
+            break;
+          case AuthStatus.initial:
+          case AuthStatus.loadingEmail:
+            // No-op
             break;
         }
       },
@@ -63,6 +65,7 @@ class AuthScreen extends StatelessWidget {
                       controller: _emailController,
                       textAlign: TextAlign.center,
                       keyboardType: TextInputType.emailAddress,
+                      autocorrect: false,
                       decoration: textFieldDecoration(
                           label: S.of(context).auth_email_placeholder),
                       onChanged: (value) {
@@ -105,13 +108,19 @@ class AuthScreen extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      if (state.status == AuthStatus.loadingEmail ||
+                          state.status == AuthStatus.loadingAnonymously) {
+                        return;
+                      }
                       _analytics.logEvent(name: Metric.eventAuthLogin);
                       context.read<AuthCubit>().login(
                             _emailController.text,
                             _passwordController.text,
                           );
                     },
-                    child: Text(S.of(context).auth_login),
+                    child: state.status == AuthStatus.loadingEmail
+                        ? const ButtonLoading()
+                        : Text(S.of(context).auth_login),
                   ),
                   const SizedBox(
                     height: 12,
@@ -154,11 +163,17 @@ class AuthScreen extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
+                      if (state.status == AuthStatus.loadingEmail ||
+                          state.status == AuthStatus.loadingAnonymously) {
+                        return;
+                      }
                       _analytics.logEvent(
                           name: Metric.eventAuthLoginAnonymously);
                       context.read<AuthCubit>().loginAnonymously();
                     },
-                    child: Text(S.of(context).auth_anonymous),
+                    child: state.status == AuthStatus.loadingAnonymously
+                        ? const ButtonLoading()
+                        : Text(S.of(context).auth_anonymous),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(40.0),
