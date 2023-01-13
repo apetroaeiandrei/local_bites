@@ -103,12 +103,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Local Bites',
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
-        // 1
         S.delegate,
-        // 2
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
