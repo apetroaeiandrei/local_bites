@@ -16,6 +16,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       required String password,
       required String name,
       required String phone}) async {
+    emit(state.copyWith(status: RegisterStatus.loading));
     final success = await _authRepo.register(email, password);
     if (success) {
       final userSuccess = await _userRepo.setUserDetails(name, phone);

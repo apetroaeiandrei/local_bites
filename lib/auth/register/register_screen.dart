@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,12 +87,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
           case RegisterStatus.initial:
             break;
           case RegisterStatus.success:
+            _analytics.logEvent(name: Metric.eventRegisterSuccess);
             Navigator.of(context)
                 .pushNamedAndRemoveUntil(Routes.home, (route) => false);
             break;
           case RegisterStatus.failure:
             _analytics.logEvent(name: Metric.eventRegisterError);
             _showRegistrationError();
+            break;
+          case RegisterStatus.loading:
+            // TODO: Handle this case.
             break;
         }
       },
@@ -102,6 +105,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: Scaffold(
             appBar: AppBar(
+              leading: state.status == RegisterStatus.loading
+                  ? const SizedBox()
+                  : null,
               title: Text(S.of(context).register_title),
             ),
             body: SingleChildScrollView(
@@ -114,6 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextField(
                       controller: _emailController,
                       focusNode: _emailFocusNode,
+                      autocorrect: false,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       decoration: textFieldDecoration(
@@ -183,6 +190,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
+                        if (state.status == RegisterStatus.loading) {
+                          return;
+                        }
                         _analytics.logEvent(name: Metric.eventAuthRegister);
                         FocusManager.instance.primaryFocus?.unfocus();
                         if (_areFieldsValid()) {
@@ -194,7 +204,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               );
                         }
                       },
-                      child: Text(S.of(context).auth_register),
+                      child: state.status == RegisterStatus.loading
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : Text(S.of(context).auth_register),
                     )
                   ],
                 ),
@@ -273,17 +292,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   _showRegistrationError() {
     showPlatformDialog(
-        context: context,
-        title: S.of(context).register_error_title,
-        content: S.of(context).register_error_message,
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              context.read<RegisterCubit>().onDialogClosed();
-            },
-            child: Text(S.of(context).generic_ok),
-          ),
-        ],);
+      context: context,
+      title: S.of(context).register_error_title,
+      content: S.of(context).register_error_message,
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            context.read<RegisterCubit>().onDialogClosed();
+          },
+          child: Text(S.of(context).generic_ok),
+        ),
+      ],
+    );
   }
 }
