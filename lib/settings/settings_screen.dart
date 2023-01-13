@@ -37,7 +37,10 @@ class SettingsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(Dimens.defaultPadding),
+                    padding: const EdgeInsets.only(
+                      top: Dimens.defaultPadding,
+                      bottom: Dimens.defaultPadding,
+                    ),
                     child: Text(S.of(context).settings_welcome(state.name),
                         style: Theme.of(context).textTheme.headline2),
                   ),
