@@ -6,15 +6,24 @@ import 'package:local/routes.dart';
 
 import '../analytics/analytics.dart';
 import '../analytics/metric.dart';
+import '../constants.dart';
 import '../generated/l10n.dart';
 import '../theme/decorations.dart';
 import '../theme/dimens.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _analytics = Analytics();
+  String? _phoneError;
+  String? _nameError;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +75,8 @@ class ProfileScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.name,
                         decoration: textFieldDecoration(
-                            label: S.of(context).profile_name),
+                            label: S.of(context).profile_name,
+                            error: _nameError),
                         controller: _nameController,
                       ),
                     ),
@@ -76,7 +86,8 @@ class ProfileScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.number,
                         decoration: textFieldDecoration(
-                            label: S.of(context).profile_phone_number),
+                            label: S.of(context).profile_phone_number,
+                            error: _phoneError),
                         controller: _phoneController,
                       ),
                     ),
@@ -85,6 +96,9 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
+                        if (!validate()) {
+                          return;
+                        }
                         context.read<ProfileCubit>().setUserDetails(
                             _nameController.text, _phoneController.text);
                       },
@@ -122,5 +136,45 @@ class ProfileScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  bool validate() {
+    var isValid = true;
+    if (!_isPhoneValid(_phoneController.text)) {
+      isValid = false;
+    }
+    if (!_isNameValid(_nameController.text)) {
+      isValid = false;
+    }
+    return isValid;
+  }
+
+  bool _isNameValid(String name) {
+    if (name.length >= 3) {
+      setState(() {
+        _nameError = null;
+      });
+      return true;
+    } else {
+      setState(() {
+        _nameError = S.of(context).register_name_error;
+      });
+      return false;
+    }
+  }
+
+  bool _isPhoneValid(String phone) {
+    final phoneRegexp = RegExp(Constants.phoneRegex);
+    if (phoneRegexp.hasMatch(phone)) {
+      setState(() {
+        _phoneError = null;
+      });
+      return true;
+    } else {
+      setState(() {
+        _phoneError = S.of(context).register_phone_error;
+      });
+      return false;
+    }
   }
 }
