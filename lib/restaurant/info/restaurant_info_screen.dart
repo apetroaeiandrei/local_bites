@@ -186,21 +186,23 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                         padding: const EdgeInsets.all(Dimens.defaultPadding),
                         child: Row(
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  S.of(context).restaurant_info_website,
-                                  style: Theme.of(context).textTheme.headline6,
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  state.restaurant.website,
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                ),
-                              ],
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    S.of(context).restaurant_info_website,
+                                    style: Theme.of(context).textTheme.headline6,
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    state.restaurant.website,
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ],
+                              ),
                             ),
-                            const Spacer(),
+                            const SizedBox(width: Dimens.defaultPadding,),
                             IconButton(
                               onPressed: () {
                                 _analytics.logEvent(
