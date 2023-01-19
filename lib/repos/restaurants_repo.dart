@@ -78,24 +78,41 @@ class RestaurantsRepo {
     return RestaurantModel.fromMap(restaurantSnapshot.data()!);
   }
 
-  listenForNearbyRestaurants(double latitude, double longitude) {
+  listenForNearbyRestaurants(double latitude, double longitude) async {
     var collectionReference = _firestore.collection(_collectionRestaurants);
     GeoFirePoint center = _geo.point(latitude: latitude, longitude: longitude);
 
     final query = _geo.collection(collectionRef: collectionReference).within(
           center: center,
-          radius: 10,
+          radius: 15,
           field: 'location',
           strictMode: true,
         );
+    await _restaurantsSubscription?.cancel();
     _restaurantsSubscription = query.listen((docs) {
-      _restaurants.clear();
-      _restaurants.addAll(docs
+      final allRestaurants = docs
           .map((doc) =>
-              RestaurantModel.fromMap(doc.data() as Map<String, dynamic>))
-          .toList());
+          RestaurantModel.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+
+      _restaurants.clear();
+      _restaurants.addAll(_filterByMaxRadius(latitude, longitude, allRestaurants));
       _restaurantsController.add(List.of(_restaurants));
     });
+  }
+
+  List<RestaurantModel> _filterByMaxRadius(
+      double latitude, double longitude, List<RestaurantModel> allRestaurants) {
+    GeoFirePoint center = _geo.point(latitude: latitude, longitude: longitude);
+    return allRestaurants.where((restaurant) {
+      GeoFirePoint restaurantLocation = restaurant.location;
+      final distance = center.distance(
+        lat: restaurantLocation.latitude,
+        lng: restaurantLocation.longitude,
+      );
+      bool isNearby = distance <= restaurant.maxRadius;
+      return isNearby;
+    }).toList();
   }
 
   Future<List<FoodCategoryModel>> getCategoriesAsync() async {
