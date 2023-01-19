@@ -14,10 +14,20 @@ class RestaurantState extends Equatable {
   final List<CategoryContent> categories;
   final int cartCount;
   final double cartTotal;
+  final num deliveryFee;
+  final num minimumOrder;
 
   @override
-  List<Object> get props =>
-      [name, status, foods, categories, cartCount, cartTotal];
+  List<Object> get props => [
+        name,
+        status,
+        foods,
+        categories,
+        cartCount,
+        cartTotal,
+        deliveryFee,
+        minimumOrder
+      ];
 
   const RestaurantState({
     required this.name,
@@ -26,6 +36,8 @@ class RestaurantState extends Equatable {
     required this.categories,
     required this.cartCount,
     required this.cartTotal,
+    required this.deliveryFee,
+    required this.minimumOrder,
   });
 
   RestaurantState copyWith({
@@ -35,6 +47,8 @@ class RestaurantState extends Equatable {
     List<CategoryContent>? categories,
     int? cartCount,
     double? cartTotal,
+    num? deliveryFee,
+    num? minimumOrder,
   }) {
     return RestaurantState(
       name: name ?? this.name,
@@ -43,6 +57,8 @@ class RestaurantState extends Equatable {
       categories: categories ?? this.categories,
       cartCount: cartCount ?? this.cartCount,
       cartTotal: cartTotal ?? this.cartTotal,
+      deliveryFee: deliveryFee ?? this.deliveryFee,
+      minimumOrder: minimumOrder ?? this.minimumOrder,
     );
   }
 }

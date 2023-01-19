@@ -127,5 +127,7 @@
   "restaurant_info_phone": "Telefon",
   "restaurant_info_website": "Website",
   "restaurant_info_email": "Email",
-  "restaurant_info_services": "Servicii"
+  "restaurant_info_services": "Servicii",
+  "restaurant_banner_free_delivery_min_order": "Acest restaurant acceptă comenzi de minim {min} RON",
+  "restaurant_banner_paid_delivery_under_min_order": "Taxă livrare: {delivery_fee} RON. Livrare gratuită pentru comenzi de minim {min} RON"
 }

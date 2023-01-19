@@ -185,6 +185,7 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) => BlocProvider<RestaurantCubit>(
               create: (context) => RestaurantCubit(
+                RepositoryProvider.of<UserRepo>(context),
                 RepositoryProvider.of<RestaurantsRepo>(context),
                 RepositoryProvider.of<CartRepo>(context),
                 settings.arguments as RestaurantModel,

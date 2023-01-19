@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
+import 'package:models/delivery_zone.dart';
 import 'package:models/food_category_model.dart';
 import 'package:models/food_model.dart';
 import 'package:models/food_option.dart';
@@ -92,11 +93,12 @@ class RestaurantsRepo {
     _restaurantsSubscription = query.listen((docs) {
       final allRestaurants = docs
           .map((doc) =>
-          RestaurantModel.fromMap(doc.data() as Map<String, dynamic>))
+              RestaurantModel.fromMap(doc.data() as Map<String, dynamic>))
           .toList();
 
       _restaurants.clear();
-      _restaurants.addAll(_filterByMaxRadius(latitude, longitude, allRestaurants));
+      _restaurants
+          .addAll(_filterByMaxRadius(latitude, longitude, allRestaurants));
       _restaurantsController.add(List.of(_restaurants));
     });
   }
@@ -137,6 +139,16 @@ class RestaurantsRepo {
     _foods.clear();
     _foods.addAll(
         foodCollection.docs.map((e) => FoodModel.fromMap(e.data())).toList());
+  }
+
+  Future<List<DeliveryZone>> getDeliveryZonesSorted() async {
+    final deliveryZonesCollection =
+        await _getRestaurantDoc().collection('delivery_zones').get();
+    final zones = deliveryZonesCollection.docs
+        .map((e) => DeliveryZone.fromMap(e.data()))
+        .toList();
+    zones.sort((a, b) => a.radius.compareTo(b.radius));
+    return zones;
   }
 
   List<FoodModel> getFoodsContent() {
