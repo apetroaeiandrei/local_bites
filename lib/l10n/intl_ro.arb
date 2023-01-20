@@ -129,5 +129,8 @@
   "restaurant_info_email": "Email",
   "restaurant_info_services": "Servicii",
   "restaurant_banner_free_delivery_min_order": "Acest restaurant acceptă comenzi de minim {min} RON",
-  "restaurant_banner_paid_delivery_under_min_order": "Taxă livrare: {delivery_fee} RON. Livrare gratuită pentru comenzi de minim {min} RON"
+  "restaurant_banner_paid_delivery_under_min_order": "Taxă livrare: {delivery_fee} RON. Livrare gratuită pentru comenzi de minim {min} RON",
+
+  "cart_banner_free_delivery_min_order": "Acest restaurant acceptă comenzi de minim {min} RON",
+  "cart_banner_paid_delivery_under_min_order": "Mai adaugă produse în valoare de {amount} RON pentru livrare gratuită"
 }

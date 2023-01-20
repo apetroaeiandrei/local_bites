@@ -40,12 +40,21 @@ class _CartScreenState extends State<CartScreen> {
           _showRestaurantClosedDialog(context);
         } else if (state.status == CartStatus.minimumOrderError) {
           _analytics.logEvent(name: Metric.eventCartMinOrder);
+          if (state.cartTotal == 0) {
+            Navigator.of(context).pop();
+          }
         }
       },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             title: Text(S.of(context).cart_title),
+            bottom: state.amountToMinOrder == 0 || !_deliverySelected
+                ? null
+                : PreferredSize(
+                    preferredSize: const Size.fromHeight(48),
+                    child: _getDeliveryAndMinOrderInfo(state),
+                  ),
           ),
           body: Stack(
             children: [
@@ -386,5 +395,36 @@ class _CartScreenState extends State<CartScreen> {
     } else {
       return S.of(context).cart_pay_pickup_card;
     }
+  }
+
+  Widget _getDeliveryAndMinOrderInfo(CartState state) {
+    String infoText = "";
+    if (state.deliveryFee == 0) {
+      infoText =
+          S.of(context).cart_banner_free_delivery_min_order(state.minOrder);
+    } else {
+      infoText = S
+          .of(context)
+          .cart_banner_paid_delivery_under_min_order(state.amountToMinOrder);
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Icon(Icons.info),
+          const SizedBox(
+            width: 8,
+          ),
+          Expanded(
+            child: Text(
+              infoText,
+              style: Theme.of(context).textTheme.subtitle2,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

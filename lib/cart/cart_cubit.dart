@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:local/repos/cart_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
+import 'package:models/delivery_zone.dart';
 import 'package:models/food_order.dart';
 
 part 'cart_state.dart';
@@ -27,6 +28,7 @@ class CartCubit extends Cubit<CartState> {
             restaurantAddress: _restaurantsRepo.selectedRestaurant.address,
             minOrder: _restaurantsRepo.selectedRestaurant.minimumOrder,
             deliveryFee: _restaurantsRepo.selectedRestaurant.deliveryFee,
+            amountToMinOrder: 0,
             hasDelivery: _restaurantsRepo.selectedRestaurant.hasDelivery,
             hasPickup: _restaurantsRepo.selectedRestaurant.hasPickup,
             hasDeliveryCash:
@@ -40,12 +42,14 @@ class CartCubit extends Cubit<CartState> {
 
   final CartRepo _cartRepo;
   final RestaurantsRepo _restaurantsRepo;
+  late final DeliveryZone _deliveryZone;
 
   // ignore: unused_field
   final UserRepo _userRepo;
   final _delayedDuration = const Duration(milliseconds: 10);
 
-  void init() {
+  Future<void> init() async {
+    await _getDeliveryZones();
     Future.delayed(_delayedDuration, () {
       _refreshCart();
     });
@@ -83,17 +87,45 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void _refreshCart() {
+    num amountToMinOrder = state.minOrder - _cartRepo.cartTotal;
+    print("amountToMinOrder: $amountToMinOrder");
+    num deliveryFee = amountToMinOrder <= 0 ? 0 : _deliveryZone.deliveryFee;
     emit(state.copyWith(
         cartCount: _cartRepo.cartCount,
         cartTotal: _cartRepo.cartTotal,
         cartItems: _cartRepo.cartItems,
+        deliveryFee: deliveryFee,
+        amountToMinOrder: amountToMinOrder > 0 ? amountToMinOrder : 0,
         status: _isNotMinimumOrder()
             ? CartStatus.minimumOrderError
             : CartStatus.initial));
   }
 
   bool _isNotMinimumOrder() {
-    return _cartRepo.cartTotal <
-        _restaurantsRepo.selectedRestaurant.minimumOrder;
+    return _cartRepo.cartTotal < _deliveryZone.minimumOrder &&
+        _deliveryZone.deliveryFee == 0 || _cartRepo.cartTotal == 0;
+  }
+
+  _getDeliveryZones() async {
+    final restaurant = _restaurantsRepo.selectedRestaurant;
+    final List<DeliveryZone> deliveryZones =
+        await _restaurantsRepo.getDeliveryZonesSorted();
+    final distance = restaurant.location.distance(
+      lat: _userRepo.address!.latitude,
+      lng: _userRepo.address!.longitude,
+    );
+    _deliveryZone = deliveryZones.firstWhere(
+      (element) => distance <= element.radius,
+      orElse: () => DeliveryZone(
+        uid: "",
+        radius: 0,
+        minimumOrder: restaurant.minimumOrder,
+        deliveryFee: restaurant.deliveryFee,
+      ),
+    );
+    emit(state.copyWith(
+      minOrder: _deliveryZone.minimumOrder,
+      deliveryFee: _deliveryZone.deliveryFee,
+    ));
   }
 }
