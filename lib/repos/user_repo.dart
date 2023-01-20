@@ -36,7 +36,7 @@ class UserRepo {
       _address = DeliveryAddress.fromMap(doc);
       Analytics().setUserId(_user!.uid);
     } catch (e) {
-      print("user_repo/getUser: $e");
+      //No-op
     }
   }
 
@@ -103,7 +103,7 @@ class UserRepo {
       _address = null;
       return true;
     } catch (e) {
-
+      //No-op
     }
     return false;
   }

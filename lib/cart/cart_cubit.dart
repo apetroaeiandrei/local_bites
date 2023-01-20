@@ -88,7 +88,6 @@ class CartCubit extends Cubit<CartState> {
 
   void _refreshCart() {
     num amountToMinOrder = state.minOrder - _cartRepo.cartTotal;
-    print("amountToMinOrder: $amountToMinOrder");
     num deliveryFee = amountToMinOrder <= 0 ? 0 : _deliveryZone.deliveryFee;
     emit(state.copyWith(
         cartCount: _cartRepo.cartCount,

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:local/theme/wl_colors.dart';
 import 'package:local/utils.dart';
 import 'package:lottie/lottie.dart';
-import 'package:models/order.dart';
 import 'package:models/order_status.dart';
 import 'package:models/user_order.dart';
 

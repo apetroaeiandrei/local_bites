@@ -133,7 +133,7 @@ class MyApp extends StatelessWidget {
               create: (context) => ProfileCubit(
                 RepositoryProvider.of<UserRepo>(context),
               ),
-              child: ProfileScreen(),
+              child: const ProfileScreen(),
             ),
         Routes.home: (context) => BlocProvider<HomeCubit>(
               create: (context) => HomeCubit(

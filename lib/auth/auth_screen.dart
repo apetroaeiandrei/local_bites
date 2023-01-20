@@ -34,6 +34,7 @@ class AuthScreen extends StatelessWidget {
             break;
           case AuthStatus.initial:
           case AuthStatus.loadingEmail:
+          case AuthStatus.loadingAnonymously:
             // No-op
             break;
         }
