@@ -41,8 +41,7 @@
   "home_cart_different_restaurant_ok": "Schimbă",
   "home_restaurant_closed" : "Nu acceptă comenzi",
   "home_restaurant_pickup" : "Ridicare personală",
-  "home_restaurant_delivery_free" : "Livrare GRATUITĂ",
-  "home_restaurant_delivery_fee" : "Livrare {price} RON",
+  "home_restaurant_delivery" : "Livrează",
 
   "settings_title": "Setări",
   "settings_welcome": "Salut, {name}!",
