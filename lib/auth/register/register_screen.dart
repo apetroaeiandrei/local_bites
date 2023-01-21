@@ -114,102 +114,107 @@ class _RegisterScreenState extends State<RegisterScreen> {
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(Dimens.defaultPadding),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: textsSpacing),
-                    TextField(
-                      controller: _emailController,
-                      focusNode: _emailFocusNode,
-                      autocorrect: false,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      decoration: textFieldDecoration(
-                          label: S.of(context).auth_email_placeholder,
-                          error: _emailError),
-                    ),
-                    const SizedBox(
-                      height: textsSpacing,
-                    ),
-                    TextField(
-                      controller: _passwordController,
-                      focusNode: _passwordFocusNode,
-                      obscureText: true,
-                      keyboardType: TextInputType.visiblePassword,
-                      textInputAction: TextInputAction.next,
-                      decoration: textFieldDecoration(
-                          label: S.of(context).auth_password_placeholder,
-                          error: _passwordError),
-                    ),
-                    const SizedBox(
-                      height: textsSpacing,
-                    ),
-                    TextField(
-                      controller: _nameController,
-                      focusNode: _nameFocusNode,
-                      keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
-                      decoration: textFieldDecoration(
-                          label: S.of(context).profile_name, error: _nameError),
-                    ),
-                    const SizedBox(
-                      height: textsSpacing,
-                    ),
-                    TextField(
-                      controller: _phoneController,
-                      focusNode: _phoneFocusNode,
-                      keyboardType: TextInputType.phone,
-                      textInputAction: TextInputAction.go,
-                      decoration: textFieldDecoration(
-                          label: S.of(context).profile_phone_number,
-                          error: _phoneError),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(40.0),
-                      child: RichText(
-                        text: TextSpan(
-                          style: Theme.of(context).textTheme.headline5,
-                          children: [
-                            TextSpan(text: S.of(context).terms1),
-                            TextSpan(
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  launchUrl(Uri.parse(Constants.tcUrl));
-                                },
-                              text: S.of(context).terms_clickable,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5
-                                  ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary),
-                            ),
-                          ],
+                child: AutofillGroup(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: textsSpacing),
+                      TextField(
+                        controller: _emailController,
+                        focusNode: _emailFocusNode,
+                        autocorrect: false,
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: const [AutofillHints.newUsername],
+                        textInputAction: TextInputAction.next,
+                        decoration: textFieldDecoration(
+                            label: S.of(context).auth_email_placeholder,
+                            error: _emailError),
+                      ),
+                      const SizedBox(
+                        height: textsSpacing,
+                      ),
+                      TextField(
+                        controller: _passwordController,
+                        focusNode: _passwordFocusNode,
+                        obscureText: true,
+                        autofillHints: const [AutofillHints.newPassword],
+                        textInputAction: TextInputAction.next,
+                        decoration: textFieldDecoration(
+                            label: S.of(context).auth_password_placeholder,
+                            error: _passwordError),
+                      ),
+                      const SizedBox(
+                        height: textsSpacing,
+                      ),
+                      TextField(
+                        controller: _nameController,
+                        focusNode: _nameFocusNode,
+                        keyboardType: TextInputType.name,
+                        autofillHints: const [AutofillHints.name],
+                        textInputAction: TextInputAction.next,
+                        decoration: textFieldDecoration(
+                            label: S.of(context).profile_name, error: _nameError),
+                      ),
+                      const SizedBox(
+                        height: textsSpacing,
+                      ),
+                      TextField(
+                        controller: _phoneController,
+                        focusNode: _phoneFocusNode,
+                        keyboardType: TextInputType.phone,
+                        autofillHints: const [AutofillHints.telephoneNumber],
+                        textInputAction: TextInputAction.go,
+                        decoration: textFieldDecoration(
+                            label: S.of(context).profile_phone_number,
+                            error: _phoneError),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(40.0),
+                        child: RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.headline5,
+                            children: [
+                              TextSpan(text: S.of(context).terms1),
+                              TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    launchUrl(Uri.parse(Constants.tcUrl));
+                                  },
+                                text: S.of(context).terms_clickable,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (state.status == RegisterStatus.loading) {
-                          return;
-                        }
-                        _analytics.logEvent(name: Metric.eventAuthRegister);
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        if (_areFieldsValid()) {
-                          context.read<RegisterCubit>().register(
-                                email: _emailController.text,
-                                password: _passwordController.text,
-                                name: _nameController.text,
-                                phone: _phoneController.text,
-                              );
-                        }
-                      },
-                      child: state.status == RegisterStatus.loading
-                          ? const ButtonLoading()
-                          : Text(S.of(context).auth_register),
-                    )
-                  ],
+                      ElevatedButton(
+                        onPressed: () {
+                          if (state.status == RegisterStatus.loading) {
+                            return;
+                          }
+                          _analytics.logEvent(name: Metric.eventAuthRegister);
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          if (_areFieldsValid()) {
+                            context.read<RegisterCubit>().register(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                  name: _nameController.text,
+                                  phone: _phoneController.text,
+                                );
+                          }
+                        },
+                        child: state.status == RegisterStatus.loading
+                            ? const ButtonLoading()
+                            : Text(S.of(context).auth_register),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -270,6 +275,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   bool _isPhoneValid(String phone) {
+    //remove phone spaces
+    phone = phone.replaceAll(' ', '');
     final phoneRegexp = RegExp(Constants.phoneRegex);
     if (phoneRegexp.hasMatch(phone)) {
       setState(() {

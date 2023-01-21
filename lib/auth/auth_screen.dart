@@ -47,158 +47,162 @@ class AuthScreen extends StatelessWidget {
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(Dimens.defaultPadding),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  Text(
-                    S.of(context).auth_subtitle,
-                    style: Theme.of(context).textTheme.headline4,
-                    textAlign: TextAlign.start,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 22),
-                    child: TextField(
-                      controller: _emailController,
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.emailAddress,
-                      autocorrect: false,
-                      decoration: textFieldDecoration(
-                          label: S.of(context).auth_email_placeholder),
-                      onChanged: (value) {
-                        context.read<AuthCubit>().onFocusChanged();
-                      },
+              child: AutofillGroup(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(
+                      height: 32,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: TextField(
-                      controller: _passwordController,
-                      textAlign: TextAlign.center,
-                      keyboardType: TextInputType.visiblePassword,
-                      obscureText: true,
-                      autocorrect: false,
-                      decoration: textFieldDecoration(
-                          label: S.of(context).auth_password_placeholder),
-                      onChanged: (value) {
-                        context.read<AuthCubit>().onFocusChanged();
-                      },
+                    Text(
+                      S.of(context).auth_subtitle,
+                      style: Theme.of(context).textTheme.headline4,
+                      textAlign: TextAlign.start,
                     ),
-                  ),
-                  SizedBox(
-                    height: state.status == AuthStatus.unauthorized ? 4 : 0,
-                  ),
-                  Center(
-                    child: Visibility(
-                      visible: state.status == AuthStatus.unauthorized,
-                      child: Text(
-                        S.of(context).auth_error,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline6
-                            ?.copyWith(color: WlColors.error),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 22),
+                      child: TextField(
+                        controller: _emailController,
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.emailAddress,
+                        autofillHints: const [AutofillHints.username],
+                        autocorrect: false,
+                        decoration: textFieldDecoration(
+                            label: S.of(context).auth_email_placeholder),
+                        onChanged: (value) {
+                          context.read<AuthCubit>().onFocusChanged();
+                        },
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 32,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (state.status == AuthStatus.loadingEmail ||
-                          state.status == AuthStatus.loadingAnonymously) {
-                        return;
-                      }
-                      _analytics.logEvent(name: Metric.eventAuthLogin);
-                      context.read<AuthCubit>().login(
-                            _emailController.text,
-                            _passwordController.text,
-                          );
-                    },
-                    child: state.status == AuthStatus.loadingEmail
-                        ? const ButtonLoading()
-                        : Text(S.of(context).auth_login),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(Routes.register);
-                    },
-                    child: Text(S.of(context).auth_register),
-                  ),
-                  const SizedBox(
-                    height: 44,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 1,
-                          color: WlColors.textColor,
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: TextField(
+                        controller: _passwordController,
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.visiblePassword,
+                        autofillHints: const [AutofillHints.password],
+                        obscureText: true,
+                        autocorrect: false,
+                        decoration: textFieldDecoration(
+                            label: S.of(context).auth_password_placeholder),
+                        onChanged: (value) {
+                          context.read<AuthCubit>().onFocusChanged();
+                        },
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12, right: 12),
+                    ),
+                    SizedBox(
+                      height: state.status == AuthStatus.unauthorized ? 4 : 0,
+                    ),
+                    Center(
+                      child: Visibility(
+                        visible: state.status == AuthStatus.unauthorized,
                         child: Text(
-                          S.of(context).auth_divider,
-                          style: Theme.of(context).textTheme.subtitle1,
+                          S.of(context).auth_error,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline6
+                              ?.copyWith(color: WlColors.error),
                         ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: 1,
-                          color: WlColors.textColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (state.status == AuthStatus.loadingEmail ||
-                          state.status == AuthStatus.loadingAnonymously) {
-                        return;
-                      }
-                      _analytics.logEvent(
-                          name: Metric.eventAuthLoginAnonymously);
-                      context.read<AuthCubit>().loginAnonymously();
-                    },
-                    child: state.status == AuthStatus.loadingAnonymously
-                        ? const ButtonLoading()
-                        : Text(S.of(context).auth_anonymous),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(40.0),
-                    child: RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.headline5,
-                        children: [
-                          TextSpan(text: S.of(context).terms1),
-                          TextSpan(
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                launchUrl(Uri.parse(Constants.tcUrl));
-                              },
-                            text: S.of(context).terms_clickable,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                ?.copyWith(color: WlColors.primary),
-                          ),
-                        ],
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (state.status == AuthStatus.loadingEmail ||
+                            state.status == AuthStatus.loadingAnonymously) {
+                          return;
+                        }
+                        _analytics.logEvent(name: Metric.eventAuthLogin);
+                        context.read<AuthCubit>().login(
+                              _emailController.text,
+                              _passwordController.text,
+                            );
+                      },
+                      child: state.status == AuthStatus.loadingEmail
+                          ? const ButtonLoading()
+                          : Text(S.of(context).auth_login),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(Routes.register);
+                      },
+                      child: Text(S.of(context).auth_register),
+                    ),
+                    const SizedBox(
+                      height: 44,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 1,
+                            color: WlColors.textColor,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12, right: 12),
+                          child: Text(
+                            S.of(context).auth_divider,
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 1,
+                            color: WlColors.textColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (state.status == AuthStatus.loadingEmail ||
+                            state.status == AuthStatus.loadingAnonymously) {
+                          return;
+                        }
+                        _analytics.logEvent(
+                            name: Metric.eventAuthLoginAnonymously);
+                        context.read<AuthCubit>().loginAnonymously();
+                      },
+                      child: state.status == AuthStatus.loadingAnonymously
+                          ? const ButtonLoading()
+                          : Text(S.of(context).auth_anonymous),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(40.0),
+                      child: RichText(
+                        text: TextSpan(
+                          style: Theme.of(context).textTheme.headline5,
+                          children: [
+                            TextSpan(text: S.of(context).terms1),
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  launchUrl(Uri.parse(Constants.tcUrl));
+                                },
+                              text: S.of(context).terms_clickable,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  ?.copyWith(color: WlColors.primary),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
