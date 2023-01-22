@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>webcredentials:https://local-restaurants.ro</string>
+		<string>webcredentials:local-restaurants.ro</string>
 	</array>
 </dict>
 </plist>
