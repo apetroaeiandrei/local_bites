@@ -23,6 +23,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   setUserDetails(String name, String phoneNumber) async {
     final success = await _userRepo.setUserDetails(name, phoneNumber);
+    phoneNumber = phoneNumber.replaceAll(' ', '');
     emit(state.copyWith(
       status: success ? ProfileStatus.success : ProfileStatus.failure,
     ));

@@ -64,71 +64,75 @@ class _ProfileScreenState extends State<ProfileScreen> {
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(Dimens.defaultPadding),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 32),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.name,
-                        decoration: textFieldDecoration(
-                            label: S.of(context).profile_name,
-                            error: _nameError),
-                        controller: _nameController,
+                child: AutofillGroup(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 32),
+                        child: TextField(
+                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.name,
+                          autofillHints: const [AutofillHints.name],
+                          decoration: textFieldDecoration(
+                              label: S.of(context).profile_name,
+                              error: _nameError),
+                          controller: _nameController,
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 32),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.number,
-                        decoration: textFieldDecoration(
-                            label: S.of(context).profile_phone_number,
-                            error: _phoneError),
-                        controller: _phoneController,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 32),
+                        child: TextField(
+                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.phone,
+                          autofillHints: const [AutofillHints.telephoneNumber],
+                          decoration: textFieldDecoration(
+                              label: S.of(context).profile_phone_number,
+                              error: _phoneError),
+                          controller: _phoneController,
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (!validate()) {
-                          return;
-                        }
-                        context.read<ProfileCubit>().setUserDetails(
-                            _nameController.text, _phoneController.text);
-                      },
-                      child: Text(S.of(context).generic_save),
-                    ),
-                    const SizedBox(
-                      height: Dimens.defaultPadding,
-                    ),
-                    const Divider(),
-                    Text(
-                      S.of(context).profile_delete_account_headline,
-                      style: Theme.of(context).textTheme.headline3,
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Text(
-                      S.of(context).profile_delete_account_info,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                    const SizedBox(
-                      height: Dimens.defaultPadding,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<ProfileCubit>().deleteUser();
-                      },
-                      child: Text(S.of(context).profile_delete_account_button),
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 32,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (!validate()) {
+                            return;
+                          }
+                          context.read<ProfileCubit>().setUserDetails(
+                              _nameController.text, _phoneController.text);
+                        },
+                        child: Text(S.of(context).generic_save),
+                      ),
+                      const SizedBox(
+                        height: Dimens.defaultPadding,
+                      ),
+                      const Divider(),
+                      Text(
+                        S.of(context).profile_delete_account_headline,
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        S.of(context).profile_delete_account_info,
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      const SizedBox(
+                        height: Dimens.defaultPadding,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<ProfileCubit>().deleteUser();
+                        },
+                        child: Text(S.of(context).profile_delete_account_button),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -165,6 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   bool _isPhoneValid(String phone) {
     final phoneRegexp = RegExp(Constants.phoneRegex);
+    phone = phone.replaceAll(' ', '');
     if (phoneRegexp.hasMatch(phone)) {
       setState(() {
         _phoneError = null;
