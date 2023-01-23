@@ -100,18 +100,16 @@ class _AddressScreenState extends State<AddressScreen> {
                       TextField(
                         controller: _addressController,
                         decoration: InputDecoration(
-                          labelText: S.of(context).address_street_label,
-                          errorText: _addressError,
-                            errorMaxLines: 2
-                        ),
+                            labelText: S.of(context).address_street_label,
+                            errorText: _addressError,
+                            errorMaxLines: 2),
                       ),
                       TextField(
                         controller: _propertyController,
                         decoration: InputDecoration(
-                          labelText: S.of(context).address_property_label,
-                          errorText: _propertyDetailsError,
-                          errorMaxLines: 2
-                        ),
+                            labelText: S.of(context).address_property_label,
+                            errorText: _propertyDetailsError,
+                            errorMaxLines: 2),
                       ),
                       const Spacer(),
                       ElevatedButton(
@@ -163,6 +161,7 @@ class _AddressScreenState extends State<AddressScreen> {
         _propertyController.text = state.propertyDetails;
         break;
       case AddressStatus.streetSuccess:
+        _analytics.logEvent(name: Metric.eventAddressStreetSuccess);
         _addressController.text = state.street;
         setState(() {
           _addressError = null;
@@ -171,13 +170,14 @@ class _AddressScreenState extends State<AddressScreen> {
 
         break;
       case AddressStatus.streetError:
-        // TODO: Handle this case.
+        _analytics.logEvent(name: Metric.eventAddressStreetErrorBackend);
         break;
       case AddressStatus.saveSuccess:
+        _analytics.logEvent(name: Metric.eventAddressSaveSuccess);
         Navigator.of(context).pop();
         break;
       case AddressStatus.saveError:
-        // TODO: Handle this case.
+        _analytics.logEvent(name: Metric.eventAddressSaveError);
         break;
       case AddressStatus.locationChanged:
         _animateMapCamera(state.latitude, state.longitude);

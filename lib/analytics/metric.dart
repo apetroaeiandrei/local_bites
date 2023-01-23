@@ -60,8 +60,11 @@ abstract class Metric {
   static const String eventAddressPermissionGranted = "address_permission_granted";
   static const String eventAddressPermissionDenied = "address_permission_denied";
   static const String eventAddressPropertyError = "address_property_error";
+  static const String eventAddressStreetSuccess = "address_property_street_success";
   static const String eventAddressStreetError = "address_street_error";
-  static const String eventAddressOtherError = "address_other_error";
+  static const String eventAddressStreetErrorBackend = "address_street_error_backend";
+  static const String eventAddressSaveError = "address_save_error";
+  static const String eventAddressSaveSuccess = "address_save_success";
 
   static const String eventRestaurantInfoCall = "restaurant_info_call";
 }

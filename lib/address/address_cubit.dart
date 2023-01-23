@@ -28,17 +28,22 @@ class AddressCubit extends Cubit<AddressState> {
   }
 
   Future<void> onLocationChanged(LatLng coordinates) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        coordinates.latitude, coordinates.longitude);
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          coordinates.latitude, coordinates.longitude);
+      if (isClosed) return;
 
-    if (placemarks.isNotEmpty) {
-      emit(state.copyWith(
-        latitude: coordinates.latitude,
-        longitude: coordinates.longitude,
-        street: placemarks[0].street,
-        status: AddressStatus.streetSuccess,
-      ));
-    } else {
+      if (placemarks.isNotEmpty) {
+        emit(state.copyWith(
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
+          street: placemarks[0].street,
+          status: AddressStatus.streetSuccess,
+        ));
+      } else {
+        emit(state.copyWith(status: AddressStatus.streetError));
+      }
+    } catch (e) {
       emit(state.copyWith(status: AddressStatus.streetError));
     }
   }
@@ -54,6 +59,7 @@ class AddressCubit extends Cubit<AddressState> {
 
   Future<void> getCurrentLocation() async {
     final position = await Geolocator.getCurrentPosition();
+    if (isClosed) return;
     emit(state.copyWith(
       latitude: position.latitude,
       longitude: position.longitude,
