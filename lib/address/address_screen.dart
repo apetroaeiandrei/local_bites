@@ -141,6 +141,9 @@ class _AddressScreenState extends State<AddressScreen> {
 
   Future<void> _onLocationChanged() async {
     final GoogleMapController controller = await _controller.future;
+    if (_mapsKey.currentContext == null) {
+      return;
+    }
     final RenderBox renderBox =
         _mapsKey.currentContext?.findRenderObject() as RenderBox;
     final Size size = renderBox.size;
