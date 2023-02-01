@@ -64,6 +64,15 @@ class HomeScreenCard extends StatelessWidget {
                 ),
               ),
               Visibility(
+                visible: restaurant.open && restaurant.maxPromo > 0,
+                child: Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: _getPromoLabel(context),
+                ),
+              ),
+              Visibility(
                 visible: !restaurant.open,
                 child: Container(
                   decoration: const BoxDecoration(
@@ -103,11 +112,11 @@ class HomeScreenCard extends StatelessWidget {
     if (!restaurant.hasDelivery) {
       labelText = S.of(context).home_restaurant_pickup;
       labelColor = Theme.of(context).colorScheme.primary;
-    } else  {
+    } else {
       labelText = S.of(context).home_restaurant_delivery;
       labelColor = Theme.of(context).colorScheme.secondary;
     }
-    
+
     return Container(
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
@@ -118,6 +127,28 @@ class HomeScreenCard extends StatelessWidget {
         style: Theme.of(context).textTheme.headline6!.copyWith(
               color: Theme.of(context).colorScheme.onPrimary,
             ),
+      ),
+    );
+  }
+
+  Widget _getPromoLabel(BuildContext context) {
+    String labelText =
+        S.of(context).home_restaurant_products_promo(restaurant.maxPromo);
+    if (restaurant.hasMenuPromo) {
+      labelText = S.of(context).home_restaurant_menu_promo(restaurant.maxPromo);
+    }
+    return Container(
+      padding: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary,
+      ),
+      child: Center(
+        child: Text(
+          labelText,
+          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+        ),
       ),
     );
   }
