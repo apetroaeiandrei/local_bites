@@ -65,7 +65,7 @@ Future<void> main() async {
   final appStartDuration = finishTime.difference(startTime).inMilliseconds;
   analytics.logEventWithParams(name: Metric.eventAppStart, parameters: {
     Metric.propertyAppStartDuration: appStartDuration,
-    Metric.propertyAppStartLoggedIn: isLoggedIn,
+    Metric.propertyAppStartLoggedIn: isLoggedIn.toString(),
   });
 
   runApp(MultiRepositoryProvider(
