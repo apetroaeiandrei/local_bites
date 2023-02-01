@@ -83,7 +83,10 @@ class FoodCard extends StatelessWidget {
                               width: 20,
                             ),
                             Text(
-                              S.of(context).price_currency_ron(foodModel.price),
+                              S.of(context).price_currency_ron(
+                                  foodModel.discountedPrice > 0
+                                      ? foodModel.discountedPrice
+                                      : foodModel.price),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.headline5,
@@ -91,10 +94,43 @@ class FoodCard extends StatelessWidget {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 8, right: 70),
-                          child: Text(
-                            foodModel.description,
-                            style: Theme.of(context).textTheme.bodyText2,
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  foodModel.description,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Visibility(
+                                visible: foodModel.discountedPrice > 0,
+                                maintainSize: true,
+                                maintainAnimation: true,
+                                maintainState: true,
+                                child: Text(
+                                  S
+                                      .of(context)
+                                      .price_currency_ron(foodModel.price),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                          color:
+                                              Theme.of(context).disabledColor,
+                                          decoration:
+                                              TextDecoration.lineThrough),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
