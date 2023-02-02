@@ -88,6 +88,7 @@ class CartCubit extends Cubit<CartState> {
 
   void _refreshCart() {
     num amountToMinOrder = state.minOrder - _cartRepo.cartTotal;
+    amountToMinOrder = double.parse(amountToMinOrder.toStringAsFixed(2));
     num deliveryFee = amountToMinOrder <= 0 ? 0 : _deliveryZone.deliveryFee;
     emit(state.copyWith(
         cartCount: _cartRepo.cartCount,
@@ -102,7 +103,8 @@ class CartCubit extends Cubit<CartState> {
 
   bool _isNotMinimumOrder() {
     return _cartRepo.cartTotal < _deliveryZone.minimumOrder &&
-        _deliveryZone.deliveryFee == 0 || _cartRepo.cartTotal == 0;
+            _deliveryZone.deliveryFee == 0 ||
+        _cartRepo.cartTotal == 0;
   }
 
   _getDeliveryZones() async {
