@@ -27,18 +27,19 @@ class CartItem extends StatelessWidget {
           children: [
             Text(
               "${item.quantity} x",
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(width: 4),
             Expanded(
               child: Text(
                 item.food.name.toString(),
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
             Text(
-              S.of(context).price_currency_ron(item.price),
-              style: Theme.of(context).textTheme.headline4,
+              S.of(context).price_currency_ron(
+                  double.parse(item.price.toStringAsFixed(2))),
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),
@@ -49,7 +50,7 @@ class CartItem extends StatelessWidget {
               "${item.quantity} x",
               style: Theme.of(context)
                   .textTheme
-                  .headline4!
+                  .headlineMedium!
                   .copyWith(color: Colors.transparent),
             ),
             const SizedBox(width: 4),
