@@ -80,7 +80,7 @@ class HomeCubit extends Cubit<HomeState> {
   void _handleRestaurantsLoaded(DeliveryAddress address) {
     List<RestaurantModel> restaurants =
         _restaurantsRepo.restaurants.where((element) => element.open).toList();
-    restaurants.sort((a, b) => a.name.compareTo(b.name));
+    restaurants.sort((a, b) => b.maxPromo.compareTo(a.maxPromo));
     restaurants
         .addAll(_restaurantsRepo.restaurants.where((element) => !element.open));
 
