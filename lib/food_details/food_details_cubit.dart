@@ -9,20 +9,29 @@ import 'package:models/food_option_category.dart';
 part 'food_details_state.dart';
 
 class FoodDetailsCubit extends Cubit<FoodDetailsState> {
-  FoodDetailsCubit(this._restaurantsRepo, this._cartRepo, FoodModel foodModel)
+  FoodDetailsCubit(this._restaurantsRepo, this._cartRepo, this._foodModel)
       : super(FoodDetailsState(
-            food: foodModel,
+            food: _foodModel,
             options: const [],
             selectedOptions: const {},
             invalidOptions: const {},
-            price: foodModel.price,
+            price: _foodModel.discountedPrice > 0
+                ? _foodModel.discountedPrice
+                : _foodModel.price,
             quantity: 1,
             status: FoodDetailsStatus.loading)) {
     _init();
   }
 
+  final FoodModel _foodModel;
   final CartRepo _cartRepo;
   final RestaurantsRepo _restaurantsRepo;
+
+  double get foodPrice {
+    return _foodModel.discountedPrice > 0
+        ? _foodModel.discountedPrice
+        : _foodModel.price;
+  }
 
   void _init() async {
     final optionCategories =
@@ -85,12 +94,14 @@ class FoodDetailsCubit extends Cubit<FoodDetailsState> {
   }
 
   void incrementQuantity() {
-    final newPrice = state.price / state.quantity * (state.quantity + 1);
+    double newPrice = state.price / state.quantity * (state.quantity + 1);
+    newPrice = double.parse(newPrice.toStringAsFixed(2));
     emit(state.copyWith(quantity: state.quantity + 1, price: newPrice));
   }
 
   void decrementQuantity() {
-    final newPrice = state.price / state.quantity * (state.quantity - 1);
+    double newPrice = state.price / state.quantity * (state.quantity - 1);
+    newPrice = double.parse(newPrice.toStringAsFixed(2));
     emit(state.copyWith(quantity: state.quantity - 1, price: newPrice));
   }
 

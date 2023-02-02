@@ -129,10 +129,32 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                         padding: const EdgeInsets.only(
                             left: Dimens.defaultPadding,
                             top: Dimens.defaultPadding,
-                            bottom: 12),
+                            bottom: 4),
                         child: Text(
-                          S.of(context).price_currency_ron(state.food.price),
+                          S.of(context).price_currency_ron(
+                              state.food.discountedPrice > 0
+                                  ? state.food.discountedPrice
+                                  : state.food.price),
                           style: Theme.of(context).textTheme.headline3,
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: Dimens.defaultPadding),
+                        child: Visibility(
+                          visible: state.food.discountedPrice > 0,
+                          maintainSize: true,
+                          maintainAnimation: true,
+                          maintainState: true,
+                          child: Text(
+                            S.of(context).price_currency_ron(state.food.price),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4!
+                                .copyWith(
+                                    color: Theme.of(context).disabledColor,
+                                    decoration: TextDecoration.lineThrough),
+                          ),
                         ),
                       ),
                       ..._getOptions(state),
