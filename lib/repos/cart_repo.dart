@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:models/food_model.dart';
 import 'package:models/food_order.dart';
-import 'package:models/order.dart'as o;
+import 'package:models/order.dart' as o;
 import 'package:models/order_status.dart';
 import 'package:collection/collection.dart';
 
@@ -60,8 +60,12 @@ class CartRepo {
   get cartCount =>
       _foodOrders.fold<int>(0, (sum, element) => sum + element.quantity);
 
-  get cartTotal =>
-      _foodOrders.fold<double>(0, (sum, element) => sum + element.price);
+  get cartTotal {
+    double total =
+        _foodOrders.fold<double>(0, (sum, element) => sum + element.price);
+    total = double.parse(total.toStringAsFixed(2));
+    return total;
+  }
 
   List<FoodOrder> get cartItems {
     final sortedFoods = List<FoodOrder>.from(_foodOrders);
@@ -105,8 +109,7 @@ class CartRepo {
       phoneNumber: user.phoneNumber,
       number: Random().nextInt(1000).toString(),
       totalProducts: cartTotal,
-      total: cartTotal + (isDelivery ? deliveryFee : 0
-      ),
+      total: cartTotal + (isDelivery ? deliveryFee : 0),
     );
     await orderDoc.set(order.toMap());
     clearCart();
