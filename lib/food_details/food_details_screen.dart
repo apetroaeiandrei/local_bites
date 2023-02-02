@@ -113,7 +113,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                             top: Dimens.defaultPadding),
                         child: Text(
                           state.food.name,
-                          style: Theme.of(context).textTheme.headline2,
+                          style: Theme.of(context).textTheme.displayMedium,
                         ),
                       ),
                       Padding(
@@ -122,7 +122,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                             top: Dimens.defaultPadding),
                         child: Text(
                           state.food.description,
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ),
                       Padding(
@@ -135,7 +135,14 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                               state.food.discountedPrice > 0
                                   ? state.food.discountedPrice
                                   : state.food.price),
-                          style: Theme.of(context).textTheme.headline3,
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall
+                              ?.copyWith(
+                                color: state.food.discountedPrice > 0
+                                    ? Theme.of(context).colorScheme.primary
+                                    : null,
+                              ),
                         ),
                       ),
                       Padding(
@@ -150,7 +157,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                             S.of(context).price_currency_ron(state.food.price),
                             style: Theme.of(context)
                                 .textTheme
-                                .headline4!
+                                .headlineMedium!
                                 .copyWith(
                                     color: Theme.of(context).disabledColor,
                                     decoration: TextDecoration.lineThrough),
@@ -201,7 +208,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
           children: [
             Text(
               e.name,
-              style: Theme.of(context).textTheme.headline2,
+              style: Theme.of(context).textTheme.displayMedium,
             ),
             const SizedBox(
               height: 4,
@@ -210,7 +217,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
               S
                   .of(context)
                   .food_details_min_max(e.minSelection, e.maxSelection),
-              style: Theme.of(context).textTheme.headline5?.copyWith(
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: state.invalidOptions.contains(e)
                       ? WlColors.error
                       : WlColors.secondary),
@@ -229,14 +236,14 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
         Expanded(
           child: Text(
             option.name,
-            style: Theme.of(context).textTheme.subtitle1,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
         const SizedBox(
           width: 4,
         ),
         Text(S.of(context).food_option_price_extra(option.price),
-            style: Theme.of(context).textTheme.subtitle2),
+            style: Theme.of(context).textTheme.titleSmall),
         IconButton(
           icon: Icon(selected ? Icons.check_circle : Icons.add),
           onPressed: () {
@@ -266,7 +273,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
         ),
         Text(
           state.quantity.toString(),
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.displayMedium,
         ),
         IconButton(
           icon: const Icon(Icons.add),
