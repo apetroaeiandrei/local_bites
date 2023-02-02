@@ -89,7 +89,15 @@ class FoodCard extends StatelessWidget {
                                       : foodModel.price),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.headline5,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                      color: foodModel.discountedPrice > 0
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                          : null),
                             ),
                           ],
                         ),
@@ -122,7 +130,7 @@ class FoodCard extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline5!
+                                      .headlineSmall!
                                       .copyWith(
                                           color:
                                               Theme.of(context).disabledColor,
