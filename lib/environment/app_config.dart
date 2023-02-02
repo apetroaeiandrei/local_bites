@@ -1,6 +1,7 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:local/environment/prod_firebase_options.dart';
@@ -22,6 +23,7 @@ class AppConfig {
     );
     await _initAppCheck(flavor == flavorProd);
     _initCrashlytics();
+   // await _initFCM();
   }
 
   static _initAppCheck(bool isProd) async {
@@ -42,4 +44,51 @@ class AppConfig {
       return true;
     };
   }
+
+  static _initFCM() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: false,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    String? token = await messaging.getToken();
+    print('User granted permission: ${settings.authorizationStatus}');
+    print('FCM TOKEN: $token');
+
+    await messaging.setForegroundNotificationPresentationOptions(
+      alert: true, // Required to display a heads up notification
+      badge: true,
+      sound: true,
+    );
+
+    // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   print('Got a message whilst in the foreground!');
+    //   print('Message data: ${message.data}');
+    //
+    //   if (message.notification != null) {
+    //     print('Message also contained a notification: ${message.notification}');
+    //   }
+    // });
+
+    //todo: remove this
+    // subscribe to topic on each app start-up
+    //await FirebaseMessaging.instance.subscribeToTopic('weather');
+    //await FirebaseMessaging.instance.unsubscribeFromTopic('weather');
+
+  }
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
 }
