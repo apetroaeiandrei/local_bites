@@ -156,6 +156,9 @@ class HomeCubit extends Cubit<HomeState> {
   //region Notifications
   Future<void> _checkNotificationsPermissions() async {
     var permissionGranted = await Permission.notification.isGranted;
+    if (permissionGranted) {
+      onWantNotificationsClick();
+    }
     emit(state.copyWith(showNotificationsPrompt: !permissionGranted));
   }
 
