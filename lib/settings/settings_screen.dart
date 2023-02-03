@@ -42,7 +42,7 @@ class SettingsScreen extends StatelessWidget {
                       bottom: Dimens.defaultPadding,
                     ),
                     child: Text(S.of(context).settings_welcome(state.name),
-                        style: Theme.of(context).textTheme.headline2),
+                        style: Theme.of(context).textTheme.displayMedium),
                   ),
                   CustomMenuItem(
                       name: S.of(context).settings_profile,
@@ -50,6 +50,16 @@ class SettingsScreen extends StatelessWidget {
                         _analytics.setCurrentScreen(screenName: Routes.profile);
                         Navigator.of(context).pushNamed(Routes.profile).then(
                             (value) => _analytics.setCurrentScreen(
+                                screenName: Routes.settings));
+                      }),
+                  CustomMenuItem(
+                      name: S.of(context).settings_notifications,
+                      onTap: () {
+                        _analytics.setCurrentScreen(
+                            screenName: Routes.notifications);
+                        Navigator.of(context)
+                            .pushNamed(Routes.notifications)
+                            .then((value) => _analytics.setCurrentScreen(
                                 screenName: Routes.settings));
                       }),
                   CustomMenuItem(

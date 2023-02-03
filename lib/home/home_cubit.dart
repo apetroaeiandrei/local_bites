@@ -2,20 +2,16 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:local/analytics/analytics.dart';
-import 'package:local/environment/app_config.dart';
 import 'package:local/repos/cart_repo.dart';
+import 'package:local/repos/notifications_repo.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:models/delivery_address.dart';
 import 'package:models/restaurant_model.dart';
 import 'package:models/user_order.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../analytics/metric.dart';
 import '../routes.dart';
@@ -23,9 +19,14 @@ import '../routes.dart';
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit(this._userRepo, this._restaurantsRepo, this._ordersRepo,
-      this._cartRepo, this._analytics)
-      : super(const HomeState(
+  HomeCubit(
+    this._userRepo,
+    this._restaurantsRepo,
+    this._ordersRepo,
+    this._cartRepo,
+    this._notificationsRepo,
+    this._analytics,
+  ) : super(const HomeState(
             status: HomeStatus.initial,
             restaurants: [],
             currentOrders: [],
@@ -38,6 +39,7 @@ class HomeCubit extends Cubit<HomeState> {
   final RestaurantsRepo _restaurantsRepo;
   final OrdersRepo _ordersRepo;
   final CartRepo _cartRepo;
+  final NotificationsRepo _notificationsRepo;
   final Analytics _analytics;
   StreamSubscription? _currentOrderSubscription;
   StreamSubscription? _restaurantsSubscription;
@@ -155,7 +157,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   //region Notifications
   Future<void> _checkNotificationsPermissions() async {
-    var permissionGranted = await Permission.notification.isGranted;
+    final permissionGranted =
+        await _notificationsRepo.areNotificationsEnabled();
     if (permissionGranted) {
       onWantNotificationsClick();
     }
@@ -163,18 +166,9 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void onWantNotificationsClick() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: false,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    final notificationsAllowed =
+        await _notificationsRepo.registerNotifications();
+    if (notificationsAllowed) {
       _analytics.logEvent(name: Metric.eventFCMPermissionGranted);
       emit(state.copyWith(showNotificationsPrompt: false));
     } else {
@@ -185,22 +179,6 @@ class HomeCubit extends Cubit<HomeState> {
         emit(state.copyWith(status: currentStatus));
       });
       return;
-    }
-
-    await messaging.setForegroundNotificationPresentationOptions(
-      alert: true, // Required to display a heads up notification
-      badge: false,
-      sound: true,
-    );
-
-    //todo refactor this
-    if (!AppConfig.isProd) {
-      String? token = await messaging.getToken();
-      String? userID = FirebaseAuth.instance.currentUser?.uid;
-      FirebaseFirestore.instance
-          .collection('tokens')
-          .doc(userID)
-          .set({'token': token});
     }
   }
 //endregion

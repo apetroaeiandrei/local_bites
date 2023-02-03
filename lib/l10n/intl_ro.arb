@@ -56,6 +56,7 @@
   "settings_profile": "Profil",
   "settings_orders": "Comenzile tale",
   "settings_terms": "Termeni și condiții",
+  "settings_notifications": "Notificări",
 
   "address_title": "Adresa ta",
   "address_street_label": "Strada și numarul",
@@ -138,5 +139,11 @@
   "restaurant_banner_paid_delivery_under_min_order": "Taxă livrare: {delivery_fee} RON. Livrare gratuită pentru comenzi de minim {min} RON",
 
   "cart_banner_free_delivery_min_order": "Acest restaurant acceptă comenzi de minim {min} RON",
-  "cart_banner_paid_delivery_under_min_order": "Mai adaugă produse în valoare de {amount} RON pentru livrare gratuită"
+  "cart_banner_paid_delivery_under_min_order": "Mai adaugă produse în valoare de {amount} RON pentru livrare gratuită",
+
+  "notifications_title" : "Notificări",
+  "notifications_description" : "Gestionează preferințele tale în ceea ce privește notificările.",
+  "notifications_banner_permission_denied" : "Notificările sunt dezactivate din setările aplicației.\n\nActiveză-le acum!",
+  "notifications_promo_title" : "Reduceri și promoții",
+  "notifications_promo_description" : "Primești notificări cu reduceri și promoții de la restaurantele din orașul tău."
 }

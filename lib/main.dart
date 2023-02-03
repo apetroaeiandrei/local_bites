@@ -18,6 +18,7 @@ import 'package:local/home/home_screen.dart';
 import 'package:local/profile/profile_screen.dart';
 import 'package:local/repos/auth_repo.dart';
 import 'package:local/repos/cart_repo.dart';
+import 'package:local/repos/notifications_repo.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
@@ -26,6 +27,8 @@ import 'package:local/restaurant/info/restaurant_info_screen.dart';
 import 'package:local/restaurant/restaurant_cubit.dart';
 import 'package:local/restaurant/restaurant_screen.dart';
 import 'package:local/routes.dart';
+import 'package:local/settings/notifications/notifications_cubit.dart';
+import 'package:local/settings/notifications/notifications_screen.dart';
 import 'package:local/settings/settings_cubit.dart';
 import 'package:local/settings/settings_screen.dart';
 import 'package:local/theme/theme.dart';
@@ -88,6 +91,9 @@ Future<void> main() async {
       RepositoryProvider<OrdersRepo>(
         create: (context) => ordersRepo,
       ),
+      RepositoryProvider<NotificationsRepo>(
+        create: (context) => NotificationsRepo(),
+      ),
     ],
     child: MyApp(
       isLoggedIn: isLoggedIn,
@@ -141,6 +147,7 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<RestaurantsRepo>(context),
                 RepositoryProvider.of<OrdersRepo>(context),
                 RepositoryProvider.of<CartRepo>(context),
+                RepositoryProvider.of<NotificationsRepo>(context),
                 RepositoryProvider.of<Analytics>(context),
               ),
               child: const HomeScreen(),
@@ -178,6 +185,12 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<RestaurantsRepo>(context),
               ),
               child: const RestaurantInfoScreen(),
+            ),
+        Routes.notifications: (context) => BlocProvider<NotificationsCubit>(
+              create: (context) => NotificationsCubit(
+                RepositoryProvider.of<NotificationsRepo>(context),
+              ),
+              child: const NotificationsScreen(),
             ),
       },
       onGenerateRoute: (settings) {
@@ -300,7 +313,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),

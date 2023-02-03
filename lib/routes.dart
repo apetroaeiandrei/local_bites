@@ -11,6 +11,7 @@ abstract class Routes {
 
   static const settings = '/settings';
   static const address = '/address';
+  static const notifications = '/settings/notifications';
 
   static const String cart = '/cart';
   static const String mentions = "/cart/mentions";
