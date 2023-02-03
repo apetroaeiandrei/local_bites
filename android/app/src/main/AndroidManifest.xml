@@ -33,6 +33,9 @@
             android:value="2" />
        <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="YOUR_MAPS_API_KEY"/>
+       <meta-data
+           android:name="com.google.firebase.messaging.default_notification_icon"
+           android:resource="@mipmap/ic_launcher_foreground" />
     </application>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- Provide required visibility configuration for API level 30 and above -->
