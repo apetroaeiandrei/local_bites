@@ -44,6 +44,11 @@
   "home_restaurant_delivery" : "Livrează",
   "home_restaurant_menu_promo" : "Reducere {discount}% la tot meniul",
   "home_restaurant_products_promo" : "Reducere {discount}% la produsele selectate",
+  "home_notifications_banner" : "Vreau să primesc notificări cu reduceri și oferte speciale!",
+  "home_notifications_dialog_title" : "Notificări",
+  "home_notifications_dialog_content" : "Pentru a primi notificări trebuie să activezi notificările pentru aplicație din setările telefonului.",
+  "home_notifications_dialog_cancel" : "Renunță",
+  "home_notifications_dialog_ok" : "Activează",
 
   "settings_title": "Setări",
   "settings_welcome": "Salut, {name}!",

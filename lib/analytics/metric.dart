@@ -67,4 +67,9 @@ abstract class Metric {
   static const String eventAddressSaveSuccess = "address_save_success";
 
   static const String eventRestaurantInfoCall = "restaurant_info_call";
+
+  static const String eventFCMPermissionGranted = "fcm_permission_granted";
+  static const String eventFCMPermissionDenied = "fcm_permission_denied";
+  static const String eventNotificationsDialogCancel = "fcm_settings_dialog_cancel";
+  static const String eventNotificationsDialogConfirm = "fcm_settings_dialog_confirm";
 }

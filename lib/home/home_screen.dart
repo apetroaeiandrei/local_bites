@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,6 +67,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             break;
           case HomeStatus.addressError:
             _showAddressScreen(context);
+            break;
+          case HomeStatus.showSettingsNotification:
+            _showNotificationSettingsDialog();
             break;
         }
       },
@@ -139,12 +143,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           body: state.restaurants.isEmpty
               ? _getEmptyRestaurants(state)
               : ListView.builder(
-                  itemCount: state.restaurants.length + 1,
+                  shrinkWrap: true,
+                  itemCount: state.restaurants.length +
+                      (state.showNotificationsPrompt ? 2 : 1),
                   itemBuilder: (context, index) {
                     if (index == 0) {
                       return _getAddressZone(context, state);
-                    } else {
+                    } else if (index == 1) {
                       return _getRestaurantCard(context, state, index - 1);
+                    } else if (index == 2 && state.showNotificationsPrompt) {
+                      return _getNotificationsBanner();
+                    } else {
+                      return _getRestaurantCard(context, state,
+                          index - (state.showNotificationsPrompt ? 2 : 1));
                     }
                   }),
         );
@@ -164,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             child: Text(
               S.of(context).home_restaurants_empty,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           )
         ],
@@ -185,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             children: [
               Text(
                 state.address ?? S.of(context).home_address_empty,
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
@@ -272,5 +283,59 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     Navigator.of(context)
         .pushNamed(Routes.address)
         .then((value) => context.read<HomeCubit>().init());
+  }
+
+  Widget _getNotificationsBanner() {
+    return InkWell(
+      onTap: () {
+        context.read<HomeCubit>().onWantNotificationsClick();
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(
+          horizontal: 14,
+        ),
+        padding: const EdgeInsets.all(30.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(Dimens.cardCornerRadius),
+          color: Theme.of(context).colorScheme.secondary,
+        ),
+        child: Center(
+          child: Text(
+            S.of(context).home_notifications_banner,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _showNotificationSettingsDialog() {
+    final List<Widget> actions = [
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          _analytics.logEvent(name: Metric.eventNotificationsDialogCancel);
+        },
+        child: Text(S.of(context).home_notifications_dialog_cancel),
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          _analytics.logEvent(name: Metric.eventNotificationsDialogConfirm);
+          AppSettings.openNotificationSettings();
+        },
+        child: Text(S.of(context).home_notifications_dialog_ok),
+      ),
+    ];
+
+    showPlatformDialog(
+      context: context,
+      title: S.of(context).home_notifications_dialog_title,
+      content: S.of(context).home_notifications_dialog_content,
+      actions: actions,
+    );
   }
 }

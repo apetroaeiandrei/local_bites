@@ -41,7 +41,9 @@ post_install do |installer|
     config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
     '$(inherited)',
      ## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
-    'PERMISSION_LOCATION=1'
+    'PERMISSION_LOCATION=1',
+     ## dart: PermissionGroup.notification
+    'PERMISSION_NOTIFICATIONS=1',
     ]
     end
   end

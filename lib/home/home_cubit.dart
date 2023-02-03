@@ -2,8 +2,12 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:local/analytics/analytics.dart';
+import 'package:local/environment/app_config.dart';
 import 'package:local/repos/cart_repo.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
@@ -11,6 +15,7 @@ import 'package:local/repos/user_repo.dart';
 import 'package:models/delivery_address.dart';
 import 'package:models/restaurant_model.dart';
 import 'package:models/user_order.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../analytics/metric.dart';
 import '../routes.dart';
@@ -24,7 +29,8 @@ class HomeCubit extends Cubit<HomeState> {
             status: HomeStatus.initial,
             restaurants: [],
             currentOrders: [],
-            showCurrentOrder: false)) {
+            showCurrentOrder: false,
+            showNotificationsPrompt: false)) {
     init();
   }
 
@@ -75,6 +81,7 @@ class HomeCubit extends Cubit<HomeState> {
           currentOrders: orders, showCurrentOrder: orders.isNotEmpty));
     });
     _ordersRepo.listenForOrderInProgress();
+    _checkNotificationsPermissions();
   }
 
   void _handleRestaurantsLoaded(DeliveryAddress address) {
@@ -145,4 +152,53 @@ class HomeCubit extends Cubit<HomeState> {
       init();
     }
   }
+
+  //region Notifications
+  Future<void> _checkNotificationsPermissions() async {
+    var permissionGranted = await Permission.notification.isGranted;
+    emit(state.copyWith(showNotificationsPrompt: !permissionGranted));
+  }
+
+  void onWantNotificationsClick() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: false,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      _analytics.logEvent(name: Metric.eventFCMPermissionGranted);
+      emit(state.copyWith(showNotificationsPrompt: false));
+    } else {
+      _analytics.logEvent(name: Metric.eventFCMPermissionDenied);
+      final currentStatus = state.status;
+      emit(state.copyWith(status: HomeStatus.showSettingsNotification));
+      Future.delayed(const Duration(milliseconds: 20), () {
+        emit(state.copyWith(status: currentStatus));
+      });
+      return;
+    }
+
+    await messaging.setForegroundNotificationPresentationOptions(
+      alert: true, // Required to display a heads up notification
+      badge: false,
+      sound: true,
+    );
+
+    //todo refactor this
+    if (!AppConfig.isProd) {
+      String? token = await messaging.getToken();
+      String? userID = FirebaseAuth.instance.currentUser?.uid;
+      FirebaseFirestore.instance
+          .collection('tokens')
+          .doc(userID)
+          .set({'token': token});
+    }
+  }
+//endregion
 }
