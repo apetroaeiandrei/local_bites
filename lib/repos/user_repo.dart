@@ -56,7 +56,7 @@ class UserRepo {
       await _firestore
           .collection(_collectionUsers)
           .doc(_auth.currentUser?.uid)
-          .set(properties);
+          .update(properties);
       _user = LocalUser.fromMap(properties);
       return true;
     } on Exception catch (e) {
