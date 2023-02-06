@@ -3,12 +3,15 @@ import 'package:equatable/equatable.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:local/analytics/analytics.dart';
 import 'package:local/repos/user_repo.dart';
+
+import '../analytics/metric.dart';
 
 part 'address_state.dart';
 
 class AddressCubit extends Cubit<AddressState> {
-  AddressCubit(this._userRepo)
+  AddressCubit(this._userRepo, this._analytics)
       : super(AddressState(
           status: AddressStatus.initial,
           street: _userRepo.address?.street ?? '',
@@ -20,6 +23,7 @@ class AddressCubit extends Cubit<AddressState> {
   }
 
   final UserRepo _userRepo;
+  final Analytics _analytics;
 
   _init() {
     Future.delayed(const Duration(milliseconds: 10), () {
@@ -58,12 +62,16 @@ class AddressCubit extends Cubit<AddressState> {
   }
 
   Future<void> getCurrentLocation() async {
-    final position = await Geolocator.getCurrentPosition();
-    if (isClosed) return;
-    emit(state.copyWith(
-      latitude: position.latitude,
-      longitude: position.longitude,
-      status: AddressStatus.locationChanged,
-    ));
+    try {
+      final position = await Geolocator.getCurrentPosition();
+      if (isClosed) return;
+      emit(state.copyWith(
+        latitude: position.latitude,
+        longitude: position.longitude,
+        status: AddressStatus.locationChanged,
+      ));
+    } catch (e) {
+      _analytics.logEvent(name: Metric.eventAddressLocationError);
+    }
   }
 }

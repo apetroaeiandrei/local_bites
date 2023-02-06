@@ -163,6 +163,7 @@ class MyApp extends StatelessWidget {
         Routes.address: (context) => BlocProvider<AddressCubit>(
               create: (context) => AddressCubit(
                 RepositoryProvider.of<UserRepo>(context),
+                RepositoryProvider.of<Analytics>(context),
               ),
               child: const AddressScreen(),
             ),

@@ -65,6 +65,7 @@ abstract class Metric {
   static const String eventAddressStreetErrorBackend = "address_street_error_backend";
   static const String eventAddressSaveError = "address_save_error";
   static const String eventAddressSaveSuccess = "address_save_success";
+  static const String eventAddressLocationError = "address_current_location_error";
 
   static const String eventRestaurantInfoCall = "restaurant_info_call";
 
