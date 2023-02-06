@@ -27,10 +27,6 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           return Scaffold(
             appBar: AppBar(
               title: Text(state.name),
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(48),
-                child: _getDeliveryAndMinOrderInfo(state)
-              ),
               actions: [
                 IconButton(
                   icon: const Icon(Icons.info_outline),
@@ -61,7 +57,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                             child: Text(
                               state.categories[index].category.name
                                   .toUpperCase(),
-                              style: Theme.of(context).textTheme.headline3,
+                              style: Theme.of(context).textTheme.displaySmall,
                             ),
                           ),
                           ...getFoodsInCategory(state.categories[index]),
@@ -115,35 +111,6 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         child: FoodCard(
           foodModel: food,
         ),
-      ),
-    );
-  }
-
-  Widget _getDeliveryAndMinOrderInfo(RestaurantState state) {
-    String infoText = "";
-    if (state.deliveryFee == 0) {
-      infoText = S
-          .of(context)
-          .restaurant_banner_free_delivery_min_order(state.minimumOrder);
-    } else {
-      infoText = S.of(context).restaurant_banner_paid_delivery_under_min_order(
-          state.deliveryFee, state.minimumOrder);
-    }
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Icon(Icons.info),
-          const SizedBox(width: 8,),
-          Expanded(
-            child: Text(
-              infoText,
-              style: Theme.of(context).textTheme.subtitle2,
-            ),
-          ),
-        ],
       ),
     );
   }
