@@ -67,6 +67,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   }
 
   _refreshFoodsContent() {
+    if (isClosed) return;
     final categories = _restaurantsRepo.getCategoriesContent();
     final categoriesContent = categories.map((category) {
       final foods = _restaurantsRepo.getFoodsByCategory(category.id);
