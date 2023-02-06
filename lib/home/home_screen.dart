@@ -280,9 +280,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   void _showAddressScreen(BuildContext context) {
-    Navigator.of(context)
-        .pushNamed(Routes.address)
-        .then((value) => context.read<HomeCubit>().init());
+    Navigator.of(context).pushNamed(Routes.address).then((value) {
+      context.read<HomeCubit>().init();
+    });
   }
 
   Widget _getNotificationsBanner() {

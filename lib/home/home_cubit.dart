@@ -56,9 +56,6 @@ class HomeCubit extends Cubit<HomeState> {
     if (address == null) {
       _analytics.setCurrentScreen(screenName: Routes.address);
       emit(state.copyWith(status: HomeStatus.addressError));
-      Future.delayed(const Duration(milliseconds: 10), () {
-        emit(state.copyWith(status: HomeStatus.initial));
-      });
       return;
     }
 
@@ -86,7 +83,6 @@ class HomeCubit extends Cubit<HomeState> {
           currentOrders: orders, showCurrentOrder: orders.isNotEmpty));
     });
     _ordersRepo.listenForOrderInProgress();
-    _checkNotificationsPermissions();
   }
 
   void _handleRestaurantsLoaded(DeliveryAddress address) {
@@ -108,6 +104,7 @@ class HomeCubit extends Cubit<HomeState> {
       restaurants: restaurants,
       address: address.street,
     ));
+    _checkNotificationsPermissions();
   }
 
   @override
