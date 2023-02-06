@@ -100,6 +100,8 @@ class RestaurantsRepo {
       _restaurants
           .addAll(_filterByMaxRadius(latitude, longitude, allRestaurants));
       _restaurantsController.add(List.of(_restaurants));
+    }, onError: (error) {
+      print("FIREBASE LISTEN ERROR:" + error);
     });
   }
 
@@ -202,13 +204,13 @@ class RestaurantsRepo {
     _selectedRestaurant = restaurant;
   }
 
-  cancelSubscriptions() {
-    _currentRestaurantSubscription?.cancel();
+  cancelSubscriptions() async {
+    await _currentRestaurantSubscription?.cancel();
     _currentRestaurantSubscription = null;
   }
 
-  cancelAllRestaurantsSubscriptions() {
-    _restaurantsSubscription?.cancel();
+  cancelAllRestaurantsSubscriptions() async {
+    await _restaurantsSubscription?.cancel();
     _restaurantsSubscription = null;
   }
 }

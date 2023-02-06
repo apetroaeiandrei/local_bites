@@ -10,6 +10,7 @@ class OrdersRepo {
   static const _collectionUsers = "users";
   static const _collectionRestaurants = "restaurants";
   StreamSubscription? _orderSubscription;
+
   OrdersRepo._privateConstructor();
 
   static OrdersRepo? _instance;
@@ -23,13 +24,14 @@ class OrdersRepo {
   final StreamController<List<UserOrder>> _currentOrderController =
       StreamController<List<UserOrder>>.broadcast();
 
-  listenForOrderInProgress() {
+  listenForOrderInProgress() async {
+    await stopListeningForOrderInProgress();
     final query = _firestore
         .collection(_collectionUsers)
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection(_collectionOrders)
         .where("settled", isEqualTo: false);
-    query.snapshots().listen((ordersSnapshot) {
+    _orderSubscription = query.snapshots().listen((ordersSnapshot) {
       _handleChangedOrder(ordersSnapshot);
     });
   }
@@ -69,7 +71,8 @@ class OrdersRepo {
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection(_collectionOrders)
         .get();
-    final orders = snapshot.docs.map((e) => UserOrder.fromMap(e.data())).toList();
+    final orders =
+        snapshot.docs.map((e) => UserOrder.fromMap(e.data())).toList();
     orders.sort((a, b) => b.date.compareTo(a.date));
     return orders;
   }
@@ -84,7 +87,8 @@ class OrdersRepo {
         .update({"settled": true});
   }
 
-  void stopListeningForOrderInProgress() {
-    _orderSubscription?.cancel();
+  Future<void> stopListeningForOrderInProgress() async {
+    await _orderSubscription?.cancel();
+    _orderSubscription = null;
   }
 }

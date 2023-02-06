@@ -89,8 +89,8 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   }
 
   @override
-  Future<void> close() {
-    _restaurantsRepo.cancelSubscriptions();
+  Future<void> close() async {
+    await _restaurantsRepo.cancelSubscriptions();
     return super.close();
   }
 }

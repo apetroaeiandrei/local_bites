@@ -56,8 +56,9 @@ Future<void> main() async {
 
   final analytics = Analytics();
   final authRepo = AuthRepo();
-  final userRepo = UserRepo();
+  final restaurantsRepo = RestaurantsRepo();
   final ordersRepo = OrdersRepo();
+  final userRepo = UserRepo(restaurantsRepo, ordersRepo);
   final isLoggedIn = await authRepo.isLoggedIn();
 
   if (isLoggedIn) {
@@ -83,7 +84,7 @@ Future<void> main() async {
         create: (context) => userRepo,
       ),
       RepositoryProvider<RestaurantsRepo>(
-        create: (context) => RestaurantsRepo(),
+        create: (context) => restaurantsRepo,
       ),
       RepositoryProvider<CartRepo>(
         create: (context) => CartRepo(userRepo),
