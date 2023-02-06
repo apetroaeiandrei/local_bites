@@ -124,7 +124,7 @@ class RestaurantsRepo {
         await _getRestaurantDoc().collection(_collectionCategories).get();
     final restaurant = await _getRestaurantDoc().get();
     final categoriesOrder =
-        List<String>.from(restaurant.data()![_propertyCategoriesOrder]);
+        List<String>.from(restaurant.data()![_propertyCategoriesOrder] ?? []);
     final result = categories.docs
         .map((e) => FoodCategoryModel.fromMap(e.data()))
         .toList();
