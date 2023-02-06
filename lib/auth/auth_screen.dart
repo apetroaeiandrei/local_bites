@@ -8,18 +8,32 @@ import 'package:local/widgets/button_loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../constants.dart';
+import '../environment/app_config.dart';
 import '../generated/l10n.dart';
 import '../routes.dart';
 import '../theme/decorations.dart';
 import '../theme/dimens.dart';
+import '../widgets/dialog_utils.dart';
 import 'auth_cubit.dart';
 import 'auth_status.dart';
 
-class AuthScreen extends StatelessWidget {
-  AuthScreen({Key? key}) : super(key: key);
+class AuthScreen extends StatefulWidget {
+  const AuthScreen({Key? key}) : super(key: key);
+
+  @override
+  State<AuthScreen> createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _analytics = Analytics();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAppVersion();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -209,5 +223,13 @@ class AuthScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  _checkAppVersion() async {
+    final versionMessage = await AppConfig.checkAppVersion();
+    if (versionMessage != null) {
+      _analytics.logEvent(name: Metric.eventAppVersionDialog);
+      showAppVersionDialog(context: context, message: versionMessage);
+    }
   }
 }

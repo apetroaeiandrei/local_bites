@@ -73,4 +73,6 @@ abstract class Metric {
   static const String eventFCMPermissionDenied = "fcm_permission_denied";
   static const String eventNotificationsDialogCancel = "fcm_settings_dialog_cancel";
   static const String eventNotificationsDialogConfirm = "fcm_settings_dialog_confirm";
+
+  static const String eventAppVersionDialog = "app_version_dialog";
 }

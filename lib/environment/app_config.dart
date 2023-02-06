@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:local/environment/prod_firebase_options.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'dev_firebase_options.dart';
 
@@ -43,5 +45,16 @@ class AppConfig {
       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
       return true;
     };
+  }
+
+  static Future<String?> checkAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final appVersion = await FirebaseFirestore.instance.collection("version").doc("app").get();
+    final firebaseVersionCode = appVersion.data()?["versionCode"] as String;
+    final appVersionCode = packageInfo.buildNumber;
+    if (firebaseVersionCode != appVersionCode) {
+      return appVersion.data()?["message"];
+    }
+    return null;
   }
 }

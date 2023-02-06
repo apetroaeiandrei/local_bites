@@ -9,6 +9,7 @@ import 'package:models/restaurant_model.dart';
 
 import '../analytics/analytics.dart';
 import '../analytics/metric.dart';
+import '../environment/app_config.dart';
 import '../generated/l10n.dart';
 import '../img.dart';
 import '../routes.dart';
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _checkAppVersion();
   }
 
   @override
@@ -337,5 +339,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       content: S.of(context).home_notifications_dialog_content,
       actions: actions,
     );
+  }
+
+  _checkAppVersion() async {
+    final versionMessage = await AppConfig.checkAppVersion();
+    if (versionMessage != null) {
+      _analytics.logEvent(name: Metric.eventAppVersionDialog);
+      showAppVersionDialog(context: context, message: versionMessage);
+    }
   }
 }

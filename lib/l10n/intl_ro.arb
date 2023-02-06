@@ -145,5 +145,7 @@
   "notifications_description" : "Gestionează preferințele tale în ceea ce privește notificările.",
   "notifications_banner_permission_denied" : "Notificările sunt dezactivate din setările aplicației.\n\nActiveză-le acum!",
   "notifications_promo_title" : "Reduceri și promoții",
-  "notifications_promo_description" : "Primești notificări cu reduceri și promoții de la restaurantele din orașul tău."
+  "notifications_promo_description" : "Primești notificări cu reduceri și promoții de la restaurantele din orașul tău.",
+
+  "app_version_dialog_title" : "Versiune nouă"
 }
