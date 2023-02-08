@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:local/address/addresses/address_tile.dart';
 import 'package:local/address/addresses/addresses_cubit.dart';
 import 'package:local/theme/dimens.dart';
+import 'package:local/widgets/dialog_utils.dart';
 
 import '../../generated/l10n.dart';
 import '../../routes.dart';
@@ -64,16 +66,52 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 ),
                 Expanded(
                   child: ListView.separated(
-                    itemBuilder: (context, index) => InkWell(
-                      onTap: () {
-                        context.read<AddressesCubit>().onAddressSelected(state.addresses[index]);
-                      },
-                      child: AddressTile(
-                        address: state.addresses[index],
-                        selected: state.addresses[index].street ==
-                            state.selectedAddress?.street,
-                      ),
-                    ),
+                    itemBuilder: (context, index) {
+                      bool selected = state.addresses[index].street ==
+                          state.selectedAddress?.street;
+                      return InkWell(
+                        onTap: () {
+                          context
+                              .read<AddressesCubit>()
+                              .onAddressSelected(state.addresses[index]);
+                        },
+                        child: Slidable(
+                          key: Key(state.addresses[index].street),
+                          endActionPane: ActionPane(
+                            motion: const ScrollMotion(),
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) {},
+                                backgroundColor: Colors.white,
+                                foregroundColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                icon: Icons.edit_outlined,
+                                padding: EdgeInsets.zero,
+                                label: S.of(context).address_action_edit,
+                              ),
+                              SlidableAction(
+                                onPressed: (context) {
+                                  if (selected) {
+                                    _showDeleteSelectedDialog();
+                                  } else {
+                                    context.read<AddressesCubit>().deleteAddress(state.addresses[index]);
+                                  }
+                                },
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.red,
+                                icon: Icons.delete,
+                                padding: EdgeInsets.zero,
+                                label: S.of(context).address_action_delete,
+                              ),
+                            ],
+                          ),
+                          child: AddressTile(
+                            address: state.addresses[index],
+                            selected: selected,
+                          ),
+                        ),
+                      );
+                    },
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 10,
                     ),
@@ -86,5 +124,20 @@ class _AddressesScreenState extends State<AddressesScreen> {
         );
       },
     );
+  }
+
+  void _showDeleteSelectedDialog() {
+    showPlatformDialog(
+        context: context,
+        title: S.of(context).address_delete_current_dialog_title,
+        content: S.of(context).address_delete_current_dialog_content,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(S.of(context).generic_ok),
+          ),
+        ]);
   }
 }

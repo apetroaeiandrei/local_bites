@@ -73,6 +73,10 @@
   "address_name_home": "Acasă",
   "address_name_work": "Serviciu",
   "address_name_other": "Altă adresă",
+  "address_action_delete": "Șterge",
+  "address_action_edit": "Modifică",
+  "address_delete_current_dialog_title": "Ștergere adresă",
+  "address_delete_current_dialog_content": "Nu poți șterge adresa ta curentă. Dacă vrei să o ștergi trebuie să alegi o altă adresă ca adresă curentă.",
 
   "generic_save": "Salvează",
   "generic_ok": "OK",

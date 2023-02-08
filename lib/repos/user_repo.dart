@@ -198,5 +198,20 @@ class UserRepo {
     }
     _addressesController.add(List.from(_addresses));
   }
+
+  void deleteAddress(DeliveryAddress address) {
+    _firestore
+        .collection(_collectionUsers)
+        .doc(_auth.currentUser?.uid)
+        .collection(_collectionAddresses)
+        .where("street", isEqualTo: address.street)
+        .where("propertyDetails", isEqualTo: address.propertyDetails)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        element.reference.delete();
+      }
+    });
+  }
 //endregion
 }

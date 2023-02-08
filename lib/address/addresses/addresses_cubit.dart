@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:models/delivery_address.dart';
@@ -18,10 +20,12 @@ class AddressesCubit extends Cubit<AddressesState> {
 
   final UserRepo _userRepo;
   final Analytics _analytics;
+  StreamSubscription? _addressesSubscription;
 
   _init() async {
-    _userRepo.addressesStream.listen((addresses) {
-      emit(AddressesState(
+    _addressesSubscription = _userRepo.addressesStream.listen((addresses) {
+      print('addresses cubit listener: $addresses');
+      emit(state.copyWith(
         status: AddressesStatus.loaded,
         addresses: addresses,
         selectedAddress: _userRepo.address,
@@ -46,5 +50,15 @@ class AddressesCubit extends Cubit<AddressesState> {
       emit(state.copyWith(selectedAddress: address));
       //_analytics.logEvent(Metric.addressSelected);
     }
+  }
+
+  void deleteAddress(DeliveryAddress address) {
+    _userRepo.deleteAddress(address);
+  }
+
+  @override
+  Future<void> close() async {
+    await _addressesSubscription?.cancel();
+    return super.close();
   }
 }
