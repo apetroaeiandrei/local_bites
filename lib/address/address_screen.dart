@@ -4,10 +4,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:local/address/address_type_tile.dart';
 import 'package:local/analytics/metric.dart';
 import 'package:local/img.dart';
 import 'package:local/theme/dimens.dart';
 import 'package:local/widgets/dialog_utils.dart';
+import 'package:models/delivery_address.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../analytics/analytics.dart';
@@ -90,9 +92,25 @@ class _AddressScreenState extends State<AddressScreen> {
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: AddressType.values
+                        .map((e) => InkWell(
+                      onTap: () {
+                        context.read<AddressCubit>().onTypeChanged(e);
+                      },
+                          child: AddressTypeTile(
+                              type: e, selected: e == state.selectedType),
+                        ))
+                        .toList(),
+                  ),
+                ),
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.35,
-                  padding: const EdgeInsets.all(Dimens.defaultPadding),
+                  height: MediaQuery.of(context).size.height * 0.30,
+                  padding: const EdgeInsets.fromLTRB(Dimens.defaultPadding, 0, Dimens.defaultPadding, Dimens.defaultPadding),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,

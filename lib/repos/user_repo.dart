@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -7,10 +9,12 @@ import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:models/delivery_address.dart';
 import 'package:models/local_user.dart';
+import 'package:collection/collection.dart';
 
 class UserRepo {
   static UserRepo? instance;
   static const _collectionUsers = "users";
+  static const _collectionAddresses = "addresses";
 
   UserRepo._privateConstructor(this._restaurantsRepo, this._ordersRepo);
 
@@ -19,7 +23,11 @@ class UserRepo {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   LocalUser? _user;
-  DeliveryAddress? _address;
+  DeliveryAddress? _currentAddress;
+  StreamSubscription? _addressesSubscription;
+  final List<DeliveryAddress> _addresses = [];
+  final StreamController<List<DeliveryAddress>> _addressesController =
+      StreamController<List<DeliveryAddress>>.broadcast();
 
   factory UserRepo(RestaurantsRepo restaurantsRepo, OrdersRepo ordersRepo) {
     instance ??= UserRepo._privateConstructor(restaurantsRepo, ordersRepo);
@@ -28,7 +36,12 @@ class UserRepo {
 
   LocalUser? get user => _user;
 
-  DeliveryAddress? get address => _address;
+  DeliveryAddress? get address => _currentAddress;
+
+  List<DeliveryAddress> get addresses => _addresses;
+
+  Stream<List<DeliveryAddress>> get addressesStream =>
+      _addressesController.stream;
 
   getUser() async {
     try {
@@ -38,7 +51,7 @@ class UserRepo {
           .get();
       final doc = firebaseUser.data()!;
       _user = LocalUser.fromMap(doc);
-      _address = DeliveryAddress.fromMap(doc);
+      _currentAddress = DeliveryAddress.fromMap(doc);
       Analytics().setUserId(_user!.uid);
     } catch (e) {
       //No-op
@@ -71,32 +84,11 @@ class UserRepo {
     }
   }
 
-  Future<bool> setDeliveryAddress(double latitude, double longitude,
-      String street, String propertyDetails) async {
-    try {
-      final properties = {
-        "latitude": latitude,
-        "longitude": longitude,
-        "street": street,
-        "propertyDetails": propertyDetails,
-      };
-      await _firestore
-          .collection(_collectionUsers)
-          .doc(_auth.currentUser?.uid)
-          .update(properties);
-
-      _address = DeliveryAddress.fromMap(properties);
-      return true;
-    } on Exception catch (e) {
-      debugPrint("Set address failed $e");
-      return false;
-    }
-  }
-
   Future<void> logout() async {
     await _stopSubscriptions();
     _user = null;
-    _address = null;
+    _currentAddress = null;
+    _addresses.clear();
   }
 
   Future<bool> deleteUser() async {
@@ -108,7 +100,7 @@ class UserRepo {
           .delete();
       await _auth.currentUser?.delete();
       _user = null;
-      _address = null;
+      _currentAddress = null;
       return true;
     } catch (e) {
       FirebaseCrashlytics.instance.log("DELETE USER FAILED: $e");
@@ -117,7 +109,91 @@ class UserRepo {
   }
 
   _stopSubscriptions() async {
+    await _addressesSubscription?.cancel();
+    _addressesSubscription = null;
     await _restaurantsRepo.cancelAllRestaurantsSubscriptions();
     await _ordersRepo.stopListeningForOrderInProgress();
   }
+
+  //region Address
+  Future<bool> setDeliveryAddress(DeliveryAddress deliveryAddress) async {
+    try {
+      await _firestore
+          .collection(_collectionUsers)
+          .doc(_auth.currentUser?.uid)
+          .update(deliveryAddress.toMap());
+
+      _currentAddress = deliveryAddress;
+      _addAddressToCollectionIfNeeded(deliveryAddress);
+      return true;
+    } on Exception catch (e) {
+      debugPrint("Set address failed $e");
+      return false;
+    }
+  }
+
+  _addAddressToCollectionIfNeeded(DeliveryAddress address) {
+    final collectionAddress = _getMatchingAddress(address);
+    if (collectionAddress == null) {
+      _addNewAddress(address);
+    }
+  }
+
+  DeliveryAddress? _getMatchingAddress(DeliveryAddress address) {
+    return _addresses.firstWhereOrNull((e) =>
+        e.street == address.street &&
+        e.propertyDetails == address.propertyDetails);
+  }
+
+  Future<void> listenForAddresses() async {
+    if (_addressesSubscription != null) {
+      return;
+    }
+    _addressesSubscription = _firestore
+        .collection(_collectionUsers)
+        .doc(_auth.currentUser?.uid)
+        .collection(_collectionAddresses)
+        .snapshots()
+        .listen((event) {
+      if (event.docs.isEmpty) {
+        _handleEmptyAddresses();
+      } else {
+        print("Got addresses ${event.docs.length}");
+        _handleAddresses(event);
+      }
+    });
+  }
+
+  _handleEmptyAddresses() {
+    if (_currentAddress != null) {
+      // Add the current address to firebase addresses collection as home address
+      final addressToAdd =
+          _currentAddress!.copyWith(addressType: AddressType.home);
+
+      print("Adding address ${addressToAdd.toMap()}");
+      _addNewAddress(addressToAdd);
+    }
+  }
+
+  void _addNewAddress(DeliveryAddress addressToAdd) {
+    _firestore
+        .collection(_collectionUsers)
+        .doc(_auth.currentUser?.uid)
+        .collection(_collectionAddresses)
+        .doc()
+        .set(addressToAdd.toMap());
+  }
+
+  void _handleAddresses(QuerySnapshot<Map<String, dynamic>> event) {
+    final addresses =
+        event.docs.map((e) => DeliveryAddress.fromMap(e.data())).toList();
+    _addresses.clear();
+    _addresses.addAll(addresses);
+    final matchingAddress = _getMatchingAddress(_currentAddress!);
+    if (matchingAddress != null) {
+      _currentAddress = matchingAddress;
+    }
+    _addressesController.add(List.from(_addresses));
+  }
+//endregion
 }

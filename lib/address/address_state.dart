@@ -16,10 +16,11 @@ class AddressState extends Equatable {
   final String propertyDetails;
   final double latitude;
   final double longitude;
+  final AddressType selectedType;
 
   @override
   List<Object?> get props =>
-      [status, street, propertyDetails, latitude, longitude];
+      [status, street, propertyDetails, latitude, longitude, selectedType];
 
   const AddressState({
     required this.status,
@@ -27,6 +28,7 @@ class AddressState extends Equatable {
     required this.propertyDetails,
     required this.latitude,
     required this.longitude,
+    required this.selectedType,
   });
 
   AddressState copyWith({
@@ -35,6 +37,7 @@ class AddressState extends Equatable {
     String? propertyDetails,
     double? latitude,
     double? longitude,
+    AddressType? selectedType,
   }) {
     return AddressState(
       status: status ?? this.status,
@@ -42,6 +45,7 @@ class AddressState extends Equatable {
       propertyDetails: propertyDetails ?? this.propertyDetails,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      selectedType: selectedType ?? this.selectedType,
     );
   }
 }

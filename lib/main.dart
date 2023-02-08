@@ -36,6 +36,8 @@ import 'package:models/food_model.dart';
 import 'package:models/restaurant_model.dart';
 import 'package:models/user_order.dart';
 
+import 'address/addresses/addresses_cubit.dart';
+import 'address/addresses/addresses_screen.dart';
 import 'analytics/metric.dart';
 import 'auth/auth_cubit.dart';
 import 'auth/auth_screen.dart';
@@ -166,6 +168,13 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<Analytics>(context),
               ),
               child: const AddressScreen(),
+            ),
+        Routes.addresses: (context) => BlocProvider<AddressesCubit>(
+              create: (context) => AddressesCubit(
+                RepositoryProvider.of<UserRepo>(context),
+                RepositoryProvider.of<Analytics>(context),
+              ),
+              child: const AddressesScreen(),
             ),
         Routes.cart: (context) => BlocProvider<CartCubit>(
               create: (context) => CartCubit(

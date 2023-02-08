@@ -105,6 +105,7 @@ class HomeCubit extends Cubit<HomeState> {
       address: address.street,
     ));
     _checkNotificationsPermissions();
+    _userRepo.listenForAddresses();
   }
 
   @override
