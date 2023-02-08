@@ -39,4 +39,12 @@ class AddressesCubit extends Cubit<AddressesState> {
       ));
     });
   }
+
+  Future<void> onAddressSelected(DeliveryAddress address) async {
+    final success = await _userRepo.setDeliveryAddress(address);
+    if (success) {
+      emit(state.copyWith(selectedAddress: address));
+      //_analytics.logEvent(Metric.addressSelected);
+    }
+  }
 }

@@ -136,6 +136,8 @@ class UserRepo {
     final collectionAddress = _getMatchingAddress(address);
     if (collectionAddress == null) {
       _addNewAddress(address);
+    } else {
+      print("address exists");
     }
   }
 
@@ -176,6 +178,7 @@ class UserRepo {
   }
 
   void _addNewAddress(DeliveryAddress addressToAdd) {
+    print("add new Address ${addressToAdd.toMap()}");
     _firestore
         .collection(_collectionUsers)
         .doc(_auth.currentUser?.uid)

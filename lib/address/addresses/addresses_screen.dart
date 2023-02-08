@@ -64,10 +64,15 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 ),
                 Expanded(
                   child: ListView.separated(
-                    itemBuilder: (context, index) => AddressTile(
-                      address: state.addresses[index],
-                      selected: state.addresses[index].street ==
-                          state.selectedAddress?.street,
+                    itemBuilder: (context, index) => InkWell(
+                      onTap: () {
+                        context.read<AddressesCubit>().onAddressSelected(state.addresses[index]);
+                      },
+                      child: AddressTile(
+                        address: state.addresses[index],
+                        selected: state.addresses[index].street ==
+                            state.selectedAddress?.street,
+                      ),
                     ),
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 10,
