@@ -81,15 +81,6 @@ class _AddressesScreenState extends State<AddressesScreen> {
                             motion: const ScrollMotion(),
                             children: [
                               SlidableAction(
-                                onPressed: (context) {},
-                                backgroundColor: Colors.white,
-                                foregroundColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                icon: Icons.edit_outlined,
-                                padding: EdgeInsets.zero,
-                                label: S.of(context).address_action_edit,
-                              ),
-                              SlidableAction(
                                 onPressed: (context) {
                                   if (selected) {
                                     _showDeleteSelectedDialog();
