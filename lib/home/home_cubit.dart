@@ -110,8 +110,11 @@ class HomeCubit extends Cubit<HomeState> {
       address: address,
     ));
     _checkNotificationsPermissions();
+
+    _userRepo.addressesStream.listen((address) {
+      _checkDistance();
+    });
     _userRepo.listenForAddresses();
-    _checkDistance();
   }
 
   @override
@@ -230,7 +233,15 @@ class HomeCubit extends Cubit<HomeState> {
       }
     } catch (e) {
       print("get location error $e");
-      //_analytics.logEvent(name: Metric.eventAddressLocationError);
+      if (_userRepo.addresses.length > 1) {
+        final previousStatus = state.status;
+        emit(
+            state.copyWith(status: HomeStatus.showLocationPermissionDialog));
+        Future.delayed(const Duration(milliseconds: 20), () {
+          emit(state.copyWith(status: previousStatus));
+        });
+      }
+      _analytics.logEvent(name: Metric.eventHomeAddressLocationError);
     }
   }
 

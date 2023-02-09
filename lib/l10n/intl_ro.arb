@@ -56,6 +56,11 @@
   "home_known_address_dialog_ok" : "Schimbă",
   "home_unknown_address_dialog_ok" : "OK",
 
+  "home_location_permission_dialog_title" : "Permisiune locație",
+  "home_location_permission_dialog_content" : "Observăm că ai mai multe adrese salvate. Pentru a facilita alegerea automată a adresei protrivite, trebuie să activezi permisiunea de accesare a locației în timpul utilizării din setările telefonului.",
+  "home_location_permission_dialog_cancel" : "Renunță",
+  "home_location_permission_dialog_ok" : "Activează",
+
   "settings_title": "Setări",
   "settings_welcome": "Salut, {name}!",
   "settings_logout": "Deconectare",

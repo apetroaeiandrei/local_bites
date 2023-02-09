@@ -82,6 +82,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           case HomeStatus.showUnknownNearestAddressDialog:
             _showUnknownAddressDialog(context);
             break;
+          case HomeStatus.showLocationPermissionDialog:
+            _showLocationPermissionDialog(context);
+            break;
         }
       },
       builder: (BuildContext context, HomeState state) {
@@ -423,6 +426,31 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         context: context,
         title: S.of(context).home_address_dialog_title,
         content: S.of(context).home_unknown_address_dialog_content,
+        actions: actions);
+  }
+
+  void _showLocationPermissionDialog(BuildContext context) {
+    final List<Widget> actions = [
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          _analytics.logEvent(name: Metric.eventHomeLocationPermissionDialogCancel);
+        },
+        child: Text(S.of(context).home_location_permission_dialog_cancel),
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          _analytics.logEvent(name: Metric.eventHomeLocationPermissionDialogConfirm);
+          AppSettings.openLocationSettings();
+        },
+        child: Text(S.of(context).home_location_permission_dialog_ok),
+      ),
+    ];
+    showPlatformDialog(
+        context: context,
+        title: S.of(context).home_location_permission_dialog_title,
+        content: S.of(context).home_location_permission_dialog_content,
         actions: actions);
   }
 }

@@ -10,7 +10,8 @@ enum HomeStatus {
   error,
   showSettingsNotification,
   showKnownNearestAddressDialog,
-  showUnknownNearestAddressDialog
+  showUnknownNearestAddressDialog,
+  showLocationPermissionDialog,
 }
 
 class HomeState extends Equatable {

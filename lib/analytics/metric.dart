@@ -80,5 +80,8 @@ abstract class Metric {
   static const String eventKnownAddressDialogConfirm = "known_address_dialog_confirm";
   static const String eventUnknownAddressDialogCancel = "unknown_address_dialog_cancel";
   static const String eventUnknownAddressDialogConfirm = "unknown_address_dialog_confirm";
+  static const String eventHomeLocationPermissionDialogCancel = "home_location_permission_dialog_cancel";
+  static const String eventHomeLocationPermissionDialogConfirm = "home_location_permission_dialog_confirm";
+  static const String eventHomeAddressLocationError = "home_address_location_error";
 
 }
