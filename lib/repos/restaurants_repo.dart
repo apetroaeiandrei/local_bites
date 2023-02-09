@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:models/delivery_zone.dart';
 import 'package:models/food_category_model.dart';
@@ -101,7 +102,7 @@ class RestaurantsRepo {
           .addAll(_filterByMaxRadius(latitude, longitude, allRestaurants));
       _restaurantsController.add(List.of(_restaurants));
     }, onError: (error) {
-      print("FIREBASE LISTEN ERROR:" + error);
+      FirebaseCrashlytics.instance.recordError(error, StackTrace.current);
     });
   }
 

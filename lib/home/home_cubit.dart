@@ -59,7 +59,7 @@ class HomeCubit extends Cubit<HomeState> {
 
     final address = _userRepo.address;
     if (address == null) {
-      _analytics.setCurrentScreen(screenName: Routes.address);
+      _analytics.setCurrentScreen(screenName: Routes.addresses);
       emit(state.copyWith(status: HomeStatus.addressError));
       return;
     }
@@ -212,12 +212,10 @@ class HomeCubit extends Cubit<HomeState> {
               lng: _userRepo.address!.longitude) *
           1000;
       final accuracyMeters = position.accuracy;
-      print("distance: $distanceMeters - accuracy: $accuracyMeters");
 
       if (distanceMeters > _showAlertMaxDistance + accuracyMeters) {
         DeliveryAddress? nearestAddress =
             _findNearestAddress(center, accuracyMeters);
-        print("nearest address: $nearestAddress");
         final previousStatus = state.status;
         if (nearestAddress != null) {
           emit(state.copyWith(
@@ -232,11 +230,9 @@ class HomeCubit extends Cubit<HomeState> {
         });
       }
     } catch (e) {
-      print("get location error $e");
       if (_userRepo.addresses.length > 1) {
         final previousStatus = state.status;
-        emit(
-            state.copyWith(status: HomeStatus.showLocationPermissionDialog));
+        emit(state.copyWith(status: HomeStatus.showLocationPermissionDialog));
         Future.delayed(const Duration(milliseconds: 20), () {
           emit(state.copyWith(status: previousStatus));
         });
@@ -258,7 +254,6 @@ class HomeCubit extends Cubit<HomeState> {
 
     final minDistance = distances.reduce(min);
     final index = distances.indexOf(minDistance);
-    print("min distance: $minDistance");
     if (minDistance * 1000 > _showAlertMaxDistance + accuracy) {
       return null;
     }

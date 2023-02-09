@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:local/address/addresses/address_tile.dart';
 import 'package:local/address/addresses/addresses_cubit.dart';
+import 'package:local/analytics/metric.dart';
 import 'package:local/theme/dimens.dart';
 import 'package:local/widgets/dialog_utils.dart';
 
+import '../../analytics/analytics.dart';
 import '../../generated/l10n.dart';
 import '../../routes.dart';
 
@@ -17,6 +19,8 @@ class AddressesScreen extends StatefulWidget {
 }
 
 class _AddressesScreenState extends State<AddressesScreen> {
+  final _analytics = Analytics();
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddressesCubit, AddressesState>(
@@ -40,7 +44,10 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushNamed(Routes.address);
+                    _analytics.setCurrentScreen(screenName: Routes.address);
+                    Navigator.of(context).pushNamed(Routes.address).then(
+                        (value) => _analytics.setCurrentScreen(
+                            screenName: Routes.addresses));
                   },
                   child: Text(S.of(context).addresses_add),
                 ),
@@ -122,6 +129,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
   }
 
   void _showDeleteSelectedDialog() {
+    _analytics.logEvent(name: Metric.eventAddressTryDeleteSelected);
     showPlatformDialog(
         context: context,
         title: S.of(context).address_delete_current_dialog_title,

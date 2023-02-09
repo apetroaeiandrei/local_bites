@@ -102,8 +102,8 @@ class UserRepo {
       _user = null;
       _currentAddress = null;
       return true;
-    } catch (e) {
-      FirebaseCrashlytics.instance.log("DELETE USER FAILED: $e");
+    } catch (error) {
+      FirebaseCrashlytics.instance.recordError(error, StackTrace.current);
     }
     return false;
   }
@@ -127,7 +127,7 @@ class UserRepo {
       _addAddressToCollectionIfNeeded(deliveryAddress);
       return true;
     } on Exception catch (e) {
-      debugPrint("Set address failed $e");
+      FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
       return false;
     }
   }
@@ -136,8 +136,6 @@ class UserRepo {
     final collectionAddress = _getMatchingAddress(address);
     if (collectionAddress == null) {
       _addNewAddress(address);
-    } else {
-      print("address exists");
     }
   }
 
@@ -160,7 +158,6 @@ class UserRepo {
       if (event.docs.isEmpty) {
         _handleEmptyAddresses();
       } else {
-        print("Got addresses ${event.docs.length}");
         _handleAddresses(event);
       }
     });
@@ -171,14 +168,11 @@ class UserRepo {
       // Add the current address to firebase addresses collection as home address
       final addressToAdd =
           _currentAddress!.copyWith(addressType: AddressType.home);
-
-      print("Adding address ${addressToAdd.toMap()}");
       _addNewAddress(addressToAdd);
     }
   }
 
   void _addNewAddress(DeliveryAddress addressToAdd) {
-    print("add new Address ${addressToAdd.toMap()}");
     _firestore
         .collection(_collectionUsers)
         .doc(_auth.currentUser?.uid)

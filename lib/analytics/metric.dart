@@ -84,4 +84,8 @@ abstract class Metric {
   static const String eventHomeLocationPermissionDialogConfirm = "home_location_permission_dialog_confirm";
   static const String eventHomeAddressLocationError = "home_address_location_error";
 
+  static const String eventAddressSelected = "address_selected";
+  static const String eventAddressDeleted = "address_deleted";
+  static const String eventAddressTryDeleteSelected = "address_try_delete_selected";
+
 }

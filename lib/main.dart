@@ -129,7 +129,7 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<AuthRepo>(context),
                 RepositoryProvider.of<UserRepo>(context),
               ),
-              child: AuthScreen(),
+              child: const AuthScreen(),
             ),
         Routes.register: (context) => BlocProvider<RegisterCubit>(
               create: (context) => RegisterCubit(
