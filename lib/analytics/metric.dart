@@ -75,4 +75,10 @@ abstract class Metric {
   static const String eventNotificationsDialogConfirm = "fcm_settings_dialog_confirm";
 
   static const String eventAppVersionDialog = "app_version_dialog";
+
+  static const String eventKnownAddressDialogCancel = "known_address_dialog_cancel";
+  static const String eventKnownAddressDialogConfirm = "known_address_dialog_confirm";
+  static const String eventUnknownAddressDialogCancel = "unknown_address_dialog_cancel";
+  static const String eventUnknownAddressDialogConfirm = "unknown_address_dialog_confirm";
+
 }

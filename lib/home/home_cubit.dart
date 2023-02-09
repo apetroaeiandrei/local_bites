@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:local/analytics/analytics.dart';
 import 'package:local/repos/cart_repo.dart';
 import 'package:local/repos/notifications_repo.dart';
@@ -35,6 +38,7 @@ class HomeCubit extends Cubit<HomeState> {
     init();
   }
 
+  static const _showAlertMaxDistance = 100;
   final UserRepo _userRepo;
   final RestaurantsRepo _restaurantsRepo;
   final OrdersRepo _ordersRepo;
@@ -43,6 +47,7 @@ class HomeCubit extends Cubit<HomeState> {
   final Analytics _analytics;
   StreamSubscription? _currentOrderSubscription;
   StreamSubscription? _restaurantsSubscription;
+  DateTime? _lastLocationCheckTime;
 
   init() async {
     _analytics.setCurrentScreen(screenName: Routes.home);
@@ -60,12 +65,12 @@ class HomeCubit extends Cubit<HomeState> {
     }
 
     try {
-      _restaurantsRepo.listenForNearbyRestaurants(
-          address.latitude, address.longitude);
       _restaurantsSubscription =
           _restaurantsRepo.restaurantsStream.listen((restaurants) {
         _handleRestaurantsLoaded(address);
       });
+      _restaurantsRepo.listenForNearbyRestaurants(
+          address.latitude, address.longitude);
     } catch (e) {
       _analytics.logEvent(name: Metric.eventRestaurantsError);
       emit(state.copyWith(
@@ -102,10 +107,11 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(
       status: HomeStatus.loaded,
       restaurants: restaurants,
-      address: address.street,
+      address: address,
     ));
     _checkNotificationsPermissions();
     _userRepo.listenForAddresses();
+    _checkDistance();
   }
 
   @override
@@ -182,5 +188,74 @@ class HomeCubit extends Cubit<HomeState> {
       return;
     }
   }
+
 //endregion
+
+  Future<void> _checkDistance() async {
+    if (_lastLocationCheckTime != null &&
+        DateTime.now().difference(_lastLocationCheckTime!).inMinutes < 10) {
+      return;
+    }
+
+    _lastLocationCheckTime = DateTime.now();
+
+    try {
+      final position = await Geolocator.getCurrentPosition();
+      if (isClosed) return;
+      GeoFirePoint center = GeoFlutterFire()
+          .point(latitude: position.latitude, longitude: position.longitude);
+      final distanceMeters = center.distance(
+              lat: _userRepo.address!.latitude,
+              lng: _userRepo.address!.longitude) *
+          1000;
+      final accuracyMeters = position.accuracy;
+      print("distance: $distanceMeters - accuracy: $accuracyMeters");
+
+      if (distanceMeters > _showAlertMaxDistance + accuracyMeters) {
+        DeliveryAddress? nearestAddress =
+            _findNearestAddress(center, accuracyMeters);
+        print("nearest address: $nearestAddress");
+        final previousStatus = state.status;
+        if (nearestAddress != null) {
+          emit(state.copyWith(
+              status: HomeStatus.showKnownNearestAddressDialog,
+              nearestDeliveryAddress: nearestAddress));
+        } else {
+          emit(state.copyWith(
+              status: HomeStatus.showUnknownNearestAddressDialog));
+        }
+        Future.delayed(const Duration(milliseconds: 20), () {
+          emit(state.copyWith(status: previousStatus));
+        });
+      }
+    } catch (e) {
+      print("get location error $e");
+      //_analytics.logEvent(name: Metric.eventAddressLocationError);
+    }
+  }
+
+  DeliveryAddress? _findNearestAddress(
+      GeoFirePoint userLocation, double accuracy) {
+    final addresses = _userRepo.addresses;
+    if (addresses.isEmpty) {
+      return null;
+    }
+
+    final distances = addresses.map((e) {
+      return userLocation.distance(lat: e.latitude, lng: e.longitude);
+    }).toList();
+
+    final minDistance = distances.reduce(min);
+    final index = distances.indexOf(minDistance);
+    print("min distance: $minDistance");
+    if (minDistance * 1000 > _showAlertMaxDistance + accuracy) {
+      return null;
+    }
+    return addresses[index];
+  }
+
+  Future<void> setDeliveryAddress(deliveryAddress) async {
+    await _userRepo.setDeliveryAddress(deliveryAddress);
+    init();
+  }
 }

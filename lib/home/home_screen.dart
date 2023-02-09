@@ -2,9 +2,12 @@ import 'package:app_settings/app_settings.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:local/address/address_type_extension.dart';
+import 'package:local/address/addresses/address_tile.dart';
 import 'package:local/home/home_cubit.dart';
 import 'package:local/widgets/dialog_utils.dart';
 import 'package:local/widgets/order_mini.dart';
+import 'package:models/delivery_address.dart';
 import 'package:models/restaurant_model.dart';
 
 import '../analytics/analytics.dart';
@@ -72,6 +75,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             break;
           case HomeStatus.showSettingsNotification:
             _showNotificationSettingsDialog();
+            break;
+          case HomeStatus.showKnownNearestAddressDialog:
+            _showKnownAddressDialog(context, state.nearestDeliveryAddress!);
+            break;
+          case HomeStatus.showUnknownNearestAddressDialog:
+            _showUnknownAddressDialog(context);
             break;
         }
       },
@@ -186,29 +195,44 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Widget _getAddressZone(BuildContext context, HomeState state) {
-    return Padding(
-      padding: const EdgeInsets.all(Dimens.defaultPadding),
-      child: GestureDetector(
-        onTap: () {
-          _showAddressScreen(context);
-        },
-        child: Center(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                state.address ?? S.of(context).home_address_empty,
-                style: Theme.of(context).textTheme.headlineSmall,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-              const SizedBox(width: 4),
-              const Icon(Icons.keyboard_arrow_down),
-            ],
+    if (state.address == null) {
+      return Padding(
+        padding: const EdgeInsets.all(Dimens.defaultPadding),
+        child: GestureDetector(
+          onTap: () {
+            _showAddressScreen(context);
+          },
+          child: Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  S.of(context).home_address_empty,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                const SizedBox(width: 4),
+                const Icon(Icons.keyboard_arrow_down),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
+        child: GestureDetector(
+          onTap: () {
+            _showAddressScreen(context);
+          },
+          child: AddressTile(
+            address: state.address!,
+            selected: true,
+          ),
+        ),
+      );
+    }
   }
 
   Widget _getRestaurantCard(BuildContext context, HomeState state, int i) {
@@ -347,5 +371,58 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       _analytics.logEvent(name: Metric.eventAppVersionDialog);
       showAppVersionDialog(context: context, message: versionMessage);
     }
+  }
+
+  void _showKnownAddressDialog(BuildContext context, DeliveryAddress address) {
+    final List<Widget> actions = [
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          _analytics.logEvent(name: Metric.eventKnownAddressDialogCancel);
+        },
+        child: Text(S.of(context).home_address_dialog_cancel),
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          _analytics.logEvent(name: Metric.eventKnownAddressDialogConfirm);
+          context.read<HomeCubit>().setDeliveryAddress(address);
+        },
+        child: Text(S.of(context).home_known_address_dialog_ok),
+      ),
+    ];
+    showPlatformDialog(
+        context: context,
+        title: S.of(context).home_address_dialog_title,
+        content: S.of(context).home_known_address_dialog_content(
+            address.addressType.getName(context),
+            address.street,
+            address.propertyDetails),
+        actions: actions);
+  }
+
+  void _showUnknownAddressDialog(BuildContext context) {
+    final List<Widget> actions = [
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          _analytics.logEvent(name: Metric.eventUnknownAddressDialogCancel);
+        },
+        child: Text(S.of(context).home_address_dialog_cancel),
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          _analytics.logEvent(name: Metric.eventUnknownAddressDialogConfirm);
+          _showAddressScreen(context);
+        },
+        child: Text(S.of(context).home_unknown_address_dialog_ok),
+      ),
+    ];
+    showPlatformDialog(
+        context: context,
+        title: S.of(context).home_address_dialog_title,
+        content: S.of(context).home_unknown_address_dialog_content,
+        actions: actions);
   }
 }

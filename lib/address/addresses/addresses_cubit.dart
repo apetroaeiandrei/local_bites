@@ -34,7 +34,7 @@ class AddressesCubit extends Cubit<AddressesState> {
 
     _userRepo.listenForAddresses();
     Future.delayed(const Duration(milliseconds: 10), () {
-      final addresses = _userRepo.addresses;
+      final addresses = List<DeliveryAddress>.from(_userRepo.addresses);
       emit(state.copyWith(
         selectedAddress: _userRepo.address,
         addresses: addresses,

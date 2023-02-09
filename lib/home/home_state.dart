@@ -9,15 +9,18 @@ enum HomeStatus {
   addressError,
   error,
   showSettingsNotification,
+  showKnownNearestAddressDialog,
+  showUnknownNearestAddressDialog
 }
 
 class HomeState extends Equatable {
   final HomeStatus status;
   final List<RestaurantModel> restaurants;
-  final String? address;
+  final DeliveryAddress? address;
   final List<UserOrder> currentOrders;
   final bool showCurrentOrder;
   final bool showNotificationsPrompt;
+  final DeliveryAddress? nearestDeliveryAddress;
 
   @override
   List<Object?> get props => [
@@ -26,7 +29,8 @@ class HomeState extends Equatable {
         address,
         currentOrders,
         showCurrentOrder,
-        showNotificationsPrompt
+        showNotificationsPrompt,
+        nearestDeliveryAddress
       ];
 
   const HomeState({
@@ -36,15 +40,17 @@ class HomeState extends Equatable {
     required this.currentOrders,
     required this.showCurrentOrder,
     required this.showNotificationsPrompt,
+    this.nearestDeliveryAddress,
   });
 
   HomeState copyWith({
     HomeStatus? status,
     List<RestaurantModel>? restaurants,
-    String? address,
+    DeliveryAddress? address,
     List<UserOrder>? currentOrders,
     bool? showCurrentOrder,
     bool? showNotificationsPrompt,
+    DeliveryAddress? nearestDeliveryAddress,
   }) {
     return HomeState(
       status: status ?? this.status,
@@ -54,6 +60,8 @@ class HomeState extends Equatable {
       showCurrentOrder: showCurrentOrder ?? this.showCurrentOrder,
       showNotificationsPrompt:
           showNotificationsPrompt ?? this.showNotificationsPrompt,
+      nearestDeliveryAddress:
+          nearestDeliveryAddress ?? this.nearestDeliveryAddress,
     );
   }
 }
