@@ -65,10 +65,12 @@ class HomeCubit extends Cubit<HomeState> {
     }
 
     try {
+      await _restaurantsSubscription?.cancel();
       _restaurantsSubscription =
           _restaurantsRepo.restaurantsStream.listen((restaurants) {
         _handleRestaurantsLoaded(address);
       });
+
       _restaurantsRepo.listenForNearbyRestaurants(
           address.latitude, address.longitude);
     } catch (e) {
@@ -78,15 +80,16 @@ class HomeCubit extends Cubit<HomeState> {
       ));
     }
 
+    await _currentOrderSubscription?.cancel();
     _currentOrderSubscription = _ordersRepo.currentOrderStream.listen((orders) {
       _analytics.logEventWithParams(name: Metric.eventOrderUpdate, parameters: {
         Metric.propertyOrderStatus: orders.map((e) => e.status).join(','),
         Metric.propertyOrderCount: orders.length,
       });
-
       emit(state.copyWith(
           currentOrders: orders, showCurrentOrder: orders.isNotEmpty));
     });
+
     _ordersRepo.listenForOrderInProgress();
   }
 
