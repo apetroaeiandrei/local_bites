@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/address/address_type_extension.dart';
-import 'package:local/address/addresses/address_tile.dart';
+import 'package:local/home/home_address_tile.dart';
 import 'package:local/home/home_cubit.dart';
 import 'package:local/widgets/dialog_utils.dart';
 import 'package:local/widgets/order_mini.dart';
@@ -221,14 +221,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
+        padding: const EdgeInsets.fromLTRB(
+            Dimens.defaultPadding, 10, Dimens.defaultPadding, 0),
         child: GestureDetector(
           onTap: () {
             _showAddressScreen(context);
           },
-          child: AddressTile(
+          child: HomeAddressTile(
             address: state.address!,
-            selected: true,
           ),
         ),
       );
@@ -395,9 +395,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         context: context,
         title: S.of(context).home_address_dialog_title,
         content: S.of(context).home_known_address_dialog_content(
-            address.addressType.getName(context),
-            address.street,
-            address.propertyDetails),
+              address.addressType.getName(context),
+              address.street,
+            ),
         actions: actions);
   }
 

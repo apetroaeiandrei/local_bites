@@ -50,7 +50,7 @@
   "home_notifications_dialog_cancel" : "Renunță",
   "home_notifications_dialog_ok" : "Activează",
   "home_address_dialog_title" : "Schimbă adresa",
-  "home_known_address_dialog_content" : "Ești mai aproape de {addressType}, {street}, {propertyDetails}. Vrei să schimbi la această adresă?",
+  "home_known_address_dialog_content" : "Ești mai aproape de {addressType}, {street}. Vrei să schimbi la această adresă?",
   "home_unknown_address_dialog_content" : "Ești cam departe. Vrei să schimbi adresa?",
   "home_address_dialog_cancel" : "Renunță",
   "home_known_address_dialog_ok" : "Schimbă",
