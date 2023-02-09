@@ -68,7 +68,9 @@ class _AddressesScreenState extends State<AddressesScreen> {
                   child: ListView.separated(
                     itemBuilder: (context, index) {
                       bool selected = state.addresses[index].street ==
-                          state.selectedAddress?.street;
+                              state.selectedAddress?.street &&
+                          state.addresses[index].propertyDetails ==
+                              state.selectedAddress?.propertyDetails;
                       return InkWell(
                         onTap: () {
                           context
@@ -85,7 +87,9 @@ class _AddressesScreenState extends State<AddressesScreen> {
                                   if (selected) {
                                     _showDeleteSelectedDialog();
                                   } else {
-                                    context.read<AddressesCubit>().deleteAddress(state.addresses[index]);
+                                    context
+                                        .read<AddressesCubit>()
+                                        .deleteAddress(state.addresses[index]);
                                   }
                                 },
                                 backgroundColor: Colors.white,
