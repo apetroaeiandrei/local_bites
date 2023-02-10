@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:local/address/address_cubit.dart';
 import 'package:local/address/address_screen.dart';
 import 'package:local/analytics/analytics.dart';
@@ -50,7 +51,9 @@ import 'order/order_screen.dart';
 
 Future<void> main() async {
   final startTime = DateTime.now();
-  WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   await AppConfig.init();
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -102,6 +105,7 @@ Future<void> main() async {
       isLoggedIn: isLoggedIn,
     ),
   ));
+  FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatelessWidget {
