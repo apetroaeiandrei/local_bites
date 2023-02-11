@@ -89,6 +89,8 @@
   "address_delete_current_dialog_title": "Ștergere adresă",
   "address_delete_current_dialog_content": "Nu poți șterge adresa ta curentă. Dacă vrei să o ștergi trebuie să alegi o altă adresă ca adresă curentă.",
 
+  "generic_error_title": "A apărut o eroare",
+  "generic_error_content": "Ceva nu a mers bine. Vă rugăm să încercați din nou.",
   "generic_save": "Salvează",
   "generic_ok": "OK",
 
@@ -170,5 +172,18 @@
   "notifications_promo_title" : "Reduceri și promoții",
   "notifications_promo_description" : "Primești notificări cu reduceri și promoții de la restaurantele din orașul tău.",
 
-  "app_version_dialog_title" : "Versiune nouă"
+  "app_version_dialog_title" : "Versiune nouă",
+
+  "feedback_title" : "Feedback",
+  "feedback_headline_positive" : "Feedback-ul tău e important pentru noi. Spune-ne ce ți-a plăcut cel mai mult.",
+  "feedback_headline_negative" : "Dorim să îmbunătățim constant experiența ta. Spune-ne ce nu ți-a plăcut.",
+  "feedback_comments_label" : "Comentarii (opțional)",
+  "feedback_send" : "Trimite",
+
+  "feedback_suggestion_food" : "mâncarea",
+  "feedback_suggestion_packaging" : "ambalajul",
+  "feedback_suggestion_delivery" : "livrarea",
+  "feedback_suggestion_app" : "aplicația",
+  "feedback_suggestion_time" : "durata comenzii"
+
 }

@@ -8,13 +8,17 @@ import 'package:local/analytics/analytics.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:models/delivery_address.dart';
+import 'package:models/feedback_model.dart';
 import 'package:models/local_user.dart';
 import 'package:collection/collection.dart';
+import 'package:models/user_order.dart';
 
 class UserRepo {
   static UserRepo? instance;
   static const _collectionUsers = "users";
   static const _collectionAddresses = "addresses";
+  static const _collectionRestaurants = "restaurants";
+  static const _collectionFeedback = "feedback";
 
   UserRepo._privateConstructor(this._restaurantsRepo, this._ordersRepo);
 
@@ -207,5 +211,33 @@ class UserRepo {
       }
     });
   }
-//endregion
+
+  //endregion
+
+  Future<bool> sendFeedback(UserOrder userOrder, String feedback,
+      bool isPositive, List<FeedbackSuggestions> suggestions) async {
+    final doc = _firestore
+        .collection(_collectionRestaurants)
+        .doc(userOrder.restaurantId)
+        .collection(_collectionFeedback)
+        .doc();
+    final FeedbackModel feedbackModel = FeedbackModel(
+      id: doc.id,
+      comment: feedback,
+      isPositive: isPositive,
+      orderId: userOrder.orderId,
+      userName: _user!.name,
+      userPhone: _user!.phoneNumber,
+      orderDate: userOrder.date,
+      seen: false,
+      suggestions: suggestions,
+    );
+    try {
+      await doc.set(feedbackModel.toMap());
+      return true;
+    } catch (e) {
+      FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
+      return false;
+    }
+  }
 }

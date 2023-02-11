@@ -18,4 +18,8 @@ abstract class Routes {
   static const String mentions = "/cart/mentions";
 
   static const String orders = '/orders';
+
+  //used only for analytics
+  static const String feedback = '/feedback';
+
 }

@@ -88,4 +88,8 @@ abstract class Metric {
   static const String eventAddressDeleted = "address_deleted";
   static const String eventAddressTryDeleteSelected = "address_try_delete_selected";
 
+  static const String eventFeedbackSend = "feedback_send";
+  static const String propertyFeedbackIsPositive = "is_positive";
+  static const String propertyFeedbackAspects = "aspects";
+
 }

@@ -3,8 +3,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/address/address_type_extension.dart';
+import 'package:local/feedback/feedback_cubit.dart';
 import 'package:local/home/home_address_tile.dart';
 import 'package:local/home/home_cubit.dart';
+import 'package:local/repos/user_repo.dart';
 import 'package:local/widgets/dialog_utils.dart';
 import 'package:local/widgets/order_mini.dart';
 import 'package:models/delivery_address.dart';
@@ -13,6 +15,7 @@ import 'package:models/restaurant_model.dart';
 import '../analytics/analytics.dart';
 import '../analytics/metric.dart';
 import '../environment/app_config.dart';
+import '../feedback/feedback_screen.dart';
 import '../generated/l10n.dart';
 import '../img.dart';
 import '../routes.dart';
@@ -145,6 +148,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         child: OrderMini(
                           order: state.currentOrders[index],
                           onFeedback: (liked) {
+                            if (liked != null) {
+                              _showFeedbackScreen(context, state, index, liked);
+                            }
                             context
                                 .read<HomeCubit>()
                                 .rateOrder(state.currentOrders[index], liked);
@@ -175,6 +181,27 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         );
       },
     );
+  }
+
+  void _showFeedbackScreen(
+      BuildContext context, HomeState state, int index, bool liked) {
+    _analytics.setCurrentScreen(screenName: Routes.feedback);
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => BlocProvider<FeedbackCubit>(
+              create: (context) => FeedbackCubit(
+                RepositoryProvider.of<Analytics>(context),
+                RepositoryProvider.of<UserRepo>(context),
+                state.currentOrders[index],
+                liked,
+              ),
+              child: const FeedbackScreen(),
+            ),
+          ),
+        )
+        .then((value) => _analytics.setCurrentScreen(screenName: Routes.home));
   }
 
   Widget _getEmptyRestaurants(HomeState state) {
@@ -434,14 +461,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       TextButton(
         onPressed: () {
           Navigator.of(context).pop();
-          _analytics.logEvent(name: Metric.eventHomeLocationPermissionDialogCancel);
+          _analytics.logEvent(
+              name: Metric.eventHomeLocationPermissionDialogCancel);
         },
         child: Text(S.of(context).home_location_permission_dialog_cancel),
       ),
       TextButton(
         onPressed: () {
           Navigator.of(context).pop();
-          _analytics.logEvent(name: Metric.eventHomeLocationPermissionDialogConfirm);
+          _analytics.logEvent(
+              name: Metric.eventHomeLocationPermissionDialogConfirm);
           AppSettings.openLocationSettings();
         },
         child: Text(S.of(context).home_location_permission_dialog_ok),
