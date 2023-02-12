@@ -113,14 +113,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const Divider(),
                       Text(
                         S.of(context).profile_delete_account_headline,
-                        style: Theme.of(context).textTheme.headline3,
+                        style: Theme.of(context).textTheme.displaySmall,
                       ),
                       const SizedBox(
                         height: 8,
                       ),
                       Text(
                         S.of(context).profile_delete_account_info,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       const SizedBox(
                         height: Dimens.defaultPadding,
@@ -129,7 +129,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onPressed: () {
                           context.read<ProfileCubit>().deleteUser();
                         },
-                        child: Text(S.of(context).profile_delete_account_button),
+                        child:
+                            Text(S.of(context).profile_delete_account_button),
                       ),
                     ],
                   ),

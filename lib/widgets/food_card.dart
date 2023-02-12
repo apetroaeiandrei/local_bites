@@ -66,7 +66,7 @@ class FoodCard extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 4.0),
                             child: Text(S.of(context).food_unavailable,
-                                style: Theme.of(context).textTheme.headline6),
+                                style: Theme.of(context).textTheme.titleLarge),
                           ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -76,7 +76,7 @@ class FoodCard extends StatelessWidget {
                                 foodModel.name,
                                 maxLines: _nameMaxLines,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.headline5,
+                                style: Theme.of(context).textTheme.headlineSmall,
                               ),
                             ),
                             const SizedBox(

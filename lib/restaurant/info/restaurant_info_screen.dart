@@ -98,12 +98,12 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                         children: [
                           Text(
                             state.restaurant.name,
-                            style: Theme.of(context).textTheme.headline2,
+                            style: Theme.of(context).textTheme.displayMedium,
                           ),
                           const SizedBox(height: 5),
                           Text(
                             state.restaurant.description,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
                       ),
@@ -116,12 +116,12 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                         children: [
                           Text(
                             S.of(context).restaurant_info_address,
-                            style: Theme.of(context).textTheme.headline6,
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
                           const SizedBox(height: 5),
                           Text(
                             state.restaurant.address,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
                       ),
@@ -136,12 +136,12 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                             children: [
                               Text(
                                 S.of(context).restaurant_info_phone,
-                                style: Theme.of(context).textTheme.headline6,
+                                style: Theme.of(context).textTheme.titleLarge,
                               ),
                               const SizedBox(height: 5),
                               Text(
                                 state.restaurant.phone,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -166,12 +166,12 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                         children: [
                           Text(
                             S.of(context).restaurant_info_email,
-                            style: Theme.of(context).textTheme.headline6,
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
                           const SizedBox(height: 5),
                           Text(
                             state.restaurant.email,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
                       ),
@@ -192,17 +192,21 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                                 children: [
                                   Text(
                                     S.of(context).restaurant_info_website,
-                                    style: Theme.of(context).textTheme.headline6,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
                                   ),
                                   const SizedBox(height: 5),
                                   Text(
                                     state.restaurant.website,
-                                    style: Theme.of(context).textTheme.bodyText2,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
                                   ),
                                 ],
                               ),
                             ),
-                            const SizedBox(width: Dimens.defaultPadding,),
+                            const SizedBox(
+                              width: Dimens.defaultPadding,
+                            ),
                             IconButton(
                               onPressed: () {
                                 _analytics.logEvent(
@@ -224,7 +228,7 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                         children: [
                           Text(
                             S.of(context).restaurant_info_services,
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
                           Visibility(
                             visible: state.restaurant.hasDelivery,
@@ -234,11 +238,11 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                                 const SizedBox(height: 5),
                                 Text(
                                   S.of(context).cart_delivery_headline,
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                                 Text(_getDeliveryPaymentInfo(state),
                                     style:
-                                        Theme.of(context).textTheme.bodyText2),
+                                        Theme.of(context).textTheme.bodyMedium),
                               ],
                             ),
                           ),
@@ -249,11 +253,11 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                                 const SizedBox(height: 8),
                                 Text(
                                   S.of(context).cart_pickup_headline,
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                                 Text(_getPickupPaymentInfo(state),
                                     style:
-                                        Theme.of(context).textTheme.bodyText2),
+                                        Theme.of(context).textTheme.bodyMedium),
                               ],
                             ),
                           ),

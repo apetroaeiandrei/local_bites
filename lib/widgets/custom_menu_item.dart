@@ -26,7 +26,7 @@ class CustomMenuItem extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 Visibility(
                   visible: showArrow,

@@ -39,7 +39,7 @@ class HomeScreenCard extends StatelessWidget {
               Center(
                 child: Text(
                   restaurant.name,
-                  style: Theme.of(context).textTheme.headline1!.copyWith(
+                  style: Theme.of(context).textTheme.displayLarge!.copyWith(
                         foreground: Paint()
                           ..style = PaintingStyle.stroke
                           ..strokeWidth = 4
@@ -50,7 +50,7 @@ class HomeScreenCard extends StatelessWidget {
               Center(
                 child: Text(
                   restaurant.name,
-                  style: Theme.of(context).textTheme.headline1!.copyWith(
+                  style: Theme.of(context).textTheme.displayLarge!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
                 ),
@@ -91,9 +91,10 @@ class HomeScreenCard extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: Text(
                         S.of(context).home_restaurant_closed,
-                        style: Theme.of(context).textTheme.headline3!.copyWith(
-                              color: Theme.of(context).colorScheme.surface,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.displaySmall!.copyWith(
+                                  color: Theme.of(context).colorScheme.surface,
+                                ),
                       ),
                     ),
                   ),
@@ -124,7 +125,7 @@ class HomeScreenCard extends StatelessWidget {
       ),
       child: Text(
         labelText,
-        style: Theme.of(context).textTheme.headline6!.copyWith(
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(
               color: Theme.of(context).colorScheme.onPrimary,
             ),
       ),

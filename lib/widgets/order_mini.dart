@@ -49,7 +49,7 @@ class OrderMini extends StatelessWidget {
                       children: [
                         Text(
                           order.restaurantName,
-                          style: Theme.of(context).textTheme.headline3,
+                          style: Theme.of(context).textTheme.displaySmall,
                         ),
                         const SizedBox(
                           height: 2,
@@ -58,7 +58,7 @@ class OrderMini extends StatelessWidget {
                           visible: _isEtaVisible(),
                           child: Text(
                             _getEta(context, order),
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
                         ),
                         const SizedBox(
@@ -66,10 +66,12 @@ class OrderMini extends StatelessWidget {
                         ),
                         Text(
                           order.status.toUserString(context),
-                          style:
-                              Theme.of(context).textTheme.headline3?.copyWith(
-                                    color: order.status.toTextColor(),
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall
+                              ?.copyWith(
+                                color: order.status.toTextColor(),
+                              ),
                         ),
                         const SizedBox(
                           height: 4,
@@ -77,7 +79,7 @@ class OrderMini extends StatelessWidget {
                         Text(
                           S.of(context).price_currency_ron(
                               order.total.toStringAsFixed(2)),
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),

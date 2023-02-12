@@ -32,19 +32,19 @@ class OrderListItem extends StatelessWidget {
               children: [
                 Text(
                   order.restaurantName,
-                  style: Theme.of(context).textTheme.headline3,
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
                 const SizedBox(
                   height: 4,
                 ),
                 Text(order.date.toUserString(),
-                    style: Theme.of(context).textTheme.subtitle2),
+                    style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(
                   height: 12,
                 ),
                 Text(
                   order.status.toUserString(context),
-                  style: Theme.of(context).textTheme.headline3?.copyWith(
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         color: order.status.toTextColor(),
                       ),
                 ),
@@ -53,7 +53,7 @@ class OrderListItem extends StatelessWidget {
                 ),
                 Text(
                   S.of(context).price_currency_ron(order.total),
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),

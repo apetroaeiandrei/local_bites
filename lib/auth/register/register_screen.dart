@@ -172,7 +172,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         padding: const EdgeInsets.all(40.0),
                         child: RichText(
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme.of(context).textTheme.headlineSmall,
                             children: [
                               TextSpan(text: S.of(context).terms1),
                               TextSpan(
@@ -183,7 +183,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 text: S.of(context).terms_clickable,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline5
+                                    .headlineSmall
                                     ?.copyWith(
                                         color: Theme.of(context)
                                             .colorScheme

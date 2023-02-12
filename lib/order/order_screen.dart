@@ -50,7 +50,9 @@ class _OrderScreenState extends State<OrderScreen> {
                           children: [
                             Expanded(
                               child: Text(state.restaurant!.name,
-                                  style: Theme.of(context).textTheme.headline2),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayMedium),
                             ),
                             IconButton(
                                 onPressed: () {
@@ -84,7 +86,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             S.of(context).order_details_restaurant_see_menu,
                             style: Theme.of(context)
                                 .textTheme
-                                .headline4!
+                                .headlineMedium!
                                 .copyWith(color: WlColors.primary),
                           ),
                         ),
@@ -102,7 +104,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                 state.order!.status.toUserString(context),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline2
+                                    .displayMedium
                                     ?.copyWith(
                                       color: state.order!.status.toTextColor(),
                                     ),
@@ -118,7 +120,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         Visibility(
                           visible: state.order!.mentions.isNotEmpty,
                           child: Text(S.of(context).cart_mentions,
-                              style: Theme.of(context).textTheme.headline3),
+                              style: Theme.of(context).textTheme.displaySmall),
                         ),
                         Visibility(
                           visible: state.order!.mentions.isNotEmpty,
@@ -129,7 +131,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               bottom: Dimens.defaultPadding,
                             ),
                             child: Text(state.order!.mentions,
-                                style: Theme.of(context).textTheme.bodyText2),
+                                style: Theme.of(context).textTheme.bodyMedium),
                           ),
                         ),
                         _getConfiguration(state),
@@ -139,18 +141,18 @@ class _OrderScreenState extends State<OrderScreen> {
                           margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                         ),
                         Text(S.of(context).cart_summary,
-                            style: Theme.of(context).textTheme.headline3),
+                            style: Theme.of(context).textTheme.displaySmall),
                         const SizedBox(height: 12),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(S.of(context).cart_products,
-                                style: Theme.of(context).textTheme.subtitle1),
+                                style: Theme.of(context).textTheme.titleMedium),
                             Text(
                                 S.of(context).price_currency_ron(state
                                     .order!.totalProducts
                                     .toStringAsFixed(2)),
-                                style: Theme.of(context).textTheme.subtitle1),
+                                style: Theme.of(context).textTheme.titleMedium),
                           ],
                         ),
                         const SizedBox(height: 2),
@@ -160,7 +162,8 @@ class _OrderScreenState extends State<OrderScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(S.of(context).cart_delivery_fee,
-                                  style: Theme.of(context).textTheme.subtitle1),
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium),
                               Text(
                                   state.order!.deliveryFee > 0
                                       ? S
@@ -169,7 +172,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                               .order!.deliveryFee
                                               .toStringAsFixed(1))
                                       : S.of(context).cart_delivery_fee_free,
-                                  style: Theme.of(context).textTheme.subtitle1),
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium),
                             ],
                           ),
                         ),
@@ -178,11 +182,13 @@ class _OrderScreenState extends State<OrderScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(S.of(context).cart_total.toUpperCase(),
-                                style: Theme.of(context).textTheme.headline4),
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium),
                             Text(
                                 S.of(context).price_currency_ron(
                                     state.order!.total.toStringAsFixed(2)),
-                                style: Theme.of(context).textTheme.headline4),
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium),
                           ],
                         ),
                         const SizedBox(height: 70),
@@ -208,7 +214,7 @@ class _OrderScreenState extends State<OrderScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(S.of(context).cart_delivery_headline,
-            style: Theme.of(context).textTheme.headline3),
+            style: Theme.of(context).textTheme.displaySmall),
         const SizedBox(height: 4),
         Container(
           margin: const EdgeInsets.only(top: 8),
@@ -241,10 +247,10 @@ class _OrderScreenState extends State<OrderScreen> {
         ),
         const SizedBox(height: 8),
         Text(state.deliveryStreet,
-            style: Theme.of(context).textTheme.headline5),
+            style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 8),
         Text(state.deliveryPropertyDetails,
-            style: Theme.of(context).textTheme.bodyText2),
+            style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 8),
       ],
     );
@@ -255,7 +261,7 @@ class _OrderScreenState extends State<OrderScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(S.of(context).cart_pickup_headline,
-            style: Theme.of(context).textTheme.headline3),
+            style: Theme.of(context).textTheme.displaySmall),
         const SizedBox(
           height: 4,
         ),
@@ -290,7 +296,7 @@ class _OrderScreenState extends State<OrderScreen> {
         ),
         const SizedBox(height: 8),
         Text(state.restaurantAddress,
-            style: Theme.of(context).textTheme.headline5),
+            style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 8),
       ],
     );

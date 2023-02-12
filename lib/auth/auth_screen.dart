@@ -72,7 +72,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                     Text(
                       S.of(context).auth_subtitle,
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                       textAlign: TextAlign.start,
                     ),
                     Padding(
@@ -116,7 +116,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           S.of(context).auth_error,
                           style: Theme.of(context)
                               .textTheme
-                              .headline6
+                              .titleLarge
                               ?.copyWith(color: WlColors.error),
                         ),
                       ),
@@ -165,7 +165,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           padding: const EdgeInsets.only(left: 12, right: 12),
                           child: Text(
                             S.of(context).auth_divider,
-                            style: Theme.of(context).textTheme.subtitle1,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ),
                         Expanded(
@@ -197,7 +197,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       padding: const EdgeInsets.all(40.0),
                       child: RichText(
                         text: TextSpan(
-                          style: Theme.of(context).textTheme.headline5,
+                          style: Theme.of(context).textTheme.headlineSmall,
                           children: [
                             TextSpan(text: S.of(context).terms1),
                             TextSpan(
@@ -208,7 +208,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               text: S.of(context).terms_clickable,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline5
+                                  .headlineSmall
                                   ?.copyWith(color: WlColors.primary),
                             ),
                           ],

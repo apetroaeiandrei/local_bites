@@ -65,11 +65,11 @@ class _CartScreenState extends State<CartScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(S.of(context).cart_order_headline,
-                          style: Theme.of(context).textTheme.headline2),
+                          style: Theme.of(context).textTheme.displayMedium),
                       Text(
                           S.of(context).cart_order_summary(
                               state.cartCount, state.restaurantName),
-                          style: Theme.of(context).textTheme.bodyText2),
+                          style: Theme.of(context).textTheme.bodyMedium),
                       const SizedBox(height: 32),
                       ...state.cartItems.map((item) {
                         return CartItem(
@@ -107,7 +107,8 @@ class _CartScreenState extends State<CartScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(S.of(context).cart_mentions,
-                                style: Theme.of(context).textTheme.headline3),
+                                style:
+                                    Theme.of(context).textTheme.displaySmall),
                             const Icon(
                               Icons.arrow_forward_ios,
                             ),
@@ -120,7 +121,7 @@ class _CartScreenState extends State<CartScreen> {
                           right: 50,
                         ),
                         child: Text(state.mentions,
-                            style: Theme.of(context).textTheme.bodyText2),
+                            style: Theme.of(context).textTheme.bodyMedium),
                       ),
                       const SizedBox(height: Dimens.defaultPadding),
                       _getConfiguration(state),
@@ -130,17 +131,17 @@ class _CartScreenState extends State<CartScreen> {
                         margin: const EdgeInsets.fromLTRB(0, 28, 0, 20),
                       ),
                       Text(S.of(context).cart_summary,
-                          style: Theme.of(context).textTheme.headline3),
+                          style: Theme.of(context).textTheme.displaySmall),
                       const SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(S.of(context).cart_products,
-                              style: Theme.of(context).textTheme.subtitle1),
+                              style: Theme.of(context).textTheme.titleMedium),
                           Text(
                               S.of(context).price_currency_ron(
                                   state.cartTotal.toStringAsFixed(2)),
-                              style: Theme.of(context).textTheme.subtitle1),
+                              style: Theme.of(context).textTheme.titleMedium),
                         ],
                       ),
                       const SizedBox(height: 2),
@@ -150,13 +151,13 @@ class _CartScreenState extends State<CartScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(S.of(context).cart_delivery_fee,
-                                style: Theme.of(context).textTheme.subtitle1),
+                                style: Theme.of(context).textTheme.titleMedium),
                             Text(
                                 state.deliveryFee > 0
                                     ? S.of(context).cart_delivery_fee_currency(
                                         state.deliveryFee.toStringAsFixed(1))
                                     : S.of(context).cart_delivery_fee_free,
-                                style: Theme.of(context).textTheme.subtitle1),
+                                style: Theme.of(context).textTheme.titleMedium),
                           ],
                         ),
                       ),
@@ -165,12 +166,14 @@ class _CartScreenState extends State<CartScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(S.of(context).cart_total.toUpperCase(),
-                              style: Theme.of(context).textTheme.headline4),
+                              style:
+                                  Theme.of(context).textTheme.headlineMedium),
                           Text(
                               S.of(context).price_currency_ron(
                                   _getTotalWithDelivery(state)
                                       .toStringAsFixed(2)),
-                              style: Theme.of(context).textTheme.headline4),
+                              style:
+                                  Theme.of(context).textTheme.headlineMedium),
                         ],
                       ),
                       const SizedBox(height: 70),
@@ -259,7 +262,7 @@ class _CartScreenState extends State<CartScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(S.of(context).cart_delivery_headline,
-            style: Theme.of(context).textTheme.headline3),
+            style: Theme.of(context).textTheme.displaySmall),
         const SizedBox(height: 4),
         _getPaymentInfoWidget(_getDeliveryPaymentInfo(state)),
         Container(
@@ -293,10 +296,10 @@ class _CartScreenState extends State<CartScreen> {
         ),
         const SizedBox(height: 8),
         Text(state.deliveryStreet,
-            style: Theme.of(context).textTheme.headline5),
+            style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 8),
         Text(state.deliveryPropertyDetails,
-            style: Theme.of(context).textTheme.bodyText2),
+            style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 8),
       ],
     );
@@ -307,7 +310,7 @@ class _CartScreenState extends State<CartScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(S.of(context).cart_pickup_headline,
-            style: Theme.of(context).textTheme.headline3),
+            style: Theme.of(context).textTheme.displaySmall),
         const SizedBox(
           height: 4,
         ),
@@ -343,7 +346,7 @@ class _CartScreenState extends State<CartScreen> {
         ),
         const SizedBox(height: 8),
         Text(state.restaurantAddress,
-            style: Theme.of(context).textTheme.headline5),
+            style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 8),
       ],
     );
@@ -354,7 +357,7 @@ class _CartScreenState extends State<CartScreen> {
       text,
       style: Theme.of(context)
           .textTheme
-          .headline5
+          .headlineSmall
           ?.copyWith(color: Theme.of(context).colorScheme.secondary),
     );
   }
@@ -422,7 +425,7 @@ class _CartScreenState extends State<CartScreen> {
           Expanded(
             child: Text(
               infoText,
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
         ],

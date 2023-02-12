@@ -15,10 +15,7 @@ class _MentionsScreenState extends State<MentionsScreen> {
 
   @override
   void didChangeDependencies() {
-    final args = ModalRoute
-        .of(context)
-        ?.settings
-        .arguments as String?;
+    final args = ModalRoute.of(context)?.settings.arguments as String?;
     _textController.text = args ?? "";
     super.didChangeDependencies();
   }
@@ -27,9 +24,7 @@ class _MentionsScreenState extends State<MentionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S
-            .of(context)
-            .mentions_title),
+        title: Text(S.of(context).mentions_title),
       ),
       body: Padding(
         padding: const EdgeInsets.all(Dimens.defaultPadding),
@@ -37,13 +32,8 @@ class _MentionsScreenState extends State<MentionsScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              S
-                  .of(context)
-                  .mentions_headline,
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline3,
+              S.of(context).mentions_headline,
+              style: Theme.of(context).textTheme.displaySmall,
             ),
             const SizedBox(height: Dimens.space_16),
             Expanded(
@@ -51,9 +41,7 @@ class _MentionsScreenState extends State<MentionsScreen> {
                 controller: _textController,
                 textAlignVertical: TextAlignVertical.top,
                 decoration: InputDecoration(
-                  hintText: S
-                      .of(context)
-                      .mentions_placeholder,
+                  hintText: S.of(context).mentions_placeholder,
                   hintMaxLines: 10,
                   border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(
@@ -62,7 +50,7 @@ class _MentionsScreenState extends State<MentionsScreen> {
                     borderSide: BorderSide.none,
                   ),
                   contentPadding:
-                  const EdgeInsets.only(right: 50, left: 10, top: 10),
+                      const EdgeInsets.only(right: 50, left: 10, top: 10),
                   fillColor: Colors.black.withOpacity(0.04),
                   filled: true,
                 ),
@@ -75,9 +63,7 @@ class _MentionsScreenState extends State<MentionsScreen> {
               onPressed: () {
                 Navigator.of(context).pop(_textController.text);
               },
-              child: Text(S
-                  .of(context)
-                  .mentions_save),
+              child: Text(S.of(context).mentions_save),
             ),
             const SafeArea(
               child: SizedBox(),
