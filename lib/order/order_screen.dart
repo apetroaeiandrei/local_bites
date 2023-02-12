@@ -147,8 +147,9 @@ class _OrderScreenState extends State<OrderScreen> {
                             Text(S.of(context).cart_products,
                                 style: Theme.of(context).textTheme.subtitle1),
                             Text(
-                                S.of(context).price_currency_ron(
-                                    state.order!.totalProducts),
+                                S.of(context).price_currency_ron(state
+                                    .order!.totalProducts
+                                    .toStringAsFixed(2)),
                                 style: Theme.of(context).textTheme.subtitle1),
                           ],
                         ),
@@ -179,9 +180,8 @@ class _OrderScreenState extends State<OrderScreen> {
                             Text(S.of(context).cart_total.toUpperCase(),
                                 style: Theme.of(context).textTheme.headline4),
                             Text(
-                                S
-                                    .of(context)
-                                    .price_currency_ron(state.order!.total),
+                                S.of(context).price_currency_ron(
+                                    state.order!.total.toStringAsFixed(2)),
                                 style: Theme.of(context).textTheme.headline4),
                           ],
                         ),

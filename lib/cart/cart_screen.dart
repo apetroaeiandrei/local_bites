@@ -138,7 +138,8 @@ class _CartScreenState extends State<CartScreen> {
                           Text(S.of(context).cart_products,
                               style: Theme.of(context).textTheme.subtitle1),
                           Text(
-                              S.of(context).price_currency_ron(state.cartTotal),
+                              S.of(context).price_currency_ron(
+                                  state.cartTotal.toStringAsFixed(2)),
                               style: Theme.of(context).textTheme.subtitle1),
                         ],
                       ),
@@ -167,7 +168,8 @@ class _CartScreenState extends State<CartScreen> {
                               style: Theme.of(context).textTheme.headline4),
                           Text(
                               S.of(context).price_currency_ron(
-                                  _getTotalWithDelivery(state)),
+                                  _getTotalWithDelivery(state)
+                                      .toStringAsFixed(2)),
                               style: Theme.of(context).textTheme.headline4),
                         ],
                       ),

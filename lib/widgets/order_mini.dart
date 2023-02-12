@@ -75,7 +75,8 @@ class OrderMini extends StatelessWidget {
                           height: 4,
                         ),
                         Text(
-                          S.of(context).price_currency_ron(order.total),
+                          S.of(context).price_currency_ron(
+                              order.total.toStringAsFixed(2)),
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ],
