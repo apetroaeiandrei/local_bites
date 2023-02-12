@@ -216,11 +216,19 @@ class UserRepo {
 
   Future<bool> sendFeedback(UserOrder userOrder, String feedback,
       bool isPositive, List<FeedbackSuggestions> suggestions) async {
-    final doc = _firestore
+    final restaurantDoc = _firestore
         .collection(_collectionRestaurants)
-        .doc(userOrder.restaurantId)
-        .collection(_collectionFeedback)
-        .doc();
+        .doc(userOrder.restaurantId);
+    if (isPositive) {
+      restaurantDoc.update({
+        "feedbackPositive": FieldValue.increment(1),
+      });
+    } else {
+      restaurantDoc.update({
+        "feedbackNegative": FieldValue.increment(1),
+      });
+    }
+    final doc = restaurantDoc.collection(_collectionFeedback).doc();
     final FeedbackModel feedbackModel = FeedbackModel(
       id: doc.id,
       comment: feedback,
