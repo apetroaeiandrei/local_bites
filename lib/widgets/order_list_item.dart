@@ -52,7 +52,9 @@ class OrderListItem extends StatelessWidget {
                   height: 4,
                 ),
                 Text(
-                  S.of(context).price_currency_ron(order.total),
+                  S
+                      .of(context)
+                      .price_currency_ron(order.total.toStringAsFixed(2)),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
