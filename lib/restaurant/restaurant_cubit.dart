@@ -13,8 +13,8 @@ part 'restaurant_state.dart';
 
 class RestaurantCubit extends Cubit<RestaurantState> {
   RestaurantCubit(
-      this._userRepo,
-      this._restaurantsRepo,
+    this._userRepo,
+    this._restaurantsRepo,
     this._cartRepo,
     this._restaurant,
   ) : super(RestaurantState(
@@ -60,6 +60,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
         deliveryFee: _restaurant.deliveryFee,
       ),
     );
+    if (isClosed) return;
     emit(state.copyWith(
       minimumOrder: deliveryZone.minimumOrder,
       deliveryFee: deliveryZone.deliveryFee,
