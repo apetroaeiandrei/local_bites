@@ -36,6 +36,9 @@ class FoodDetailsCubit extends Cubit<FoodDetailsState> {
   void _init() async {
     final optionCategories =
         await _restaurantsRepo.getFoodOptionsAsync(state.food.optionIds);
+    if (isClosed) {
+      return;
+    }
     emit(state.copyWith(
       options: optionCategories,
       status: FoodDetailsStatus.initial,
