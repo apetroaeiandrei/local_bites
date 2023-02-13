@@ -49,10 +49,13 @@ class AppConfig {
 
   static Future<String?> checkAppVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    final appVersion = await FirebaseFirestore.instance.collection("version").doc("app").get();
-    final firebaseVersionCode = appVersion.data()?["versionCode"] as String;
-    final appVersionCode = packageInfo.buildNumber;
-    if (firebaseVersionCode != appVersionCode) {
+    final appVersion =
+        await FirebaseFirestore.instance.collection("version").doc("app").get();
+    final firebaseVersionCode =
+        int.parse(appVersion.data()?["versionCode"] as String);
+    final appVersionCode = int.parse(packageInfo.buildNumber);
+
+    if (firebaseVersionCode > appVersionCode) {
       return appVersion.data()?["message"];
     }
     return null;
