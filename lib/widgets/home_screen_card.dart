@@ -110,7 +110,10 @@ class HomeScreenCard extends StatelessWidget {
   Widget _getDeliveryLabel(BuildContext context) {
     String labelText;
     Color labelColor;
-    if (!restaurant.hasDelivery) {
+    if (restaurant.hasExternalDelivery) {
+      labelText = S.of(context).home_restaurant_external_delivery;
+      labelColor = Theme.of(context).colorScheme.secondary;
+    } else if (!restaurant.hasDelivery) {
       labelText = S.of(context).home_restaurant_pickup;
       labelColor = Theme.of(context).colorScheme.primary;
     } else {
