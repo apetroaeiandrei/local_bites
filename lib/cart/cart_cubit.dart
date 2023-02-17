@@ -1,5 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:google_directions_api/google_directions_api.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:local/constants.dart';
 import 'package:local/repos/cart_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
@@ -29,7 +32,8 @@ class CartCubit extends Cubit<CartState> {
             minOrder: _restaurantsRepo.selectedRestaurant.minimumOrder,
             deliveryFee: _restaurantsRepo.selectedRestaurant.deliveryFee,
             amountToMinOrder: 0,
-            hasDelivery: _restaurantsRepo.selectedRestaurant.hasDelivery,
+            hasDelivery: _restaurantsRepo.selectedRestaurant.hasDelivery ||
+                _restaurantsRepo.selectedRestaurant.hasExternalDelivery,
             hasPickup: _restaurantsRepo.selectedRestaurant.hasPickup,
             hasDeliveryCash:
                 _restaurantsRepo.selectedRestaurant.hasDeliveryCash,
@@ -49,7 +53,7 @@ class CartCubit extends Cubit<CartState> {
   final _delayedDuration = const Duration(milliseconds: 10);
 
   Future<void> init() async {
-    await _getDeliveryZones();
+    _getDelivery();
     Future.delayed(_delayedDuration, () {
       _refreshCart();
     });
@@ -107,6 +111,19 @@ class CartCubit extends Cubit<CartState> {
         _cartRepo.cartTotal == 0;
   }
 
+  _getDelivery() {
+    if (_restaurantsRepo.selectedRestaurant.hasExternalDelivery) {
+      final LatLng restaurantLocation = LatLng(
+          _restaurantsRepo.selectedRestaurant.location.latitude,
+          _restaurantsRepo.selectedRestaurant.location.longitude);
+      final LatLng userLocation =
+          LatLng(state.deliveryLatitude, state.deliveryLongitude);
+      _getExternalDeliveryPrice(restaurantLocation, userLocation);
+    } else {
+      _getDeliveryZones();
+    }
+  }
+
   _getDeliveryZones() async {
     final restaurant = _restaurantsRepo.selectedRestaurant;
     final List<DeliveryZone> deliveryZones =
@@ -128,5 +145,44 @@ class CartCubit extends Cubit<CartState> {
       minOrder: _deliveryZone.minimumOrder,
       deliveryFee: _deliveryZone.deliveryFee,
     ));
+  }
+
+  void _getExternalDeliveryPrice(
+      LatLng restaurantLocation, LatLng userLocation) {
+    DirectionsService.init(Constants.directionsApiKey);
+
+    final directionsService = DirectionsService();
+
+    final request = DirectionsRequest(
+      origin: GeoCoord(
+        restaurantLocation.latitude,
+        restaurantLocation.longitude,
+      ),
+      destination: GeoCoord(
+        userLocation.latitude,
+        userLocation.longitude,
+      ),
+      travelMode: TravelMode.driving,
+    );
+
+    directionsService.route(request,
+        (DirectionsResult response, DirectionsStatus? status) {
+      if (status == DirectionsStatus.ok) {
+        num distance = 0;
+        for (var element in response.routes!.first.legs!) {
+          distance += element.distance!.value!;
+        }
+        int deliveryFee = _computeDeliveryPrice(distance.toInt());
+        emit(state.copyWith(deliveryFee: deliveryFee));
+      } else {
+        emit(state.copyWith(deliveryFee: Constants.deliveryPriceErrorDefault));
+      }
+    });
+  }
+
+  int _computeDeliveryPrice(int routeDistanceMeters) {
+    int adjustedKm = (routeDistanceMeters / 1000).ceil();
+    return Constants.deliveryPriceStart +
+        (adjustedKm * Constants.deliveryPricePerKm);
   }
 }

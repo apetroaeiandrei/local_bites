@@ -63,6 +63,7 @@ dependencies:
   firebase_crashlytics: ^3.0.12
   firebase_app_check: ^0.1.1+9
   package_info_plus: ^3.0.3
+  google_directions_api: ^0.9.1
 
 dev_dependencies:
   flutter_test:
