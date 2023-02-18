@@ -96,18 +96,24 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void _refreshCart() {
-    num amountToMinOrder = state.minOrder - _cartRepo.cartTotal;
-    amountToMinOrder = double.parse(amountToMinOrder.toStringAsFixed(2));
-    num deliveryFee = amountToMinOrder <= 0 ? 0 : _deliveryZone.deliveryFee;
+    num amountToMinOrder = 0;
+    num deliveryFee = state.deliveryFee;
+    CartStatus status = CartStatus.initial;
+    if (!_restaurantsRepo.selectedRestaurant.hasExternalDelivery) {
+      amountToMinOrder = state.minOrder - _cartRepo.cartTotal;
+      amountToMinOrder = double.parse(amountToMinOrder.toStringAsFixed(2));
+      deliveryFee = amountToMinOrder <= 0 ? 0 : _deliveryZone.deliveryFee;
+      status = _isNotMinimumOrder()
+          ? CartStatus.minimumOrderError
+          : CartStatus.initial;
+    }
     emit(state.copyWith(
         cartCount: _cartRepo.cartCount,
         cartTotal: _cartRepo.cartTotal,
         cartItems: _cartRepo.cartItems,
         deliveryFee: deliveryFee,
         amountToMinOrder: amountToMinOrder > 0 ? amountToMinOrder : 0,
-        status: _isNotMinimumOrder()
-            ? CartStatus.minimumOrderError
-            : CartStatus.initial));
+        status: status));
   }
 
   bool _isNotMinimumOrder() {

@@ -33,6 +33,9 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<CartCubit, CartState>(
       listener: (context, state) {
+        if (state.cartTotal == 0) {
+          Navigator.of(context).pop();
+        }
         if (state.status == CartStatus.orderSuccess) {
           Navigator.of(context).popUntil((route) => route.isFirst);
         } else if (state.status == CartStatus.restaurantClosed) {
@@ -40,9 +43,6 @@ class _CartScreenState extends State<CartScreen> {
           _showRestaurantClosedDialog(context);
         } else if (state.status == CartStatus.minimumOrderError) {
           _analytics.logEvent(name: Metric.eventCartMinOrder);
-          if (state.cartTotal == 0) {
-            Navigator.of(context).pop();
-          }
         }
       },
       builder: (context, state) {
