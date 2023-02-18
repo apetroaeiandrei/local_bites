@@ -80,8 +80,8 @@ class CartRepo {
     return sortedFoods;
   }
 
-  Future<bool> placeOrder(
-      String mentions, bool isDelivery, num deliveryFee) async {
+  Future<bool> placeOrder(String mentions, bool isDelivery, num deliveryFee,
+      int deliveryEta) async {
     final address = _userRepo.address!;
     final user = _userRepo.user!;
 
@@ -99,6 +99,7 @@ class CartRepo {
       settled: false,
       isDelivery: isDelivery,
       deliveryFee: deliveryFee,
+      deliveryEta: deliveryEta,
       eta: 0,
       latitude: address.latitude,
       longitude: address.longitude,
@@ -110,6 +111,8 @@ class CartRepo {
       number: Random().nextInt(1000).toString(),
       totalProducts: cartTotal,
       total: cartTotal + (isDelivery ? deliveryFee : 0),
+      courierId: '',
+      courierName: '',
     );
     await orderDoc.set(order.toMap());
     clearCart();

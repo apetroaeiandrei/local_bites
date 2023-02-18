@@ -12,9 +12,11 @@ abstract class Constants {
   static String appStoreUrl =
       "https://apps.apple.com/us/app/local-bites/id1658342286";
 
+  static int deliveryEtaErrorDefault = 10;
   static int deliveryPriceErrorDefault = 10;
   static int deliveryPriceStart = 3;
   static int deliveryPricePerKm = 2;
 
   static String directionsApiKey = 'DIRECTIONS_API_KEY';
+
 }

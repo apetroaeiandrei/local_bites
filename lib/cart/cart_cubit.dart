@@ -31,6 +31,7 @@ class CartCubit extends Cubit<CartState> {
             restaurantAddress: _restaurantsRepo.selectedRestaurant.address,
             minOrder: _restaurantsRepo.selectedRestaurant.minimumOrder,
             deliveryFee: _restaurantsRepo.selectedRestaurant.deliveryFee,
+            deliveryEta: 0,
             amountToMinOrder: 0,
             hasDelivery: _restaurantsRepo.selectedRestaurant.hasDelivery ||
                 _restaurantsRepo.selectedRestaurant.hasExternalDelivery,
@@ -67,8 +68,12 @@ class CartCubit extends Cubit<CartState> {
       });
       return;
     }
-    final success = await _cartRepo.placeOrder(state.mentions,
-        deliverySelected && state.hasDelivery, state.deliveryFee);
+    final success = await _cartRepo.placeOrder(
+      state.mentions,
+      deliverySelected && state.hasDelivery,
+      state.deliveryFee,
+      state.deliveryEta.toInt(),
+    );
     if (success) {
       emit(state.copyWith(status: CartStatus.orderSuccess));
     } else {
@@ -169,13 +174,19 @@ class CartCubit extends Cubit<CartState> {
         (DirectionsResult response, DirectionsStatus? status) {
       if (status == DirectionsStatus.ok) {
         num distance = 0;
+        num etaSeconds = 0;
         for (var element in response.routes!.first.legs!) {
           distance += element.distance!.value!;
+          etaSeconds += element.duration!.value!;
         }
         int deliveryFee = _computeDeliveryPrice(distance.toInt());
-        emit(state.copyWith(deliveryFee: deliveryFee));
+        int etaMinutes = (etaSeconds / 60).ceil();
+        emit(state.copyWith(deliveryFee: deliveryFee, deliveryEta: etaMinutes));
       } else {
-        emit(state.copyWith(deliveryFee: Constants.deliveryPriceErrorDefault));
+        emit(state.copyWith(
+          deliveryFee: Constants.deliveryPriceErrorDefault,
+          deliveryEta: Constants.deliveryEtaErrorDefault,
+        ));
       }
     });
   }

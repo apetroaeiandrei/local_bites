@@ -24,6 +24,7 @@ class CartState extends Equatable {
   final String restaurantAddress;
   final num minOrder;
   final num deliveryFee;
+  final num deliveryEta;
   final num amountToMinOrder;
   final bool hasDelivery;
   final bool hasPickup;
@@ -49,6 +50,7 @@ class CartState extends Equatable {
         restaurantAddress,
         minOrder,
         deliveryFee,
+        deliveryEta,
         amountToMinOrder,
         hasDelivery,
         hasPickup,
@@ -74,6 +76,7 @@ class CartState extends Equatable {
     required this.restaurantAddress,
     required this.minOrder,
     required this.deliveryFee,
+    required this.deliveryEta,
     required this.amountToMinOrder,
     required this.hasDelivery,
     required this.hasPickup,
@@ -99,6 +102,7 @@ class CartState extends Equatable {
     String? restaurantAddress,
     num? minOrder,
     num? deliveryFee,
+    num? deliveryEta,
     num? amountToMinOrder,
     bool? hasDelivery,
     bool? hasPickup,
@@ -124,6 +128,7 @@ class CartState extends Equatable {
       restaurantAddress: restaurantAddress ?? this.restaurantAddress,
       minOrder: minOrder ?? this.minOrder,
       deliveryFee: deliveryFee ?? this.deliveryFee,
+      deliveryEta: deliveryEta ?? this.deliveryEta,
       amountToMinOrder: amountToMinOrder ?? this.amountToMinOrder,
       hasDelivery: hasDelivery ?? this.hasDelivery,
       hasPickup: hasPickup ?? this.hasPickup,
