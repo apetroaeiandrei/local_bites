@@ -41,7 +41,12 @@ class CartCubit extends Cubit<CartState> {
             hasDeliveryCard:
                 _restaurantsRepo.selectedRestaurant.hasDeliveryCard,
             hasPickupCash: _restaurantsRepo.selectedRestaurant.hasPickupCash,
-            hasPickupCard: _restaurantsRepo.selectedRestaurant.hasPickupCard)) {
+            hasPickupCard: _restaurantsRepo.selectedRestaurant.hasPickupCard,
+            deliverySelected:
+                _restaurantsRepo.selectedRestaurant.hasExternalDelivery ||
+                    _restaurantsRepo.selectedRestaurant.hasDelivery,
+            hasExternalDelivery:
+                _restaurantsRepo.selectedRestaurant.hasExternalDelivery)) {
     init();
   }
 
@@ -54,13 +59,13 @@ class CartCubit extends Cubit<CartState> {
   final _delayedDuration = const Duration(milliseconds: 10);
 
   Future<void> init() async {
-    _getDelivery();
+    await _getDelivery();
     Future.delayed(_delayedDuration, () {
       _refreshCart();
     });
   }
 
-  Future<void> checkout(bool deliverySelected) async {
+  Future<void> checkout() async {
     if (!_restaurantsRepo.selectedRestaurant.open) {
       emit(state.copyWith(status: CartStatus.restaurantClosed));
       Future.delayed(_delayedDuration, () {
@@ -70,7 +75,7 @@ class CartCubit extends Cubit<CartState> {
     }
     final success = await _cartRepo.placeOrder(
       state.mentions,
-      deliverySelected && state.hasDelivery,
+      state.deliverySelected && state.hasDelivery,
       state.deliveryFee,
       state.deliveryEta.toInt(),
     );
@@ -99,9 +104,12 @@ class CartCubit extends Cubit<CartState> {
     num amountToMinOrder = 0;
     num deliveryFee = state.deliveryFee;
     CartStatus status = CartStatus.initial;
-    if (!_restaurantsRepo.selectedRestaurant.hasExternalDelivery) {
+    if (!_restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
+        state.deliverySelected) {
+      print("compute delivery fee");
       amountToMinOrder = state.minOrder - _cartRepo.cartTotal;
       amountToMinOrder = double.parse(amountToMinOrder.toStringAsFixed(2));
+      amountToMinOrder = amountToMinOrder > 0 ? amountToMinOrder : 0;
       deliveryFee = amountToMinOrder <= 0 ? 0 : _deliveryZone.deliveryFee;
       status = _isNotMinimumOrder()
           ? CartStatus.minimumOrderError
@@ -112,7 +120,7 @@ class CartCubit extends Cubit<CartState> {
         cartTotal: _cartRepo.cartTotal,
         cartItems: _cartRepo.cartItems,
         deliveryFee: deliveryFee,
-        amountToMinOrder: amountToMinOrder > 0 ? amountToMinOrder : 0,
+        amountToMinOrder: amountToMinOrder,
         status: status));
   }
 
@@ -122,7 +130,7 @@ class CartCubit extends Cubit<CartState> {
         _cartRepo.cartTotal == 0;
   }
 
-  _getDelivery() {
+  _getDelivery() async {
     if (_restaurantsRepo.selectedRestaurant.hasExternalDelivery) {
       final LatLng restaurantLocation = LatLng(
           _restaurantsRepo.selectedRestaurant.location.latitude,
@@ -131,7 +139,7 @@ class CartCubit extends Cubit<CartState> {
           LatLng(state.deliveryLatitude, state.deliveryLongitude);
       _getExternalDeliveryPrice(restaurantLocation, userLocation);
     } else {
-      _getDeliveryZones();
+      await _getDeliveryZones();
     }
   }
 
@@ -201,5 +209,9 @@ class CartCubit extends Cubit<CartState> {
     int adjustedKm = (routeDistanceMeters / 1000).ceil();
     return Constants.deliveryPriceStart +
         (adjustedKm * Constants.deliveryPricePerKm);
+  }
+
+  void toggleDeliverySelected() {
+    emit(state.copyWith(deliverySelected: !state.deliverySelected));
   }
 }

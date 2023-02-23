@@ -32,6 +32,8 @@ class CartState extends Equatable {
   final bool hasDeliveryCard;
   final bool hasPickupCash;
   final bool hasPickupCard;
+  final bool deliverySelected;
+  final bool hasExternalDelivery;
 
   @override
   List<Object> get props => [
@@ -58,6 +60,8 @@ class CartState extends Equatable {
         hasDeliveryCard,
         hasPickupCash,
         hasPickupCard,
+        deliverySelected,
+        hasExternalDelivery,
       ];
 
   const CartState({
@@ -84,6 +88,8 @@ class CartState extends Equatable {
     required this.hasDeliveryCard,
     required this.hasPickupCash,
     required this.hasPickupCard,
+    required this.deliverySelected,
+    required this.hasExternalDelivery,
   });
 
   CartState copyWith({
@@ -110,6 +116,8 @@ class CartState extends Equatable {
     bool? hasDeliveryCard,
     bool? hasPickupCash,
     bool? hasPickupCard,
+    bool? deliverySelected,
+    bool? hasExternalDelivery,
   }) {
     return CartState(
       status: status ?? this.status,
@@ -136,6 +144,8 @@ class CartState extends Equatable {
       hasDeliveryCard: hasDeliveryCard ?? this.hasDeliveryCard,
       hasPickupCash: hasPickupCash ?? this.hasPickupCash,
       hasPickupCard: hasPickupCard ?? this.hasPickupCard,
+      deliverySelected: deliverySelected ?? this.deliverySelected,
+      hasExternalDelivery: hasExternalDelivery ?? this.hasExternalDelivery,
     );
   }
 }

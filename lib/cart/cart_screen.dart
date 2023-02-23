@@ -27,8 +27,6 @@ class _CartScreenState extends State<CartScreen> {
   final _deliveryKey = GlobalKey();
   final _pickupKey = GlobalKey();
 
-  bool _deliverySelected = true;
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CartCubit, CartState>(
@@ -49,7 +47,7 @@ class _CartScreenState extends State<CartScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(S.of(context).cart_title),
-            bottom: state.amountToMinOrder == 0 || !_deliverySelected
+            bottom: state.amountToMinOrder == 0 || !state.deliverySelected
                 ? null
                 : PreferredSize(
                     preferredSize: const Size.fromHeight(48),
@@ -146,7 +144,7 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                       const SizedBox(height: 2),
                       Visibility(
-                        visible: state.hasDelivery && _deliverySelected,
+                        visible: state.hasDelivery && state.deliverySelected,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -195,7 +193,7 @@ class _CartScreenState extends State<CartScreen> {
                                 Metric.propertyOrderPrice:
                                     _getTotalWithDelivery(state),
                               });
-                          context.read<CartCubit>().checkout(_deliverySelected);
+                          context.read<CartCubit>().checkout();
                         },
                   child: Text(state.status == CartStatus.minimumOrderError
                       ? S.of(context).cart_button_min_order(state.minOrder)
@@ -210,7 +208,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   double _getTotalWithDelivery(CartState state) {
-    return state.hasDelivery && _deliverySelected
+    return state.hasDelivery && state.deliverySelected
         ? state.cartTotal + state.deliveryFee
         : state.cartTotal;
   }
@@ -233,7 +231,7 @@ class _CartScreenState extends State<CartScreen> {
 
   Widget _getConfiguration(CartState state) {
     if (state.hasDelivery && state.hasPickup) {
-      if (_deliverySelected) {
+      if (state.deliverySelected) {
         return Column(
           children: [
             _getDeliveryConfigurationWidget(state),
@@ -373,9 +371,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ),
         onPressed: () {
-          setState(() {
-            _deliverySelected = !_deliverySelected;
-          });
+          context.read<CartCubit>().toggleDeliverySelected();
         },
         child: Text(buttonText),
       ),
@@ -383,7 +379,9 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   String _getDeliveryPaymentInfo(CartState state) {
-    if (state.hasDeliveryCash && state.hasDeliveryCard) {
+    if (state.hasExternalDelivery && state.deliverySelected) {
+      return S.of(context).cart_pay_delivery_cash;
+    } else if (state.hasDeliveryCash && state.hasDeliveryCard) {
       return S.of(context).cart_pay_delivery_cash_and_card;
     } else if (state.hasDeliveryCash) {
       return S.of(context).cart_pay_delivery_cash;

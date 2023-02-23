@@ -115,7 +115,7 @@
   "cart_mentions": "Mențiuni speciale",
   "cart_mentions_headline": "Adaugă mențiunile tale",
   "cart_mentions_placeholder": "Anunță restaurantul de ce ar trebui să țină cont.",
-  "cart_delivery_fee" : "Taxă livrare",
+  "cart_delivery_fee" : "Livrare",
   "cart_delivery_fee_free" : "GRATUIT",
   "cart_delivery_fee_currency" : "{amount} RON",
   "cart_restaurant_closed_title" : "S-a închis",
