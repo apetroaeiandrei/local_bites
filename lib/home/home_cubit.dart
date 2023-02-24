@@ -15,6 +15,7 @@ import 'package:local/repos/user_repo.dart';
 import 'package:models/delivery_address.dart';
 import 'package:models/restaurant_model.dart';
 import 'package:models/user_order.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../analytics/metric.dart';
 import '../routes.dart';
@@ -235,6 +236,11 @@ class HomeCubit extends Cubit<HomeState> {
       }
     } catch (e) {
       if (_userRepo.addresses.length > 1) {
+        bool permissionGranted = await Permission.location.request().isGranted;
+        if (permissionGranted) {
+          return;
+        }
+
         final previousStatus = state.status;
         emit(state.copyWith(status: HomeStatus.showLocationPermissionDialog));
         Future.delayed(const Duration(milliseconds: 20), () {
