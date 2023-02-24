@@ -124,6 +124,8 @@
   "cart_pickup_button" : "Doresc ridicare personală",
   "cart_delivery_button" : "Doresc livrare la adresa mea",
   "cart_pickup_headline" : "Ridicare personală",
+  "cart_couriers_unavailable_title" : "Livratori indisponibili",
+    "cart_couriers_unavailable_content" : "Ne pare rău, dar nu avem niciun livrator disponibil în acest moment. Doar comenzile pentru ridicare personală sunt acceptate.",
 
   "cart_pay_delivery_cash_and_card" : "Plătești la livrare cu numerar sau card",
   "cart_pay_delivery_cash" : "Plătești la livrare cu numerar",

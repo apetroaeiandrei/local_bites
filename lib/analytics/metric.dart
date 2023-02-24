@@ -37,6 +37,7 @@ abstract class Metric {
   static const String eventCartMinOrder = "cart_min_order";
   static const String eventCartPlaceOrder = "cart_place_order";
   static const String eventCartRestaurantClosed = "cart_restaurant_closed";
+  static const String eventCartCouriersUnavailable = "cart_couriers_unavailable";
   static const String propertyOrderPrice = "price";
 
   static const String eventAuthError = "auth_error";

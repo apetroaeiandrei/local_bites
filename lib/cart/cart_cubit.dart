@@ -73,6 +73,19 @@ class CartCubit extends Cubit<CartState> {
       });
       return;
     }
+    if (_restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
+        !_restaurantsRepo.selectedRestaurant.couriersAvailable &&
+        state.deliverySelected) {
+      emit(state.copyWith(
+          status: CartStatus.couriersUnavailable,
+          hasExternalDelivery: false,
+          hasDelivery: false,
+          deliverySelected: false));
+      Future.delayed(_delayedDuration, () {
+        emit(state.copyWith(status: CartStatus.initial));
+      });
+      return;
+    }
     final success = await _cartRepo.placeOrder(
       state.mentions,
       state.deliverySelected && state.hasDelivery,

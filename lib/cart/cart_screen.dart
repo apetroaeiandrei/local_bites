@@ -41,6 +41,9 @@ class _CartScreenState extends State<CartScreen> {
           _showRestaurantClosedDialog(context);
         } else if (state.status == CartStatus.minimumOrderError) {
           _analytics.logEvent(name: Metric.eventCartMinOrder);
+        } else if (state.status == CartStatus.couriersUnavailable) {
+          _showCouriersUnavailableDialog(context);
+          _analytics.logEvent(name: Metric.eventCartCouriersUnavailable);
         }
       },
       builder: (context, state) {
@@ -184,7 +187,8 @@ class _CartScreenState extends State<CartScreen> {
                 left: Dimens.defaultPadding,
                 right: Dimens.defaultPadding,
                 child: ElevatedButton(
-                  onPressed: state.status == CartStatus.minimumOrderError && state.deliverySelected
+                  onPressed: state.status == CartStatus.minimumOrderError &&
+                          state.deliverySelected
                       ? null
                       : () {
                           _analytics.logEventWithParams(
@@ -428,6 +432,22 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showCouriersUnavailableDialog(BuildContext context) {
+    showPlatformDialog(
+      context: context,
+      title: S.of(context).cart_couriers_unavailable_title,
+      content: S.of(context).cart_couriers_unavailable_content,
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(S.of(context).cart_restaurant_closed_ok),
+        ),
+      ],
     );
   }
 }
