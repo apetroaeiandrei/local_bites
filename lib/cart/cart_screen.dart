@@ -184,7 +184,7 @@ class _CartScreenState extends State<CartScreen> {
                 left: Dimens.defaultPadding,
                 right: Dimens.defaultPadding,
                 child: ElevatedButton(
-                  onPressed: state.status == CartStatus.minimumOrderError
+                  onPressed: state.status == CartStatus.minimumOrderError && state.deliverySelected
                       ? null
                       : () {
                           _analytics.logEventWithParams(

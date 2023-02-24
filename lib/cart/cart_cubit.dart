@@ -14,7 +14,7 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   CartCubit(this._cartRepo, this._restaurantsRepo, this._userRepo)
       : super(CartState(
-            status: CartStatus.initial,
+            status: CartStatus.minimumOrderError,
             cartCount: _cartRepo.cartCount,
             cartTotal: _cartRepo.cartTotal,
             cartItems: _cartRepo.cartItems,
@@ -106,7 +106,6 @@ class CartCubit extends Cubit<CartState> {
     CartStatus status = CartStatus.initial;
     if (!_restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
         state.deliverySelected) {
-      print("compute delivery fee");
       amountToMinOrder = state.minOrder - _cartRepo.cartTotal;
       amountToMinOrder = double.parse(amountToMinOrder.toStringAsFixed(2));
       amountToMinOrder = amountToMinOrder > 0 ? amountToMinOrder : 0;
