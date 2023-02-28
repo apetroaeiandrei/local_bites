@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:local/analytics/metric.dart';
 import 'package:local/cart/cart_cubit.dart';
@@ -45,6 +46,8 @@ class _CartScreenState extends State<CartScreen> {
         } else if (state.status == CartStatus.couriersUnavailable) {
           _showCouriersUnavailableDialog(context);
           _analytics.logEvent(name: Metric.eventCartCouriersUnavailable);
+        } else if (state.status == CartStatus.stripeReady) {
+          initPaymentSheet(state);
         }
       },
       builder: (context, state) {
@@ -462,5 +465,34 @@ class _CartScreenState extends State<CartScreen> {
         ),
       ],
     );
+  }
+
+  Future<void> initPaymentSheet(CartState state) async {
+    try {
+      final data = state.stripePayData!;
+      // 2. initialize the payment sheet
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          // Enable custom flow
+          customFlow: false,
+          // Main params
+          merchantDisplayName: 'Flutter Stripe Store Demo',
+          paymentIntentClientSecret: data.paymentIntentClientSecret,
+          // Customer keys
+          customerEphemeralKeySecret: data.ephemeralKeySecret,
+          customerId: data.customer,
+          // Extra options
+          // applePay: const PaymentSheetApplePay(merchantCountryCode: 'RO'),
+          // googlePay: const PaymentSheetGooglePay(merchantCountryCode: 'RO'),
+          style: ThemeMode.light,
+        ),
+      );
+     Stripe.instance.presentPaymentSheet();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+      rethrow;
+    }
   }
 }

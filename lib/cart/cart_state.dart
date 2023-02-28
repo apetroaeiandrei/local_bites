@@ -8,6 +8,7 @@ enum CartStatus {
   restaurantClosed,
   couriersUnavailable,
   computingDelivery,
+  stripeReady,
 }
 
 class CartState extends Equatable {
@@ -36,9 +37,10 @@ class CartState extends Equatable {
   final bool hasPickupCard;
   final bool deliverySelected;
   final bool hasExternalDelivery;
+  final StripePayData? stripePayData;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         status,
         cartCount,
         cartTotal,
@@ -64,6 +66,7 @@ class CartState extends Equatable {
         hasPickupCard,
         deliverySelected,
         hasExternalDelivery,
+        stripePayData,
       ];
 
   const CartState({
@@ -92,6 +95,7 @@ class CartState extends Equatable {
     required this.hasPickupCard,
     required this.deliverySelected,
     required this.hasExternalDelivery,
+    this.stripePayData,
   });
 
   CartState copyWith({
@@ -120,6 +124,7 @@ class CartState extends Equatable {
     bool? hasPickupCard,
     bool? deliverySelected,
     bool? hasExternalDelivery,
+    StripePayData? stripePayData,
   }) {
     return CartState(
       status: status ?? this.status,
@@ -148,6 +153,7 @@ class CartState extends Equatable {
       hasPickupCard: hasPickupCard ?? this.hasPickupCard,
       deliverySelected: deliverySelected ?? this.deliverySelected,
       hasExternalDelivery: hasExternalDelivery ?? this.hasExternalDelivery,
+      stripePayData: stripePayData ?? this.stripePayData,
     );
   }
 }

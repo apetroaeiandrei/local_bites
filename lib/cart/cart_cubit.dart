@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:google_directions_api/google_directions_api.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:local/cart/stripe_pay_data.dart';
 import 'package:local/constants.dart';
 import 'package:local/repos/cart_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
@@ -92,6 +93,8 @@ class CartCubit extends Cubit<CartState> {
       });
       return;
     }
+    _initCheckout();
+    return;
     final success = await _cartRepo.placeOrder(
       state.mentions,
       state.deliverySelected && state.hasDelivery,
@@ -236,5 +239,14 @@ class CartCubit extends Cubit<CartState> {
 
   void toggleDeliverySelected() {
     emit(state.copyWith(deliverySelected: !state.deliverySelected));
+  }
+
+  void _initCheckout() {
+    _cartRepo.initStripeCheckout(_userRepo.user!, (stripeData) {
+      emit(state.copyWith(
+        status: CartStatus.stripeReady,
+        stripePayData: stripeData,
+      ));
+    });
   }
 }

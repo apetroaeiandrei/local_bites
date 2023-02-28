@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:local/cart/stripe_pay_data.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:models/food_model.dart';
 import 'package:models/food_order.dart';
+import 'package:models/local_user.dart';
 import 'package:models/order.dart' as o;
 import 'package:models/order_status.dart';
 import 'package:collection/collection.dart';
@@ -143,5 +145,29 @@ class CartRepo {
         price: foodOrder.price - itemPrice,
       ));
     }
+  }
+
+  Future<void> initStripeCheckout(LocalUser user, Function(StripePayData) callback) async {
+    final doc = await _firestore
+        .collection("customers")
+        .doc(user.uid)
+        .collection("checkout_sessions")
+        .add({
+      "client": "mobile",
+      "mode": "payment",
+      "amount": cartTotal * 100,
+      "currency": "RON",
+      "payment_method_types": ["card"],
+    });
+
+    doc.snapshots().listen((event) {
+      print(event.data());
+      try {
+        callback(StripePayData.fromMap(event.data()!));
+      } catch (e) {
+        print(e);
+      }
+    });
+
   }
 }

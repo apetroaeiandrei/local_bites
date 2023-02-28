@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:local/environment/prod_firebase_options.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -26,6 +27,7 @@ class AppConfig {
     );
     await _initAppCheck();
     _initCrashlytics();
+    _initStripe();
   }
 
   static _initAppCheck() async {
@@ -59,5 +61,10 @@ class AppConfig {
       return appVersion.data()?["message"];
     }
     return null;
+  }
+
+  static Future<void> _initStripe() async {
+    Stripe.publishableKey = "pk_test_STRIPE";
+    await Stripe.instance.applySettings();
   }
 }
