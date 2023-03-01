@@ -76,7 +76,8 @@ class FoodCard extends StatelessWidget {
                                 foodModel.name,
                                 maxLines: _nameMaxLines,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.headlineSmall,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               ),
                             ),
                             const SizedBox(
@@ -86,6 +87,7 @@ class FoodCard extends StatelessWidget {
                               S.of(context).price_currency_ron(
                                   foodModel.discountedPrice > 0
                                       ? foodModel.discountedPrice
+                                          .toStringAsFixed(1)
                                       : foodModel.price),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

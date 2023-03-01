@@ -134,6 +134,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                           S.of(context).price_currency_ron(
                               state.food.discountedPrice > 0
                                   ? state.food.discountedPrice
+                                      .toStringAsFixed(1)
                                   : state.food.price),
                           style: Theme.of(context)
                               .textTheme
@@ -186,9 +187,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                     context.read<FoodDetailsCubit>().addFood();
                   },
                   child: Text(
-                    S
-                        .of(context)
-                        .food_details_add_button(state.quantity, state.price),
+                    S.of(context).food_details_add_button(
+                        state.quantity, state.price.toStringAsFixed(1)),
                   ),
                 ),
               ),
