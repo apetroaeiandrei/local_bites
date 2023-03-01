@@ -30,7 +30,9 @@ class CartCubit extends Cubit<CartState> {
                 _restaurantsRepo.selectedRestaurant.location.longitude,
             restaurantAddress: _restaurantsRepo.selectedRestaurant.address,
             minOrder: _restaurantsRepo.selectedRestaurant.minimumOrder,
-            deliveryFee: _restaurantsRepo.selectedRestaurant.deliveryFee,
+            deliveryFee: _restaurantsRepo.selectedRestaurant.hasExternalDelivery
+                ? Constants.deliveryPriceErrorDefault
+                : _restaurantsRepo.selectedRestaurant.deliveryFee,
             deliveryEta: 0,
             amountToMinOrder: 0,
             hasDelivery: _restaurantsRepo.selectedRestaurant.hasDelivery ||
