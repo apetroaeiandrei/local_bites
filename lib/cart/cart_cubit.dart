@@ -14,7 +14,10 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   CartCubit(this._cartRepo, this._restaurantsRepo, this._userRepo)
       : super(CartState(
-            status: CartStatus.minimumOrderError,
+            status: _restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
+                    _restaurantsRepo.selectedRestaurant.couriersAvailable
+                ? CartStatus.computingDelivery
+                : CartStatus.initial,
             cartCount: _cartRepo.cartCount,
             cartTotal: _cartRepo.cartTotal,
             cartItems: _cartRepo.cartItems,
@@ -36,7 +39,8 @@ class CartCubit extends Cubit<CartState> {
             deliveryEta: 0,
             amountToMinOrder: 0,
             hasDelivery: _restaurantsRepo.selectedRestaurant.hasDelivery ||
-                _restaurantsRepo.selectedRestaurant.hasExternalDelivery,
+                (_restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
+                    _restaurantsRepo.selectedRestaurant.couriersAvailable),
             hasPickup: _restaurantsRepo.selectedRestaurant.hasPickup,
             hasDeliveryCash:
                 _restaurantsRepo.selectedRestaurant.hasDeliveryCash,
@@ -118,7 +122,7 @@ class CartCubit extends Cubit<CartState> {
   void _refreshCart() {
     num amountToMinOrder = 0;
     num deliveryFee = state.deliveryFee;
-    CartStatus status = CartStatus.initial;
+    CartStatus status = state.status;
     if (!_restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
         state.deliverySelected) {
       amountToMinOrder = state.minOrder - _cartRepo.cartTotal;
@@ -209,11 +213,16 @@ class CartCubit extends Cubit<CartState> {
         }
         int deliveryFee = _computeDeliveryPrice(distance.toInt());
         int etaMinutes = (etaSeconds / 60).ceil();
-        emit(state.copyWith(deliveryFee: deliveryFee, deliveryEta: etaMinutes));
+        emit(state.copyWith(
+          deliveryFee: deliveryFee,
+          deliveryEta: etaMinutes,
+          status: CartStatus.initial,
+        ));
       } else {
         emit(state.copyWith(
           deliveryFee: Constants.deliveryPriceErrorDefault,
           deliveryEta: Constants.deliveryEtaErrorDefault,
+          status: CartStatus.initial,
         ));
       }
     });

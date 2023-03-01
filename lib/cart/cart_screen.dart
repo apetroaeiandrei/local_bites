@@ -5,6 +5,7 @@ import 'package:local/analytics/metric.dart';
 import 'package:local/cart/cart_cubit.dart';
 import 'package:local/routes.dart';
 import 'package:local/theme/wl_colors.dart';
+import 'package:local/widgets/button_loading.dart';
 import 'package:local/widgets/dialog_utils.dart';
 
 import '../analytics/analytics.dart';
@@ -191,17 +192,20 @@ class _CartScreenState extends State<CartScreen> {
                           state.deliverySelected
                       ? null
                       : () {
+                          if (state.status == CartStatus.computingDelivery) {
+                            return;
+                          }
                           _analytics.logEventWithParams(
                               name: Metric.eventCartPlaceOrder,
                               parameters: {
                                 Metric.propertyOrderPrice:
                                     _getTotalWithDelivery(state),
+                                Metric.propertyRestaurantsName:
+                                    state.restaurantName,
                               });
                           context.read<CartCubit>().checkout();
                         },
-                  child: Text(state.status == CartStatus.minimumOrderError
-                      ? S.of(context).cart_button_min_order(state.minOrder)
-                      : S.of(context).cart_confirm_button),
+                  child: _getCheckoutButtonWidget(state),
                 ),
               ),
             ],
@@ -209,6 +213,15 @@ class _CartScreenState extends State<CartScreen> {
         );
       },
     );
+  }
+
+  Widget _getCheckoutButtonWidget(CartState state) {
+    if (state.status == CartStatus.computingDelivery) {
+      return const ButtonLoading();
+    }
+    return Text(state.status == CartStatus.minimumOrderError
+        ? S.of(context).cart_button_min_order(state.minOrder)
+        : S.of(context).cart_confirm_button);
   }
 
   double _getTotalWithDelivery(CartState state) {
