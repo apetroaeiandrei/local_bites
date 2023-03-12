@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:local/analytics/analytics.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
@@ -83,7 +82,7 @@ class UserRepo {
       _user = LocalUser.fromMap(properties);
       return true;
     } on Exception catch (e) {
-      debugPrint("Auth failed $e");
+      FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
       return false;
     }
   }
