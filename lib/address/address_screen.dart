@@ -93,30 +93,46 @@ class _AddressScreenState extends State<AddressScreen> {
                   ),
                 ),
                 Padding(
+                  padding: const EdgeInsets.only(
+                      left: Dimens.defaultPadding,
+                      top: 12,
+                      right: Dimens.defaultPadding),
+                  child: Text(
+                    S.of(context).address_location_info,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
                   child: Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: AddressType.values
-                        .map((e) => InkWell(
-                      onTap: () {
-                        context.read<AddressCubit>().onTypeChanged(e);
-                      },
-                          child: AddressTypeTile(
-                              type: e, selected: e == state.selectedType),
-                        ))
+                        .map(
+                          (e) => InkWell(
+                            onTap: () {
+                              context.read<AddressCubit>().onTypeChanged(e);
+                            },
+                            child: AddressTypeTile(
+                                type: e, selected: e == state.selectedType),
+                          ),
+                        )
                         .toList(),
                   ),
                 ),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.30,
-                  padding: const EdgeInsets.fromLTRB(Dimens.defaultPadding, 0, Dimens.defaultPadding, Dimens.defaultPadding),
+                  padding: const EdgeInsets.fromLTRB(Dimens.defaultPadding, 0,
+                      Dimens.defaultPadding, Dimens.defaultPadding),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       TextField(
                         controller: _addressController,
+                        enabled: false,
                         decoration: InputDecoration(
                             labelText: S.of(context).address_street_label,
                             errorText: _addressError,
@@ -191,6 +207,7 @@ class _AddressScreenState extends State<AddressScreen> {
 
         break;
       case AddressStatus.streetError:
+        _addressController.text = S.of(context).address_street_unknown;
         _analytics.logEvent(name: Metric.eventAddressStreetErrorBackend);
         break;
       case AddressStatus.saveSuccess:

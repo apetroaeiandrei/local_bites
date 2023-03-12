@@ -47,10 +47,10 @@ class AddressCubit extends Cubit<AddressState> {
           status: AddressStatus.streetSuccess,
         ));
       } else {
-        emit(state.copyWith(status: AddressStatus.streetError));
+        emit(state.copyWith(street: '', status: AddressStatus.streetError));
       }
     } catch (e) {
-      emit(state.copyWith(status: AddressStatus.streetError));
+      emit(state.copyWith(street: '', status: AddressStatus.streetError));
     }
   }
 
