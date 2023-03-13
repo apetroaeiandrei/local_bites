@@ -87,7 +87,8 @@ class OrderMini extends StatelessWidget {
                 ],
               ),
               Visibility(
-                visible: order.status == OrderStatus.completed,
+                visible: order.status == OrderStatus.completed ||
+                    order.status == OrderStatus.cancelled,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
