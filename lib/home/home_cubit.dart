@@ -83,10 +83,12 @@ class HomeCubit extends Cubit<HomeState> {
 
     await _currentOrderSubscription?.cancel();
     _currentOrderSubscription = _ordersRepo.currentOrderStream.listen((orders) {
-      _analytics.logEventWithParams(name: Metric.eventOrderUpdate, parameters: {
-        Metric.propertyOrderStatus: orders.map((e) => e.status).join(','),
-        Metric.propertyOrderCount: orders.length,
-      });
+      if (orders.isNotEmpty) {
+        _analytics.logEventWithParams(name: Metric.eventOrderUpdate, parameters: {
+          Metric.propertyOrderStatus: orders.map((e) => e.status).join(','),
+          Metric.propertyOrderCount: orders.length,
+        });
+      }
       emit(state.copyWith(
           currentOrders: orders, showCurrentOrder: orders.isNotEmpty));
     });
