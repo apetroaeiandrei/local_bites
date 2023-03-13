@@ -296,6 +296,9 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   }
 
   double _getHeaderPosition() {
+    if (_headerKey.currentContext == null) {
+      return 0;
+    }
     final RenderBox renderBox =
         _headerKey.currentContext!.findRenderObject() as RenderBox;
     final position = renderBox.localToGlobal(Offset.zero);
