@@ -470,29 +470,23 @@ class _CartScreenState extends State<CartScreen> {
   Future<void> initPaymentSheet(CartState state) async {
     try {
       final data = state.stripePayData!;
-      // 2. initialize the payment sheet
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
-          // Enable custom flow
           customFlow: false,
-          // Main params
-          merchantDisplayName: 'Flutter Stripe Store Demo',
+          merchantDisplayName: 'Test',
           paymentIntentClientSecret: data.paymentIntentClientSecret,
-          // Customer keys
           customerEphemeralKeySecret: data.ephemeralKeySecret,
           customerId: data.customer,
-          // Extra options
-          // applePay: const PaymentSheetApplePay(merchantCountryCode: 'RO'),
-          // googlePay: const PaymentSheetGooglePay(merchantCountryCode: 'RO'),
+          //applePay: const PaymentSheetApplePay(merchantCountryCode: 'RO', merchantIdentifier: 'merchant.com.example.flutter_stripe_store_demo'),
+          googlePay: const PaymentSheetGooglePay(merchantCountryCode: 'RO', currencyCode: 'RON', testEnv: true),
           style: ThemeMode.light,
         ),
       );
-     Stripe.instance.presentPaymentSheet();
+     await Stripe.instance.presentPaymentSheet();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
-      rethrow;
     }
   }
 }

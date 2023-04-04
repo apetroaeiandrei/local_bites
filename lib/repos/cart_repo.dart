@@ -157,7 +157,8 @@ class CartRepo {
       "mode": "payment",
       "amount": cartTotal * 100,
       "currency": "RON",
-      "payment_method_types": ["card"],
+      "application_fee_amount": 4 * 100,
+      "on_behalf_of": "acct_1MgRncD8OUb1LR3n",
     });
 
     doc.snapshots().listen((event) {

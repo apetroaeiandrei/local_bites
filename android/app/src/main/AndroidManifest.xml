@@ -40,6 +40,9 @@
         <meta-data
             android:name="google_analytics_automatic_screen_reporting_enabled"
             android:value="false"/>
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
     </application>
     <uses-permission
         android:name="android.permission.ACCESS_FINE_LOCATION"/>
