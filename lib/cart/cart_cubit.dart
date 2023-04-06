@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:google_directions_api/google_directions_api.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:models/payment_type.dart';
 import 'package:local/cart/stripe_pay_data.dart';
 import 'package:local/constants.dart';
 import 'package:local/repos/cart_repo.dart';
@@ -54,8 +55,10 @@ class CartCubit extends Cubit<CartState> {
                     _restaurantsRepo.selectedRestaurant.hasDelivery,
             hasExternalDelivery:
                 _restaurantsRepo.selectedRestaurant.hasExternalDelivery,
-            hasPayments: _restaurantsRepo
-                .selectedRestaurant.stripeAccountId!.isNotEmpty)) {
+            hasPayments: _restaurantsRepo.selectedRestaurant.stripeConfigured,
+            paymentType: _restaurantsRepo.selectedRestaurant.stripeConfigured
+                ? PaymentType.app
+                : PaymentType.cash)) {
     init();
   }
 
@@ -66,6 +69,7 @@ class CartCubit extends Cubit<CartState> {
   // ignore: unused_field
   final UserRepo _userRepo;
   final _delayedDuration = const Duration(milliseconds: 10);
+  bool _userChangedPaymentType = false;
 
   Future<void> init() async {
     await _getDelivery();
@@ -95,7 +99,7 @@ class CartCubit extends Cubit<CartState> {
       });
       return;
     }
-    if (state.hasPayments) {
+    if (state.paymentType == PaymentType.app) {
       _initStripePayment();
     } else {
       placeOrder();
@@ -104,10 +108,11 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> placeOrder() async {
     final success = await _cartRepo.placeOrder(
-      state.mentions,
-      state.deliverySelected && state.hasDelivery,
-      state.deliveryFee,
-      state.deliveryEta.toInt(),
+      mentions: state.mentions,
+      isDelivery: state.deliverySelected && state.hasDelivery,
+      deliveryFee: state.deliveryFee,
+      deliveryEta: state.deliveryEta.toInt(),
+      paymentType: state.paymentType,
     );
     if (success) {
       emit(state.copyWith(status: CartStatus.orderSuccess));
@@ -150,7 +155,30 @@ class CartCubit extends Cubit<CartState> {
         cartItems: _cartRepo.cartItems,
         deliveryFee: deliveryFee,
         amountToMinOrder: amountToMinOrder,
-        status: status));
+        status: status,
+        paymentType:
+            _userChangedPaymentType ? null : _getDefaultPaymentType()));
+  }
+
+  PaymentType _getDefaultPaymentType() {
+    if (_restaurantsRepo.selectedRestaurant.stripeConfigured) {
+      return PaymentType.app;
+    } else if (_restaurantsRepo.selectedRestaurant.hasDeliveryCash) {
+      return PaymentType.cash;
+    } else if (_restaurantsRepo.selectedRestaurant.hasDeliveryCard) {
+      return PaymentType.card;
+    } else if (_restaurantsRepo.selectedRestaurant.hasPickupCash) {
+      return PaymentType.cash;
+    } else if (_restaurantsRepo.selectedRestaurant.hasPickupCard) {
+      return PaymentType.card;
+    } else {
+      return PaymentType.cash;
+    }
+  }
+
+  void onPaymentTypeChanged(PaymentType paymentType) {
+    _userChangedPaymentType = true;
+    emit(state.copyWith(paymentType: paymentType));
   }
 
   bool _isNotMinimumOrder() {
@@ -254,7 +282,7 @@ class CartCubit extends Cubit<CartState> {
     _cartRepo.initStripeCheckout(
         user: _userRepo.user!,
         restaurantStripeAccountId:
-            _restaurantsRepo.selectedRestaurant.stripeAccountId!,
+            _restaurantsRepo.selectedRestaurant.stripeAccountId,
         applicationFee: state.hasExternalDelivery ? state.deliveryFee : 0,
         callback: (stripeData) {
           emit(state.copyWith(

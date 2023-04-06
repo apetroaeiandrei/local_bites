@@ -4,6 +4,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:local/analytics/metric.dart';
 import 'package:local/cart/cart_cubit.dart';
+import 'package:models/payment_type.dart';
 import 'package:local/routes.dart';
 import 'package:local/theme/wl_colors.dart';
 import 'package:local/widgets/button_loading.dart';
@@ -130,10 +131,13 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                       const SizedBox(height: Dimens.defaultPadding),
                       _getConfiguration(state),
+                      _getPaymentMethods(state),
                       Container(
                         height: 1,
                         color: WlColors.onSurface,
-                        margin: const EdgeInsets.fromLTRB(0, 28, 0, 20),
+                        margin: const EdgeInsets.symmetric(
+                          vertical: Dimens.defaultPadding,
+                        ),
                       ),
                       Text(S.of(context).cart_summary,
                           style: Theme.of(context).textTheme.displaySmall),
@@ -237,7 +241,7 @@ class _CartScreenState extends State<CartScreen> {
     if (state.status == CartStatus.minimumOrderError) {
       return S.of(context).cart_button_min_order(state.minOrder);
     }
-    return state.hasPayments
+    return state.paymentType == PaymentType.app
         ? S.of(context).cart_confirm_payment_button
         : S.of(context).cart_confirm_button;
   }
@@ -297,8 +301,6 @@ class _CartScreenState extends State<CartScreen> {
         Text(S.of(context).cart_delivery_headline,
             style: Theme.of(context).textTheme.displaySmall),
         const SizedBox(height: 4),
-        if (!state.hasPayments)
-          _getRestaurantPaymentInfoWidget(_getDeliveryPaymentInfo(state)),
         Container(
           margin: const EdgeInsets.only(top: 8),
           height: _mapHeight,
@@ -348,7 +350,6 @@ class _CartScreenState extends State<CartScreen> {
         const SizedBox(
           height: 4,
         ),
-        _getRestaurantPaymentInfoWidget(_getPickupPaymentInfo(state)),
         Container(
           margin: const EdgeInsets.only(top: 8),
           height: _mapHeight,
@@ -386,16 +387,6 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _getRestaurantPaymentInfoWidget(String text) {
-    return Text(
-      text,
-      style: Theme.of(context)
-          .textTheme
-          .headlineSmall
-          ?.copyWith(color: Theme.of(context).colorScheme.secondary),
-    );
-  }
-
   Widget _getSwitchConfigurationButton(String buttonText) {
     return Padding(
       padding: const EdgeInsets.only(top: 4),
@@ -414,26 +405,111 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  String _getDeliveryPaymentInfo(CartState state) {
-    if (state.hasExternalDelivery && state.deliverySelected) {
-      return S.of(context).cart_pay_delivery_cash;
-    } else if (state.hasDeliveryCash && state.hasDeliveryCard) {
-      return S.of(context).cart_pay_delivery_cash_and_card;
-    } else if (state.hasDeliveryCash) {
-      return S.of(context).cart_pay_delivery_cash;
-    } else {
-      return S.of(context).cart_pay_delivery_card;
+  Widget _getPaymentMethods(CartState state) {
+    List<Widget> paymentMethods = [];
+    if (state.hasPayments) {
+      paymentMethods.add(
+        _getPaymentTile(
+          state.paymentType,
+          PaymentType.app,
+          S.of(context).cart_pay_app,
+          Icons.wallet,
+        ),
+      );
     }
+    if (state.hasExternalDelivery && state.deliverySelected) {
+      paymentMethods.add(
+        _getPaymentTile(
+          state.paymentType,
+          PaymentType.cash,
+          S.of(context).cart_pay_delivery_cash,
+          Icons.monetization_on_outlined,
+        ),
+      );
+    }
+
+    if (!state.hasExternalDelivery && state.deliverySelected) {
+      if (state.hasDeliveryCash) {
+        paymentMethods.add(
+          _getPaymentTile(
+            state.paymentType,
+            PaymentType.cash,
+            S.of(context).cart_pay_delivery_cash,
+            Icons.monetization_on_outlined,
+          ),
+        );
+      }
+      if (state.hasDeliveryCard) {
+        paymentMethods.add(
+          _getPaymentTile(
+            state.paymentType,
+            PaymentType.card,
+            S.of(context).cart_pay_delivery_card,
+            Icons.credit_card,
+          ),
+        );
+      }
+    }
+
+    if (!state.deliverySelected) {
+      if (state.hasPickupCash) {
+        paymentMethods.add(
+          _getPaymentTile(
+            state.paymentType,
+            PaymentType.cash,
+            S.of(context).cart_pay_pickup_cash,
+            Icons.monetization_on_outlined,
+          ),
+        );
+      }
+      if (state.hasPickupCard) {
+        paymentMethods.add(
+          _getPaymentTile(
+            state.paymentType,
+            PaymentType.card,
+            S.of(context).cart_pay_pickup_card,
+            Icons.credit_card,
+          ),
+        );
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(
+          height: Dimens.defaultPadding,
+        ),
+        Text(S.of(context).cart_pay_method,
+            style: Theme.of(context).textTheme.displaySmall),
+        const SizedBox(
+          height: 4,
+        ),
+        ...paymentMethods,
+      ],
+    );
   }
 
-  String _getPickupPaymentInfo(CartState state) {
-    if (state.hasPickupCash && state.hasPickupCard) {
-      return S.of(context).cart_pay_pickup_cash_and_card;
-    } else if (state.hasPickupCash) {
-      return S.of(context).cart_pay_pickup_cash;
-    } else {
-      return S.of(context).cart_pay_pickup_card;
-    }
+  Widget _getPaymentTile(
+      PaymentType selectedType, PaymentType type, String title, IconData icon) {
+    return RadioListTile<PaymentType>(
+      dense: true,
+      visualDensity: VisualDensity.compact,
+      contentPadding: const EdgeInsets.all(0),
+      value: type,
+      groupValue: selectedType,
+      secondary: Icon(
+        icon,
+        color: Theme.of(context).colorScheme.secondary,
+      ),
+      onChanged: (value) {
+        context.read<CartCubit>().onPaymentTypeChanged(value!);
+      },
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.headlineSmall,
+      ),
+    );
   }
 
   Widget _getDeliveryAndMinOrderInfo(CartState state) {

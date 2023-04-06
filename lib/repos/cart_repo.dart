@@ -9,6 +9,7 @@ import 'package:models/local_user.dart';
 import 'package:models/order.dart' as o;
 import 'package:models/order_status.dart';
 import 'package:collection/collection.dart';
+import 'package:models/payment_type.dart';
 
 class CartRepo {
   static CartRepo? instance;
@@ -82,8 +83,13 @@ class CartRepo {
     return sortedFoods;
   }
 
-  Future<bool> placeOrder(String mentions, bool isDelivery, num deliveryFee,
-      int deliveryEta) async {
+  Future<bool> placeOrder({
+    required String mentions,
+    required bool isDelivery,
+    required num deliveryFee,
+    required int deliveryEta,
+    required PaymentType paymentType,
+  }) async {
     final address = _userRepo.address!;
     final user = _userRepo.user!;
 
@@ -103,6 +109,7 @@ class CartRepo {
       deliveryFee: deliveryFee,
       deliveryEta: deliveryEta,
       eta: 0,
+      paymentType: paymentType,
       latitude: address.latitude,
       longitude: address.longitude,
       street: address.street,

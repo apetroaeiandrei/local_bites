@@ -39,6 +39,7 @@ class CartState extends Equatable {
   final bool deliverySelected;
   final bool hasExternalDelivery;
   final bool hasPayments;
+  final PaymentType paymentType;
   final StripePayData? stripePayData;
 
   @override
@@ -69,6 +70,7 @@ class CartState extends Equatable {
         deliverySelected,
         hasExternalDelivery,
         hasPayments,
+        paymentType,
         stripePayData,
       ];
 
@@ -99,6 +101,7 @@ class CartState extends Equatable {
     required this.deliverySelected,
     required this.hasExternalDelivery,
     required this.hasPayments,
+    required this.paymentType,
     this.stripePayData,
   });
 
@@ -129,6 +132,7 @@ class CartState extends Equatable {
     bool? deliverySelected,
     bool? hasExternalDelivery,
     bool? hasPayments,
+    PaymentType? paymentType,
     StripePayData? stripePayData,
   }) {
     return CartState(
@@ -159,6 +163,7 @@ class CartState extends Equatable {
       deliverySelected: deliverySelected ?? this.deliverySelected,
       hasExternalDelivery: hasExternalDelivery ?? this.hasExternalDelivery,
       hasPayments: hasPayments ?? this.hasPayments,
+      paymentType: paymentType ?? this.paymentType,
       stripePayData: stripePayData ?? this.stripePayData,
     );
   }
