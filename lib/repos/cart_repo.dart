@@ -147,7 +147,11 @@ class CartRepo {
     }
   }
 
-  Future<void> initStripeCheckout(LocalUser user, Function(StripePayData) callback) async {
+  Future<void> initStripeCheckout(
+      {required LocalUser user,
+      required String restaurantStripeAccountId,
+      required num applicationFee,
+      required Function(StripePayData) callback}) async {
     final doc = await _firestore
         .collection("customers")
         .doc(user.uid)
@@ -157,8 +161,8 @@ class CartRepo {
       "mode": "payment",
       "amount": cartTotal * 100,
       "currency": "RON",
-      "application_fee_amount": 4 * 100,
-      "on_behalf_of": "acct_1MgRncD8OUb1LR3n",
+      "application_fee_amount": applicationFee * 100,
+      "on_behalf_of": restaurantStripeAccountId,
     });
 
     doc.snapshots().listen((event) {
@@ -169,6 +173,5 @@ class CartRepo {
         print(e);
       }
     });
-
   }
 }

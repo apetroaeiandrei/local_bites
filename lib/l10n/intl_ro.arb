@@ -113,6 +113,7 @@
   "cart_products": "Produse",
   "cart_delivery_headline": "Livrare",
   "cart_confirm_button": "Confirmă comanda",
+  "cart_confirm_payment_button": "Plătește și confirmă comanda",
   "cart_button_min_order" : "Comanda minimă {min} RON",
   "cart_mentions": "Mențiuni speciale",
   "cart_mentions_headline": "Adaugă mențiunile tale",

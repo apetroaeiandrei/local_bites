@@ -47,7 +47,7 @@ class _CartScreenState extends State<CartScreen> {
           _showCouriersUnavailableDialog(context);
           _analytics.logEvent(name: Metric.eventCartCouriersUnavailable);
         } else if (state.status == CartStatus.stripeReady) {
-          initPaymentSheet(state);
+          initPaymentSheet(state, context.read<CartCubit>());
         }
       },
       builder: (context, state) {
@@ -191,11 +191,12 @@ class _CartScreenState extends State<CartScreen> {
                 left: Dimens.defaultPadding,
                 right: Dimens.defaultPadding,
                 child: ElevatedButton(
-                  onPressed: state.status == CartStatus.minimumOrderError &&
-                          state.deliverySelected
+                  onPressed: _isCheckoutButtonDisabled(state)
                       ? null
                       : () {
-                          if (state.status == CartStatus.computingDelivery) {
+                          if (state.status == CartStatus.computingDelivery ||
+                              state.status == CartStatus.stripeLoading ||
+                              state.status == CartStatus.stripeReady) {
                             return;
                           }
                           _analytics.logEventWithParams(
@@ -218,13 +219,27 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
+  bool _isCheckoutButtonDisabled(CartState state) {
+    return state.status == CartStatus.minimumOrderError &&
+        state.deliverySelected;
+  }
+
   Widget _getCheckoutButtonWidget(CartState state) {
-    if (state.status == CartStatus.computingDelivery) {
+    if (state.status == CartStatus.computingDelivery ||
+        state.status == CartStatus.stripeLoading) {
       return const ButtonLoading();
     }
-    return Text(state.status == CartStatus.minimumOrderError
-        ? S.of(context).cart_button_min_order(state.minOrder)
-        : S.of(context).cart_confirm_button);
+    var text = _getCheckoutButtonText(state);
+    return Text(text);
+  }
+
+  _getCheckoutButtonText(CartState state) {
+    if (state.status == CartStatus.minimumOrderError) {
+      return S.of(context).cart_button_min_order(state.minOrder);
+    }
+    return state.hasPayments
+        ? S.of(context).cart_confirm_payment_button
+        : S.of(context).cart_confirm_button;
   }
 
   double _getTotalWithDelivery(CartState state) {
@@ -282,7 +297,8 @@ class _CartScreenState extends State<CartScreen> {
         Text(S.of(context).cart_delivery_headline,
             style: Theme.of(context).textTheme.displaySmall),
         const SizedBox(height: 4),
-        _getPaymentInfoWidget(_getDeliveryPaymentInfo(state)),
+        if (!state.hasPayments)
+          _getRestaurantPaymentInfoWidget(_getDeliveryPaymentInfo(state)),
         Container(
           margin: const EdgeInsets.only(top: 8),
           height: _mapHeight,
@@ -332,7 +348,7 @@ class _CartScreenState extends State<CartScreen> {
         const SizedBox(
           height: 4,
         ),
-        _getPaymentInfoWidget(_getPickupPaymentInfo(state)),
+        _getRestaurantPaymentInfoWidget(_getPickupPaymentInfo(state)),
         Container(
           margin: const EdgeInsets.only(top: 8),
           height: _mapHeight,
@@ -370,7 +386,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _getPaymentInfoWidget(String text) {
+  Widget _getRestaurantPaymentInfoWidget(String text) {
     return Text(
       text,
       style: Theme.of(context)
@@ -467,7 +483,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Future<void> initPaymentSheet(CartState state) async {
+  Future<void> initPaymentSheet(CartState state, CartCubit cubit) async {
     try {
       final data = state.stripePayData!;
       await Stripe.instance.initPaymentSheet(
@@ -478,12 +494,15 @@ class _CartScreenState extends State<CartScreen> {
           customerEphemeralKeySecret: data.ephemeralKeySecret,
           customerId: data.customer,
           //applePay: const PaymentSheetApplePay(merchantCountryCode: 'RO', merchantIdentifier: 'merchant.com.example.flutter_stripe_store_demo'),
-          googlePay: const PaymentSheetGooglePay(merchantCountryCode: 'RO', currencyCode: 'RON', testEnv: true),
+          googlePay: const PaymentSheetGooglePay(
+              merchantCountryCode: 'RO', currencyCode: 'RON', testEnv: true),
           style: ThemeMode.light,
         ),
       );
-     await Stripe.instance.presentPaymentSheet();
+      await Stripe.instance.presentPaymentSheet();
+      cubit.placeOrder();
     } catch (e) {
+      cubit.paymentFailed();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );

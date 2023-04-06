@@ -53,7 +53,9 @@ class CartCubit extends Cubit<CartState> {
                 _restaurantsRepo.selectedRestaurant.hasExternalDelivery ||
                     _restaurantsRepo.selectedRestaurant.hasDelivery,
             hasExternalDelivery:
-                _restaurantsRepo.selectedRestaurant.hasExternalDelivery)) {
+                _restaurantsRepo.selectedRestaurant.hasExternalDelivery,
+            hasPayments: _restaurantsRepo
+                .selectedRestaurant.stripeAccountId!.isNotEmpty)) {
     init();
   }
 
@@ -93,8 +95,14 @@ class CartCubit extends Cubit<CartState> {
       });
       return;
     }
-    _initCheckout();
-    return;
+    if (state.hasPayments) {
+      _initStripePayment();
+    } else {
+      placeOrder();
+    }
+  }
+
+  Future<void> placeOrder() async {
     final success = await _cartRepo.placeOrder(
       state.mentions,
       state.deliverySelected && state.hasDelivery,
@@ -241,12 +249,22 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(deliverySelected: !state.deliverySelected));
   }
 
-  void _initCheckout() {
-    _cartRepo.initStripeCheckout(_userRepo.user!, (stripeData) {
-      emit(state.copyWith(
-        status: CartStatus.stripeReady,
-        stripePayData: stripeData,
-      ));
-    });
+  void _initStripePayment() {
+    emit(state.copyWith(status: CartStatus.stripeLoading));
+    _cartRepo.initStripeCheckout(
+        user: _userRepo.user!,
+        restaurantStripeAccountId:
+            _restaurantsRepo.selectedRestaurant.stripeAccountId!,
+        applicationFee: state.hasExternalDelivery ? state.deliveryFee : 0,
+        callback: (stripeData) {
+          emit(state.copyWith(
+            status: CartStatus.stripeReady,
+            stripePayData: stripeData,
+          ));
+        });
+  }
+
+  void paymentFailed() {
+    _refreshCart();
   }
 }

@@ -8,6 +8,7 @@ enum CartStatus {
   restaurantClosed,
   couriersUnavailable,
   computingDelivery,
+  stripeLoading,
   stripeReady,
 }
 
@@ -37,6 +38,7 @@ class CartState extends Equatable {
   final bool hasPickupCard;
   final bool deliverySelected;
   final bool hasExternalDelivery;
+  final bool hasPayments;
   final StripePayData? stripePayData;
 
   @override
@@ -66,6 +68,7 @@ class CartState extends Equatable {
         hasPickupCard,
         deliverySelected,
         hasExternalDelivery,
+        hasPayments,
         stripePayData,
       ];
 
@@ -95,6 +98,7 @@ class CartState extends Equatable {
     required this.hasPickupCard,
     required this.deliverySelected,
     required this.hasExternalDelivery,
+    required this.hasPayments,
     this.stripePayData,
   });
 
@@ -124,6 +128,7 @@ class CartState extends Equatable {
     bool? hasPickupCard,
     bool? deliverySelected,
     bool? hasExternalDelivery,
+    bool? hasPayments,
     StripePayData? stripePayData,
   }) {
     return CartState(
@@ -153,6 +158,7 @@ class CartState extends Equatable {
       hasPickupCard: hasPickupCard ?? this.hasPickupCard,
       deliverySelected: deliverySelected ?? this.deliverySelected,
       hasExternalDelivery: hasExternalDelivery ?? this.hasExternalDelivery,
+      hasPayments: hasPayments ?? this.hasPayments,
       stripePayData: stripePayData ?? this.stripePayData,
     );
   }
