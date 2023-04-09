@@ -89,6 +89,7 @@ class CartRepo {
     required num deliveryFee,
     required int deliveryEta,
     required PaymentType paymentType,
+    required String paymentIntentId,
   }) async {
     final address = _userRepo.address!;
     final user = _userRepo.user!;
@@ -110,6 +111,7 @@ class CartRepo {
       deliveryEta: deliveryEta,
       eta: 0,
       paymentType: paymentType,
+      paymentIntentId: paymentIntentId,
       latitude: address.latitude,
       longitude: address.longitude,
       street: address.street,

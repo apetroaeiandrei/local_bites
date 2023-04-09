@@ -113,6 +113,7 @@ class CartCubit extends Cubit<CartState> {
       deliveryFee: state.deliveryFee,
       deliveryEta: state.deliveryEta.toInt(),
       paymentType: state.paymentType,
+      paymentIntentId: state.stripePayData?.paymentIntentId ?? '',
     );
     if (success) {
       emit(state.copyWith(status: CartStatus.orderSuccess));
