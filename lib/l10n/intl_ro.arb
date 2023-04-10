@@ -149,6 +149,7 @@
   "order_mini_status_ready_for_pickup" : "Gata pentru ridicare",
   "order_mini_delivery_eta": "Estimare livrare: {time}",
   "order_mini_pickup_eta": "Estimare ridicare: {time}",
+  "order_mini_refund_info": "Veți primi banii înapoi în cel mai scurt timp.",
 
   "order_details_title" : "Comanda ta",
   "order_details_restaurant_see_menu" : "Vezi meniul",

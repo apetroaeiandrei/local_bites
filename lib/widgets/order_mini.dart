@@ -4,6 +4,7 @@ import 'package:local/theme/wl_colors.dart';
 import 'package:local/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:models/order_status.dart';
+import 'package:models/payment_type.dart';
 import 'package:models/user_order.dart';
 
 import '../generated/l10n.dart';
@@ -62,7 +63,7 @@ class OrderMini extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(
-                          height: 12,
+                          height: 8,
                         ),
                         Text(
                           order.status.toUserString(context),
@@ -75,6 +76,11 @@ class OrderMini extends StatelessWidget {
                         ),
                         const SizedBox(
                           height: 4,
+                        ),
+                        Visibility(
+                          visible: order.status == OrderStatus.cancelled &&
+                              order.paymentType == PaymentType.app,
+                          child: Text(S.of(context).order_mini_refund_info),
                         ),
                         Text(
                           S.of(context).price_currency_ron(

@@ -30,7 +30,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-  static const _orderMiniHeight = 200.0;
+  static const _orderMiniHeight = 210.0;
   final _analytics = Analytics();
 
   @override

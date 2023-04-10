@@ -5,6 +5,7 @@ import 'package:local/order/order_cubit.dart';
 import 'package:local/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:models/order_status.dart';
+import 'package:models/payment_type.dart';
 
 import '../analytics/analytics.dart';
 import '../analytics/metric.dart';
@@ -113,6 +114,14 @@ class _OrderScreenState extends State<OrderScreen> {
                           ],
                         ),
                         const SizedBox(height: 32),
+                        Visibility(
+                          visible: state.order!.status == OrderStatus.cancelled &&
+                              state.order!.paymentType == PaymentType.app,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Text(S.of(context).order_mini_refund_info),
+                          ),
+                        ),
                         ...state.order!.foods.map((item) {
                           return CartItem(item: item);
                         }),
