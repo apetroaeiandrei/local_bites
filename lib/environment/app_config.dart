@@ -65,6 +65,7 @@ class AppConfig {
 
   static Future<void> _initStripe() async {
     Stripe.publishableKey = "pk_test_STRIPE";
+    Stripe.merchantIdentifier = "STRIPE_MERCHANT_ID";
     await Stripe.instance.applySettings();
   }
 }

@@ -8,5 +8,9 @@
 	<array>
 		<string>webcredentials:local-restaurants.ro</string>
 	</array>
+	<key>com.apple.developer.in-app-payments</key>
+	<array>
+		<string>STRIPE_MERCHANT_ID</string>
+	</array>
 </dict>
 </plist>

@@ -570,7 +570,7 @@ class _CartScreenState extends State<CartScreen> {
           customerEphemeralKeySecret: data.ephemeralKeySecret,
           customerId: data.customer,
           primaryButtonLabel: S.of(context).cart_pay_button,
-          //applePay: const PaymentSheetApplePay(merchantCountryCode: 'RO', merchantIdentifier: 'merchant.com.example.flutter_stripe_store_demo'),
+          applePay: const PaymentSheetApplePay(merchantCountryCode: 'RO',),
           googlePay: const PaymentSheetGooglePay(
               merchantCountryCode: 'RO', currencyCode: 'RON', testEnv: true),
           style: ThemeMode.light,
@@ -583,6 +583,7 @@ class _CartScreenState extends State<CartScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
+      print(e);
     }
   }
 }
