@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:google_directions_api/google_directions_api.dart';
@@ -64,14 +66,16 @@ class CartCubit extends Cubit<CartState> {
 
   final CartRepo _cartRepo;
   final RestaurantsRepo _restaurantsRepo;
-  late final DeliveryZone _deliveryZone;
-
-  // ignore: unused_field
   final UserRepo _userRepo;
+
+  late final DeliveryZone _deliveryZone;
+  late final String _orderId;
+
   final _delayedDuration = const Duration(milliseconds: 10);
   bool _userChangedPaymentType = false;
 
   Future<void> init() async {
+    _orderId = _generateOrderId();
     await _getDelivery();
     Future.delayed(_delayedDuration, () {
       _refreshCart();
@@ -114,6 +118,7 @@ class CartCubit extends Cubit<CartState> {
       deliveryEta: state.deliveryEta.toInt(),
       paymentType: state.paymentType,
       paymentIntentId: state.stripePayData?.paymentIntentId ?? '',
+      orderId: _orderId,
     );
     if (success) {
       emit(state.copyWith(status: CartStatus.orderSuccess));
@@ -285,6 +290,7 @@ class CartCubit extends Cubit<CartState> {
         restaurantStripeAccountId:
             _restaurantsRepo.selectedRestaurant.stripeAccountId,
         applicationFee: state.hasExternalDelivery ? state.deliveryFee : 0,
+        orderId: _orderId,
         callback: (stripeData) {
           emit(state.copyWith(
             status: CartStatus.stripeReady,
@@ -295,5 +301,14 @@ class CartCubit extends Cubit<CartState> {
 
   void paymentFailed() {
     _refreshCart();
+  }
+
+  String _generateOrderId() {
+    // return a random string of 5 characters
+    final random = Random();
+    const chars = 'abcdefghjklmnpqrstuvwxyz23456789';
+    return List.generate(5, (index) => chars[random.nextInt(chars.length)])
+        .join()
+        .toUpperCase();
   }
 }

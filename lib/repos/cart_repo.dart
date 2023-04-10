@@ -90,6 +90,7 @@ class CartRepo {
     required int deliveryEta,
     required PaymentType paymentType,
     required String paymentIntentId,
+    required String orderId,
   }) async {
     final address = _userRepo.address!;
     final user = _userRepo.user!;
@@ -119,7 +120,7 @@ class CartRepo {
       userId: user.uid,
       name: user.name,
       phoneNumber: user.phoneNumber,
-      number: Random().nextInt(1000).toString(),
+      number: orderId,
       totalProducts: cartTotal,
       total: cartTotal + (isDelivery ? deliveryFee : 0),
       courierId: '',
@@ -158,6 +159,7 @@ class CartRepo {
 
   Future<void> initStripeCheckout(
       {required LocalUser user,
+        required String orderId,
       required String restaurantStripeAccountId,
       required num applicationFee,
       required Function(StripePayData) callback}) async {
@@ -172,6 +174,8 @@ class CartRepo {
       "currency": "RON",
       "application_fee_amount": applicationFee * 100,
       "on_behalf_of": restaurantStripeAccountId,
+      "client_phone_number": user.phoneNumber,
+      "order_id": orderId,
     });
 
     doc.snapshots().listen((event) {
