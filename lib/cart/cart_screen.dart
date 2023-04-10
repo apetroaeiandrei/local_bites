@@ -565,10 +565,11 @@ class _CartScreenState extends State<CartScreen> {
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           customFlow: false,
-          merchantDisplayName: 'Test',
+          merchantDisplayName: state.restaurantName,
           paymentIntentClientSecret: data.paymentIntentClientSecret,
           customerEphemeralKeySecret: data.ephemeralKeySecret,
           customerId: data.customer,
+          primaryButtonLabel: S.of(context).cart_pay_button,
           //applePay: const PaymentSheetApplePay(merchantCountryCode: 'RO', merchantIdentifier: 'merchant.com.example.flutter_stripe_store_demo'),
           googlePay: const PaymentSheetGooglePay(
               merchantCountryCode: 'RO', currencyCode: 'RON', testEnv: true),

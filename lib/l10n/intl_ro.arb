@@ -192,6 +192,8 @@
   "feedback_suggestion_packaging" : "ambalajul",
   "feedback_suggestion_delivery" : "livrarea",
   "feedback_suggestion_app" : "aplicația",
-  "feedback_suggestion_time" : "durata comenzii"
+  "feedback_suggestion_time" : "durata comenzii",
+
+  "cart_pay_button": "Plătește"
 
 }
