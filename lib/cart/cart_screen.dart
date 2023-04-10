@@ -570,7 +570,9 @@ class _CartScreenState extends State<CartScreen> {
           customerEphemeralKeySecret: data.ephemeralKeySecret,
           customerId: data.customer,
           primaryButtonLabel: S.of(context).cart_pay_button,
-          applePay: const PaymentSheetApplePay(merchantCountryCode: 'RO',),
+          applePay: const PaymentSheetApplePay(
+            merchantCountryCode: 'RO',
+          ),
           googlePay: const PaymentSheetGooglePay(
               merchantCountryCode: 'RO', currencyCode: 'RON', testEnv: true),
           style: ThemeMode.light,
@@ -578,12 +580,31 @@ class _CartScreenState extends State<CartScreen> {
       );
       await Stripe.instance.presentPaymentSheet();
       cubit.placeOrder();
+    } on StripeException catch (e) {
+      cubit.paymentFailed();
+      _handleStripeException(e);
     } catch (e) {
       cubit.paymentFailed();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-      print(e);
+      _showGenericPaymentError();
     }
+  }
+
+  _handleStripeException(StripeException e) {
+    //todo log to analytics
+    final error = e.error;
+    switch (error.code) {
+      case FailureCode.Failed:
+        _showGenericPaymentError();
+        break;
+      case FailureCode.Canceled:
+        // do nothing
+        break;
+    }
+  }
+
+  _showGenericPaymentError() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(S.of(context).cart_payment_failed_message)),
+    );
   }
 }

@@ -195,6 +195,7 @@
   "feedback_suggestion_app" : "aplicația",
   "feedback_suggestion_time" : "durata comenzii",
 
-  "cart_pay_button": "Plătește"
+  "cart_pay_button": "Plătește",
+  "cart_payment_failed_message": "Plata a eșuat. Te rugăm să încerci din nou."
 
 }
