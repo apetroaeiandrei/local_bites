@@ -38,6 +38,8 @@
 		<string>Folosim locația dvs. pentru a putea găsi restaurante din apropiere și pentru a permite livrarea la adresa exactă.</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>Folosim locația dvs. pentru a putea găsi restaurante din apropiere și pentru a permite livrarea la adresa exactă.</string>
+		<key>NSCameraUsageDescription</key>
+        <string>Scanează cardul pentru a-l adăuga automat</string>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>UIBackgroundModes</key>
