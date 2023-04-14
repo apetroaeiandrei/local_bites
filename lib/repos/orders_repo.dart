@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:models/order.dart' as o;
 import 'package:models/user_order.dart';
 
@@ -21,6 +23,8 @@ class OrdersRepo {
   }
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+
   final StreamController<List<UserOrder>> _currentOrderController =
       StreamController<List<UserOrder>>.broadcast();
 
@@ -90,5 +94,27 @@ class OrdersRepo {
   Future<void> stopListeningForOrderInProgress() async {
     await _orderSubscription?.cancel();
     _orderSubscription = null;
+  }
+
+  Future<String?> downloadReceipt(o.Order order, bool isStorno) async {
+    final folderFormatter = DateFormat('yyyy-MM');
+    final folder = folderFormatter.format(order.date);
+    final formatter = DateFormat('yyyy-MM-dd');
+    final receiptDate = formatter.format(order.date);
+    var receiptName = "f-${order.number}-$receiptDate.pdf";
+    if (isStorno) {
+      receiptName = "f-storno-${order.number}-$receiptDate.pdf";
+    }
+
+    try {
+      final url = await _storage
+          .ref()
+          .child("receipts")
+          .child(folder)
+          .child(receiptName).getDownloadURL();
+      return url;
+    } on FirebaseException {
+      return null;
+    }
   }
 }

@@ -5,6 +5,7 @@ enum OrderScreenStatus {
   loading,
   loaded,
   error,
+  receiptError,
 }
 
 class OrderState extends Equatable {

@@ -33,7 +33,12 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OrderCubit, OrderState>(
+    return BlocConsumer<OrderCubit, OrderState>(
+      listener: (context, state) {
+        if (state.status == OrderScreenStatus.receiptError) {
+          _showReceiptErrorSnackBar(context);
+        }
+      },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -115,8 +120,9 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                         const SizedBox(height: 32),
                         Visibility(
-                          visible: state.order!.status == OrderStatus.cancelled &&
-                              state.order!.paymentType == PaymentType.app,
+                          visible:
+                              state.order!.status == OrderStatus.cancelled &&
+                                  state.order!.paymentType == PaymentType.app,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: Text(S.of(context).order_mini_refund_info),
@@ -144,6 +150,10 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                         ),
                         _getConfiguration(state),
+                        if (state.order!.isDelivery &&
+                            (state.order!.courierId.isNotEmpty ||
+                                state.order!.paymentIntentId.isNotEmpty))
+                          _getReceipts(state),
                         Container(
                           height: 1,
                           color: WlColors.onSurface,
@@ -200,13 +210,63 @@ class _OrderScreenState extends State<OrderScreen> {
                                     Theme.of(context).textTheme.headlineMedium),
                           ],
                         ),
-                        const SizedBox(height: 70),
+                        if (state.order!.courierId.isNotEmpty ||
+                            state.order!.paymentIntentId.isNotEmpty)
+                          const SizedBox(height: 70),
                       ],
                     ),
                   ),
                 ),
         );
       },
+    );
+  }
+
+  static const double _receiptSize = 40;
+
+  Widget _getReceipts(OrderState state) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Column(
+          children: [
+            IconButton(
+              iconSize: _receiptSize,
+              onPressed: () {
+                context.read<OrderCubit>().getReceipt(false);
+              },
+              icon: Icon(
+                Icons.receipt_long,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+            Text(
+              S.of(context).order_details_receipt,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+        ),
+        if (state.order!.status == OrderStatus.cancelled &&
+            state.order!.paymentType == PaymentType.app)
+          Column(
+            children: [
+              IconButton(
+                iconSize: _receiptSize,
+                onPressed: () {
+                  context.read<OrderCubit>().getReceipt(true);
+                },
+                icon: Icon(
+                  Icons.receipt_long,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+              Text(
+                S.of(context).order_details_receipt_storno,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+      ],
     );
   }
 
@@ -308,6 +368,15 @@ class _OrderScreenState extends State<OrderScreen> {
             style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 8),
       ],
+    );
+  }
+
+  void _showReceiptErrorSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(S.of(context).order_details_receipt_error),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ),
     );
   }
 }

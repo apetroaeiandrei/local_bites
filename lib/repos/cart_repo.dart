@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:local/cart/stripe_pay_data.dart';
 import 'package:local/repos/user_repo.dart';
