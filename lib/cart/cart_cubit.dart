@@ -187,6 +187,10 @@ class CartCubit extends Cubit<CartState> {
     emit(state.copyWith(paymentType: paymentType));
   }
 
+  void onPaymentFailed() {
+    emit(state.copyWith(status: CartStatus.initial));
+  }
+
   bool _isNotMinimumOrder() {
     return _cartRepo.cartTotal < _deliveryZone.minimumOrder &&
             _deliveryZone.deliveryFee == 0 ||

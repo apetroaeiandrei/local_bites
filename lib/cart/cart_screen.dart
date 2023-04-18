@@ -592,6 +592,7 @@ class _CartScreenState extends State<CartScreen> {
   _handleStripeException(StripeException e) {
     //todo log to analytics
     final error = e.error;
+    context.read<CartCubit>().onPaymentFailed();
     switch (error.code) {
       case FailureCode.Failed:
         _showGenericPaymentError();
