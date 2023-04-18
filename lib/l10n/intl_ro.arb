@@ -118,6 +118,7 @@
   "cart_mentions": "Mențiuni speciale",
   "cart_mentions_headline": "Adaugă mențiunile tale",
   "cart_mentions_placeholder": "Anunță restaurantul de ce ar trebui să țină cont.",
+  "cart_mentions_hint": "Anunță restaurantul dacă ai alergii sau alte preferințe.",
   "cart_delivery_fee" : "Livrare",
   "cart_delivery_fee_free" : "GRATUIT",
   "cart_delivery_fee_currency" : "{amount} RON",

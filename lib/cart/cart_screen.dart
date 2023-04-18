@@ -126,7 +126,10 @@ class _CartScreenState extends State<CartScreen> {
                           top: 4.0,
                           right: 50,
                         ),
-                        child: Text(state.mentions,
+                        child: Text(
+                            state.mentions.isNotEmpty
+                                ? state.mentions
+                                : S.of(context).cart_mentions_hint,
                             style: Theme.of(context).textTheme.bodyMedium),
                       ),
                       const SizedBox(height: Dimens.defaultPadding),
