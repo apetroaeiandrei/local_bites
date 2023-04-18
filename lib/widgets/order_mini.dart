@@ -127,8 +127,9 @@ class OrderMini extends StatelessWidget {
   }
 
   bool _isEtaVisible() {
-    return order.eta != 0 && order.status != OrderStatus.completed ||
-        order.status == OrderStatus.cancelled;
+    return order.eta != 0 &&
+        !(order.status == OrderStatus.completed ||
+            order.status == OrderStatus.cancelled);
   }
 
   String _getEta(BuildContext context, UserOrder order) {
