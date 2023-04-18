@@ -41,6 +41,8 @@ class CartState extends Equatable {
   final bool hasPayments;
   final PaymentType paymentType;
   final StripePayData? stripePayData;
+  /// When generating copyWith take care of the extra clearPayData flag
+  /// Used to be able to set stripePayData to null if payment method is later changed
 
   @override
   List<Object?> get props => [
@@ -134,6 +136,7 @@ class CartState extends Equatable {
     bool? hasPayments,
     PaymentType? paymentType,
     StripePayData? stripePayData,
+    bool clearPayData = false,
   }) {
     return CartState(
       status: status ?? this.status,
@@ -164,7 +167,7 @@ class CartState extends Equatable {
       hasExternalDelivery: hasExternalDelivery ?? this.hasExternalDelivery,
       hasPayments: hasPayments ?? this.hasPayments,
       paymentType: paymentType ?? this.paymentType,
-      stripePayData: stripePayData ?? this.stripePayData,
+      stripePayData: clearPayData ? null : stripePayData ?? this.stripePayData,
     );
   }
 }
