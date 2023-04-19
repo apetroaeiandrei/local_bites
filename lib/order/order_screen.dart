@@ -61,20 +61,18 @@ class _OrderScreenState extends State<OrderScreen> {
                                       .displayMedium),
                             ),
                             IconButton(
-                                onPressed: () {
-                                  _analytics.logEventWithParams(
-                                      name: Metric.eventOrderDetailsCall,
-                                      parameters: {
-                                        Metric.propertyOrderCallStatus:
-                                            state.order!.status.toSimpleString()
-                                      });
-                                  Utils.launchCall(state.restaurant!.phone);
-                                },
-                                icon: const Icon(Icons.phone)),
+                              onPressed: () {
+                                _analytics.logEventWithParams(
+                                    name: Metric.eventOrderDetailsCall,
+                                    parameters: {
+                                      Metric.propertyOrderCallStatus:
+                                          state.order!.status.toSimpleString()
+                                    });
+                                Utils.launchCall(state.restaurant!.phone);
+                              },
+                              icon: const Icon(Icons.phone),
+                            ),
                           ],
-                        ),
-                        const SizedBox(
-                          height: 8,
                         ),
                         GestureDetector(
                           onTap: () {
@@ -118,13 +116,20 @@ class _OrderScreenState extends State<OrderScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 8),
+                        Text(
+                          S.of(context).order_details_id(state.order!.number),
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        const SizedBox(height: 8),
                         Visibility(
                           visible:
                               state.order!.status == OrderStatus.cancelled &&
                                   state.order!.paymentType == PaymentType.app,
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
+                            padding: const EdgeInsets.only(
+                              bottom: 8.0,
+                            ),
                             child: Text(S.of(context).order_mini_refund_info),
                           ),
                         ),
@@ -150,9 +155,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                         ),
                         _getConfiguration(state),
-                        if (state.order!.isDelivery &&
-                            (state.order!.courierId.isNotEmpty ||
-                                state.order!.paymentIntentId.isNotEmpty))
+                        if (state.order!.isExternalDelivery ?? false)
                           _getReceipts(state),
                         Container(
                           height: 1,

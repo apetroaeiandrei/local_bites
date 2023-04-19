@@ -157,6 +157,7 @@
   "order_details_receipt" : "Factura livrare",
   "order_details_receipt_storno" : "Factura storno",
   "order_details_receipt_error": "Factura nu e disponibilă deocamdată. Vă rugăm să încercați din nou.",
+  "order_details_id" : "Id comandă: #{id}",
 
   "mentions_title" : "Mențiuni speciale",
   "mentions_headline" : "Adaugă mențiunile tale",
