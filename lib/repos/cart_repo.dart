@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:local/cart/stripe_pay_data.dart';
 import 'package:local/repos/user_repo.dart';
-import 'package:models/delivery_address.dart';
 import 'package:models/food_model.dart';
 import 'package:models/food_order.dart';
 import 'package:models/local_user.dart';
@@ -85,10 +84,10 @@ class CartRepo {
   Future<bool> placeOrder({
     required String mentions,
     required bool isDelivery,
+    required bool isExternalDelivery,
     required num deliveryFee,
     required int deliveryEta,
     required PaymentType paymentType,
-    required String paymentIntentId,
     required String orderId,
   }) async {
     final restaurantDoc = _firestore
@@ -96,23 +95,31 @@ class CartRepo {
         .doc(_selectedRestaurantId);
     final orderDoc = restaurantDoc.collection(_collectionOrders).doc();
 
-    final o.Order order = _getOrder(orderDoc, mentions, isDelivery, deliveryFee,
-        deliveryEta, paymentType, paymentIntentId, orderId);
+    final o.Order order = _getOrder(
+      orderDoc: orderDoc,
+      mentions: mentions,
+      isDelivery: isDelivery,
+      deliveryFee: deliveryFee,
+      deliveryEta: deliveryEta,
+      paymentType: paymentType,
+      orderId: orderId,
+      isExternalDelivery: isExternalDelivery,
+    );
     await orderDoc.set(order.toMap());
     clearCart();
     return true;
   }
 
-  o.Order _getOrder(
-    DocumentReference<Map<String, dynamic>> orderDoc,
-    String mentions,
-    bool isDelivery,
-    num deliveryFee,
-    int deliveryEta,
-    PaymentType paymentType,
-    String paymentIntentId,
-    String orderId,
-  ) {
+  o.Order _getOrder({
+    required DocumentReference<Map<String, dynamic>> orderDoc,
+    required String mentions,
+    required bool isDelivery,
+    required bool isExternalDelivery,
+    required num deliveryFee,
+    required int deliveryEta,
+    required PaymentType paymentType,
+    required String orderId,
+  }) {
     final address = _userRepo.address!;
     final user = _userRepo.user!;
 
@@ -124,11 +131,13 @@ class CartRepo {
       mentions: mentions,
       settled: false,
       isDelivery: isDelivery,
+      isExternalDelivery: isExternalDelivery,
+      restaurantId: _selectedRestaurantId!,
       deliveryFee: deliveryFee,
       deliveryEta: deliveryEta,
       eta: 0,
       paymentType: paymentType,
-      paymentIntentId: paymentIntentId,
+      paymentIntentId: '',
       latitude: address.latitude,
       longitude: address.longitude,
       street: address.street,
@@ -173,6 +182,7 @@ class CartRepo {
   Future<void> initStripeCheckout(
       {required String mentions,
       required bool isDelivery,
+      required bool isExternalDelivery,
       required num deliveryFee,
       required int deliveryEta,
       required PaymentType paymentType,
@@ -191,9 +201,9 @@ class CartRepo {
     final checkoutSessionData = {
       "client": "mobile",
       "mode": "payment",
-      "amount": cartTotal * 100,
+      "amount": (cartTotal * 100).round() ,
       "currency": "RON",
-      "application_fee_amount": applicationFee * 100,
+      "application_fee_amount": (applicationFee * 100).round(),
       "on_behalf_of": restaurantStripeAccountId,
       "client_phone_number": user.phoneNumber,
       "order_id": orderId,
@@ -202,8 +212,16 @@ class CartRepo {
     batch.set(checkoutSessionRef, checkoutSessionData);
 
     final orderRef = checkoutSessionRef.collection("pendingOrders").doc();
-    final order = _getOrder(orderRef, mentions, isDelivery, deliveryFee,
-        deliveryEta, paymentType, "", orderId);
+    final order = _getOrder(
+      orderDoc: orderRef,
+      mentions: mentions,
+      isDelivery: isDelivery,
+      deliveryFee: deliveryFee,
+      deliveryEta: deliveryEta,
+      paymentType: paymentType,
+      orderId: orderId,
+      isExternalDelivery: isExternalDelivery,
+    );
     batch.set(orderRef, order.toMap());
 
     await batch.commit();
