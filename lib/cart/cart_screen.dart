@@ -576,13 +576,14 @@ class _CartScreenState extends State<CartScreen> {
           applePay: const PaymentSheetApplePay(
             merchantCountryCode: 'RO',
           ),
+          //todo change test env
           googlePay: const PaymentSheetGooglePay(
               merchantCountryCode: 'RO', currencyCode: 'RON', testEnv: true),
           style: ThemeMode.light,
         ),
       );
       await Stripe.instance.presentPaymentSheet();
-      cubit.placeOrder();
+      cubit.paymentSuccess();
     } on StripeException catch (e) {
       cubit.paymentFailed();
       _handleStripeException(e);

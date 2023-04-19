@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:local/cart/stripe_pay_data.dart';
 import 'package:local/repos/user_repo.dart';
+import 'package:models/delivery_address.dart';
 import 'package:models/food_model.dart';
 import 'package:models/food_order.dart';
 import 'package:models/local_user.dart';
@@ -90,15 +91,32 @@ class CartRepo {
     required String paymentIntentId,
     required String orderId,
   }) async {
-    final address = _userRepo.address!;
-    final user = _userRepo.user!;
-
     final restaurantDoc = _firestore
         .collection(_collectionRestaurants)
         .doc(_selectedRestaurantId);
     final orderDoc = restaurantDoc.collection(_collectionOrders).doc();
 
-    final o.Order order = o.Order(
+    final o.Order order = _getOrder(orderDoc, mentions, isDelivery, deliveryFee,
+        deliveryEta, paymentType, paymentIntentId, orderId);
+    await orderDoc.set(order.toMap());
+    clearCart();
+    return true;
+  }
+
+  o.Order _getOrder(
+    DocumentReference<Map<String, dynamic>> orderDoc,
+    String mentions,
+    bool isDelivery,
+    num deliveryFee,
+    int deliveryEta,
+    PaymentType paymentType,
+    String paymentIntentId,
+    String orderId,
+  ) {
+    final address = _userRepo.address!;
+    final user = _userRepo.user!;
+
+    return o.Order(
       id: orderDoc.id,
       date: DateTime.now(),
       foods: _foodOrders,
@@ -124,9 +142,6 @@ class CartRepo {
       courierId: '',
       courierName: '',
     );
-    await orderDoc.set(order.toMap());
-    clearCart();
-    return true;
   }
 
   void clearCart() {
@@ -156,16 +171,24 @@ class CartRepo {
   }
 
   Future<void> initStripeCheckout(
-      {required LocalUser user,
-        required String orderId,
+      {required String mentions,
+      required bool isDelivery,
+      required num deliveryFee,
+      required int deliveryEta,
+      required PaymentType paymentType,
+      required LocalUser user,
+      required String orderId,
       required String restaurantStripeAccountId,
       required num applicationFee,
       required Function(StripePayData) callback}) async {
-    final doc = await _firestore
+    final batch = _firestore.batch();
+
+    final checkoutSessionRef = _firestore
         .collection("customers")
         .doc(user.uid)
         .collection("checkout_sessions")
-        .add({
+        .doc();
+    final checkoutSessionData = {
       "client": "mobile",
       "mode": "payment",
       "amount": cartTotal * 100,
@@ -174,9 +197,18 @@ class CartRepo {
       "on_behalf_of": restaurantStripeAccountId,
       "client_phone_number": user.phoneNumber,
       "order_id": orderId,
-    });
+      "restaurantId": _selectedRestaurantId,
+    };
+    batch.set(checkoutSessionRef, checkoutSessionData);
 
-    doc.snapshots().listen((event) {
+    final orderRef = checkoutSessionRef.collection("pendingOrders").doc();
+    final order = _getOrder(orderRef, mentions, isDelivery, deliveryFee,
+        deliveryEta, paymentType, "", orderId);
+    batch.set(orderRef, order.toMap());
+
+    await batch.commit();
+
+    checkoutSessionRef.snapshots().listen((event) {
       print(event.data());
       try {
         callback(StripePayData.fromMap(event.data()!));
