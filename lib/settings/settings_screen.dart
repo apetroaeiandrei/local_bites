@@ -77,6 +77,14 @@ class SettingsScreen extends StatelessWidget {
                         launchUrl(Uri.parse(Constants.tcUrl));
                       }),
                   CustomMenuItem(
+                      name: S.of(context).settings_help,
+                      onTap: () {
+                        _analytics.setCurrentScreen(screenName: Routes.help);
+                        Navigator.of(context).pushNamed(Routes.help).then(
+                            (value) => _analytics.setCurrentScreen(
+                                screenName: Routes.settings));
+                      }),
+                  CustomMenuItem(
                       name: S.of(context).settings_logout,
                       onTap: () {
                         _analytics.logEvent(name: Metric.eventLogout);

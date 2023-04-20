@@ -1,0 +1,44 @@
+{
+  "faq": [
+    {
+      "question": "Ce este Local Bites?",
+      "answer": "Local Bites este o platformă online care facilitează comanda de mâncare la domiciliu de la restaurantele partenere din zona ta."
+    },
+    {
+      "question": "Cum pot plasa o comandă?",
+      "answer": "Alege un restaurant din lista noastră de parteneri. Selectează articolele dorite din meniul restaurantului și finalizează comanda prin plata cu cardul sau cash la livrare."
+    },
+    {
+      "question": "Ce metode de plată sunt acceptate?",
+      "answer": "Local Bites acceptă plăți prin aplicație cu cardul, ApplePay sau GooglePay, cu cardul de credit sau cu numerar la livrare. Acestea pot varia în funcție de restaurant."
+    },
+    {
+      "question": "Este sigură plata prin aplicație?",
+      "answer": "Da. Folosim Stripe pentru a procesa plățile. Stripe are certificările necesare la nivel mondial pentru a procesa plăți online. Local Bites nu reține și nu are acces la cardurile dumneavoastră."
+    },
+    {
+      "question": "Cum pot contacta un restaurant partener?",
+      "answer": "Pentru a contacta un restaurant partener, deschide pagina restaurantului în aplicație și apasă pe butonul info din dreapta sus. Acesta îți va oferi opțiuni de contact, cum ar fi un număr de telefon sau o adresă de e-mail.\n\nOpțiunea de a suna la restaurant este disponibilă și din detaliile comenzii dumneavoastră."
+    },
+    {
+      "question": "Cât timp va dura livrarea?",
+      "answer": "Timpul de livrare variază în funcție de restaurant și de distanța de la restaurant la adresa ta. În general, timpul de livrare este între 30 și 60 de minute și este afișat în aplicație după plasarea comenzii."
+    },
+    {
+      "question": "Pot anula o comandă?",
+      "answer": "Din păcate momentan nu avem această capabilitate momentan. Vă rugăm să contactați restaurantul telefonic pentru a anula comanda."
+    },
+    {
+      "question": "Ce se întâmplă dacă am probleme cu comanda?",
+      "answer": "În funcție de situație, te rugăm să contactezi restaurantul sau să ne contactezi pe noi. Vom face tot posibilul pentru a remedia situația.\n\nExemple de situații ce țin de restaurant: comandă în așteptare de prea mult timp, comandă care nu mai ajunge, detalii lipsă la produse, etc.\n\nExemple de situații ce țin de Local Bites: nu pot plasa comanda, nu pot plăti, nu pot vedea comanda, etc."
+    },
+    {
+      "question": "Pot comanda de la mai multe restaurante în același timp?",
+      "answer": "Da, puteți plasa mai multe comenzi simultan."
+    },
+    {
+      "question": "Contactează Local Bites",
+      "answer": "Pentru informații și sugestii trimiteți un email la: contact.localbites@gmail.com\n\nPentru urgențe, sunați la: 0750485123"
+    }
+  ]
+}

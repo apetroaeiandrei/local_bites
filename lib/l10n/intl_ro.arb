@@ -67,6 +67,7 @@
   "settings_logout": "Deconectare",
   "settings_profile": "Profil",
   "settings_orders": "Comenzile tale",
+  "settings_help": "Ajutor",
   "settings_terms": "Termeni și condiții",
   "settings_notifications": "Notificări",
 
@@ -201,6 +202,8 @@
   "feedback_suggestion_time" : "durata comenzii",
 
   "cart_pay_button": "Plătește",
-  "cart_payment_failed_message": "Plata a eșuat. Verifică dacă ai internet și încearcă din nou."
+  "cart_payment_failed_message": "Plata a eșuat. Verifică dacă ai internet și încearcă din nou.",
+
+  "help_screen_title" : "Ajutor"
 
 }

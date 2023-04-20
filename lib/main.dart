@@ -11,6 +11,8 @@ import 'package:local/auth/register/register_screen.dart';
 import 'package:local/cart/mentions_screen.dart';
 import 'package:local/food_details/food_details_cubit.dart';
 import 'package:local/food_details/food_details_screen.dart';
+import 'package:local/help/help_cubit.dart';
+import 'package:local/help/help_screen.dart';
 import 'package:local/orders/orders_cubit.dart';
 import 'package:local/orders/orders_screen.dart';
 import 'package:local/profile/profile_cubit.dart';
@@ -207,6 +209,10 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<NotificationsRepo>(context),
               ),
               child: const NotificationsScreen(),
+            ),
+        Routes.help: (context) => BlocProvider<HelpCubit>(
+              create: (context) => HelpCubit(),
+              child: const HelpScreen(),
             ),
       },
       onGenerateRoute: (settings) {

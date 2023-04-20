@@ -96,6 +96,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             title: Text(S.of(context).home_welcome),
             actions: [
               IconButton(
+                icon: const Icon(Icons.help_outline),
+                onPressed: () {
+                  _analytics.setCurrentScreen(screenName: Routes.help);
+                  Navigator.of(context).pushNamed(Routes.help).then((value) =>
+                      _analytics.setCurrentScreen(screenName: Routes.home));
+                },
+              ),
+              IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () {
                   Navigator.of(context).pushNamed(Routes.settings).then(
