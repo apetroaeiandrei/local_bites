@@ -3,6 +3,7 @@ part of 'cart_cubit.dart';
 enum CartStatus {
   initial,
   orderSuccess,
+  orderPending,
   orderError,
   minimumOrderError,
   restaurantClosed,

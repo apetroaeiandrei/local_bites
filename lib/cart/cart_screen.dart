@@ -203,7 +203,8 @@ class _CartScreenState extends State<CartScreen> {
                       : () {
                           if (state.status == CartStatus.computingDelivery ||
                               state.status == CartStatus.stripeLoading ||
-                              state.status == CartStatus.stripeReady) {
+                              state.status == CartStatus.stripeReady ||
+                              state.status == CartStatus.orderPending) {
                             return;
                           }
                           _analytics.logEventWithParams(
@@ -233,7 +234,8 @@ class _CartScreenState extends State<CartScreen> {
 
   Widget _getCheckoutButtonWidget(CartState state) {
     if (state.status == CartStatus.computingDelivery ||
-        state.status == CartStatus.stripeLoading) {
+        state.status == CartStatus.stripeLoading ||
+        state.status == CartStatus.orderPending) {
       return const ButtonLoading();
     }
     var text = _getCheckoutButtonText(state);
@@ -564,6 +566,7 @@ class _CartScreenState extends State<CartScreen> {
 
   Future<void> initPaymentSheet(CartState state, CartCubit cubit) async {
     try {
+      cubit.onPaymentPending();
       final data = state.stripePayData!;
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
@@ -583,12 +586,11 @@ class _CartScreenState extends State<CartScreen> {
         ),
       );
       await Stripe.instance.presentPaymentSheet();
-      cubit.paymentSuccess();
     } on StripeException catch (e) {
-      cubit.paymentFailed();
+      cubit.onPaymentFailed();
       _handleStripeException(e);
     } catch (e) {
-      cubit.paymentFailed();
+      cubit.onPaymentFailed();
       _showGenericPaymentError();
     }
   }
@@ -596,8 +598,8 @@ class _CartScreenState extends State<CartScreen> {
   _handleStripeException(StripeException e) {
     //todo log to analytics
     final error = e.error;
-    context.read<CartCubit>().onPaymentFailed();
     switch (error.code) {
+      case FailureCode.Timeout:
       case FailureCode.Failed:
         _showGenericPaymentError();
         break;

@@ -12,7 +12,7 @@ class OrdersRepo {
   static const _collectionUsers = "users";
   static const _collectionRestaurants = "restaurants";
   StreamSubscription? _orderSubscription;
-
+  final List<UserOrder> _currentOrders = [];
   OrdersRepo._privateConstructor();
 
   static OrdersRepo? _instance;
@@ -27,6 +27,8 @@ class OrdersRepo {
 
   final StreamController<List<UserOrder>> _currentOrderController =
       StreamController<List<UserOrder>>.broadcast();
+
+  List<UserOrder> get currentOrders => _currentOrders;
 
   listenForOrderInProgress() async {
     await stopListeningForOrderInProgress();
@@ -43,6 +45,8 @@ class OrdersRepo {
   void _handleChangedOrder(QuerySnapshot<Map<String, dynamic>> ordersSnapshot) {
     final orders =
         ordersSnapshot.docs.map((e) => UserOrder.fromMap(e.data())).toList();
+    _currentOrders.clear();
+    _currentOrders.addAll(orders);
     _currentOrderController.add(orders);
   }
 

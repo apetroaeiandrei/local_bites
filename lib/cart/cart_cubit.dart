@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:google_directions_api/google_directions_api.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:local/repos/orders_repo.dart';
 import 'package:models/payment_type.dart';
 import 'package:local/cart/stripe_pay_data.dart';
 import 'package:local/constants.dart';
@@ -16,7 +18,8 @@ import 'package:models/food_order.dart';
 part 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
-  CartCubit(this._cartRepo, this._restaurantsRepo, this._userRepo)
+  CartCubit(
+      this._cartRepo, this._restaurantsRepo, this._userRepo, this._ordersRepo)
       : super(CartState(
             status: _restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
                     _restaurantsRepo.selectedRestaurant.couriersAvailable
@@ -64,6 +67,7 @@ class CartCubit extends Cubit<CartState> {
     init();
   }
 
+  final OrdersRepo _ordersRepo;
   final CartRepo _cartRepo;
   final RestaurantsRepo _restaurantsRepo;
   final UserRepo _userRepo;
@@ -71,14 +75,30 @@ class CartCubit extends Cubit<CartState> {
   late final DeliveryZone _deliveryZone;
   late final String _orderId;
 
+  StreamSubscription? _currentOrderSubscription;
+  int length = -1;
+
   final _delayedDuration = const Duration(milliseconds: 10);
   bool _userChangedPaymentType = false;
 
   Future<void> init() async {
+    _listenForOrders();
     _orderId = _generateOrderId();
     await _getDelivery();
     Future.delayed(_delayedDuration, () {
       _refreshCart();
+    });
+  }
+
+  _listenForOrders() async {
+    length = _ordersRepo.currentOrders.length;
+    await _currentOrderSubscription?.cancel();
+    _currentOrderSubscription = _ordersRepo.currentOrderStream.listen((orders) {
+      if (orders.length > length) {
+        // New order
+        _cartRepo.clearCart();
+        emit(state.copyWith(status: CartStatus.orderSuccess));
+      }
     });
   }
 
@@ -111,6 +131,7 @@ class CartCubit extends Cubit<CartState> {
   }
 
   Future<void> _placeOrder() async {
+    emit(state.copyWith(status: CartStatus.orderPending));
     final success = await _cartRepo.placeOrder(
       mentions: state.mentions,
       isDelivery: state.deliverySelected && state.hasDelivery,
@@ -120,9 +141,7 @@ class CartCubit extends Cubit<CartState> {
       isExternalDelivery: state.hasExternalDelivery,
       orderId: _orderId,
     );
-    if (success) {
-      emit(state.copyWith(status: CartStatus.orderSuccess));
-    } else {
+    if (!success) {
       emit(state.copyWith(status: CartStatus.orderError));
     }
   }
@@ -310,14 +329,9 @@ class CartCubit extends Cubit<CartState> {
     );
   }
 
-  void paymentFailed() {
-    _refreshCart();
-  }
-
-  void paymentSuccess() {
-    _cartRepo.clearCart();
+  void onPaymentPending() {
     emit(state.copyWith(
-      status: CartStatus.orderSuccess,
+      status: CartStatus.orderPending,
     ));
   }
 
@@ -328,5 +342,11 @@ class CartCubit extends Cubit<CartState> {
     return List.generate(5, (index) => chars[random.nextInt(chars.length)])
         .join()
         .toUpperCase();
+  }
+
+  @override
+  Future<void> close() {
+    _currentOrderSubscription?.cancel();
+    return super.close();
   }
 }

@@ -185,6 +185,7 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<CartRepo>(context),
                 RepositoryProvider.of<RestaurantsRepo>(context),
                 RepositoryProvider.of<UserRepo>(context),
+                RepositoryProvider.of<OrdersRepo>(context),
               ),
               child: const CartScreen(),
             ),
