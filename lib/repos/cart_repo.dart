@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:local/cart/stripe_pay_data.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:models/food_model.dart';
@@ -201,7 +202,7 @@ class CartRepo {
     final checkoutSessionData = {
       "client": "mobile",
       "mode": "payment",
-      "amount": (cartTotal * 100).round() ,
+      "amount": ((cartTotal + deliveryFee) * 100).round(),
       "currency": "RON",
       "application_fee_amount": (applicationFee * 100).round(),
       "on_behalf_of": restaurantStripeAccountId,
@@ -227,11 +228,10 @@ class CartRepo {
     await batch.commit();
 
     checkoutSessionRef.snapshots().listen((event) {
-      print(event.data());
       try {
         callback(StripePayData.fromMap(event.data()!));
       } catch (e) {
-        print(e);
+        FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
       }
     });
   }
