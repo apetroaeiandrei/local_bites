@@ -39,6 +39,7 @@ abstract class Metric {
   static const String eventCartRestaurantClosed = "cart_restaurant_closed";
   static const String eventCartCouriersUnavailable = "cart_couriers_unavailable";
   static const String propertyOrderPrice = "price";
+  static const String propertyOrderPaymentType = "payment_type";
 
   static const String eventAuthError = "auth_error";
   static const String eventAuthLogin = "auth_login";
@@ -92,5 +93,7 @@ abstract class Metric {
   static const String eventFeedbackSend = "feedback_send";
   static const String propertyFeedbackIsPositive = "is_positive";
   static const String propertyFeedbackAspects = "aspects";
+
+  static const String eventPaymentCancelled = "payment_cancelled";
 
 }

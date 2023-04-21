@@ -1,9 +1,11 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:local/analytics/metric.dart';
 import 'package:local/cart/cart_cubit.dart';
+import 'package:local/environment/app_config.dart';
 import 'package:models/payment_type.dart';
 import 'package:local/routes.dart';
 import 'package:local/theme/wl_colors.dart';
@@ -214,6 +216,8 @@ class _CartScreenState extends State<CartScreen> {
                                     _getTotalWithDelivery(state),
                                 Metric.propertyRestaurantsName:
                                     state.restaurantName,
+                                Metric.propertyOrderPaymentType:
+                                    state.paymentType.toString(),
                               });
                           context.read<CartCubit>().checkout();
                         },
@@ -579,9 +583,10 @@ class _CartScreenState extends State<CartScreen> {
           applePay: const PaymentSheetApplePay(
             merchantCountryCode: 'RO',
           ),
-          //todo change test env
-          googlePay: const PaymentSheetGooglePay(
-              merchantCountryCode: 'RO', currencyCode: 'RON', testEnv: true),
+          googlePay: PaymentSheetGooglePay(
+              merchantCountryCode: 'RO',
+              currencyCode: 'RON',
+              testEnv: !AppConfig.isProd),
           style: ThemeMode.light,
         ),
       );
@@ -596,15 +601,15 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   _handleStripeException(StripeException e) {
-    //todo log to analytics
     final error = e.error;
     switch (error.code) {
       case FailureCode.Timeout:
       case FailureCode.Failed:
         _showGenericPaymentError();
+        FirebaseCrashlytics.instance.recordError(e, null);
         break;
       case FailureCode.Canceled:
-        // do nothing
+        Analytics().logEvent(name: Metric.eventPaymentCancelled);
         break;
     }
   }
