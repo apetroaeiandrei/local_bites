@@ -229,7 +229,9 @@ class CartRepo {
 
     checkoutSessionRef.snapshots().listen((event) {
       try {
-        callback(StripePayData.fromMap(event.data()!));
+        if (event.data()!['paymentIntentId'] != null) {
+          callback(StripePayData.fromMap(event.data()!));
+        }
       } catch (e) {
         FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
       }
