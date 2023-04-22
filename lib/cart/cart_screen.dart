@@ -572,6 +572,7 @@ class _CartScreenState extends State<CartScreen> {
     try {
       cubit.onPaymentPending();
       final data = state.stripePayData!;
+      final colorScheme = Theme.of(context).colorScheme;
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           customFlow: false,
@@ -588,6 +589,19 @@ class _CartScreenState extends State<CartScreen> {
               currencyCode: 'RON',
               testEnv: !AppConfig.isProd),
           style: ThemeMode.light,
+          appearance: PaymentSheetAppearance(
+            colors: PaymentSheetAppearanceColors(
+              primary: colorScheme.primary,
+              background: colorScheme.surface,
+              componentBackground: colorScheme.surface,
+              primaryText: WlColors.textColor,
+              secondaryText: WlColors.textColor,
+              placeholderText: WlColors.placeholderTextColor,
+              componentText: WlColors.textColor,
+              icon: WlColors.textColor.withOpacity(0.8),
+              error: WlColors.error,
+            ),
+          ),
         ),
       );
       await Stripe.instance.presentPaymentSheet();
