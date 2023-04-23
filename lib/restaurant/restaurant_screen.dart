@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/restaurant/restaurant_cubit.dart';
 import 'package:local/routes.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../analytics/analytics.dart';
 import '../generated/l10n.dart';
@@ -18,6 +19,19 @@ class RestaurantScreen extends StatefulWidget {
 
 class _RestaurantScreenState extends State<RestaurantScreen> {
   final _analytics = Analytics();
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemScrollController categoriesItemScrollController =
+      ItemScrollController();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
+  int _selectedCategoryIndex = 0;
+  DateTime? _lastTopCategoryPressTime;
+
+  @override
+  void initState() {
+    _listenToFoodsPosition();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,33 +51,44 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               ],
             ),
             body: Stack(
-              fit: StackFit.expand,
               children: [
-                ListView.builder(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.fromLTRB(
-                      Dimens.defaultPadding,
-                      Dimens.defaultPadding,
-                      Dimens.defaultPadding,
-                      80,
-                    ),
-                    itemCount: state.categories.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30, bottom: 20),
-                            child: Text(
-                              state.categories[index].category.name
-                                  .toUpperCase(),
-                              style: Theme.of(context).textTheme.displaySmall,
+                Padding(
+                  padding: const EdgeInsets.only(top: 30),
+                  child: ScrollablePositionedList.builder(
+                      shrinkWrap: true,
+                      itemScrollController: itemScrollController,
+                      itemPositionsListener: itemPositionsListener,
+                      padding: const EdgeInsets.fromLTRB(
+                        Dimens.defaultPadding,
+                        0,
+                        Dimens.defaultPadding,
+                        80,
+                      ),
+                      itemCount: state.categories.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 30, bottom: 20),
+                              child: Text(
+                                state.categories[index].category.name
+                                    .toUpperCase(),
+                                style: Theme.of(context).textTheme.displaySmall,
+                              ),
                             ),
-                          ),
-                          ...getFoodsInCategory(state.categories[index]),
-                        ],
-                      );
-                    }),
+                            ...getFoodsInCategory(state.categories[index]),
+                          ],
+                        );
+                      }),
+                ),
+                Container(
+                  height: 50,
+                  color: Theme.of(context).colorScheme.surface,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: getPositionsView(state),
+                ),
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 400),
                   curve: Curves.easeInOut,
@@ -113,5 +138,91 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         ),
       ),
     );
+  }
+
+  Widget getPositionsView(RestaurantState state) {
+    return ScrollablePositionedList.builder(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      itemCount: state.categories.length,
+      itemScrollController: categoriesItemScrollController,
+      padding: const EdgeInsets.symmetric(horizontal: Dimens.defaultPadding),
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () {
+            _scrollFoodsToIndex(index);
+          },
+          child: Container(
+            margin: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: _selectedCategoryIndex == index
+                  ? Theme.of(context).colorScheme.secondary
+                  : Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(50),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+            child: Center(
+                child: Text(
+              state.categories[index].category.name,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium!
+                  .copyWith(fontWeight: FontWeight.bold, fontSize: 12),
+            )),
+          ),
+        );
+      },
+    );
+  }
+
+  _scrollFoodsToIndex(int index) {
+    setState(() {
+      _lastTopCategoryPressTime = DateTime.now();
+      _selectedCategoryIndex = index;
+    });
+    itemScrollController.scrollTo(
+        index: index,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut);
+  }
+
+  _scrollCategoriesToIndex(int index) {
+    if (_lastTopCategoryPressTime != null &&
+        DateTime.now().difference(_lastTopCategoryPressTime!) <
+            const Duration(milliseconds: 1000)) {
+      return;
+    }
+    setState(() {
+      _selectedCategoryIndex = index;
+    });
+    categoriesItemScrollController.scrollTo(
+        index: index,
+        alignment: 0.45,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut);
+  }
+
+  void _listenToFoodsPosition() {
+    itemPositionsListener.itemPositions.addListener(() {
+      int min = 0;
+      if (itemPositionsListener.itemPositions.value.isNotEmpty) {
+        // Determine the first visible item by finding the item with the
+        // smallest trailing edge that is greater than 0.  i.e. the first
+        // item whose trailing edge in visible in the viewport.
+        min = itemPositionsListener.itemPositions.value
+            .where((ItemPosition position) => position.itemTrailingEdge > 0)
+            .reduce((ItemPosition min, ItemPosition position) =>
+                position.itemTrailingEdge < min.itemTrailingEdge
+                    ? position
+                    : min)
+            .index;
+      }
+      if (min != _selectedCategoryIndex) {
+        _scrollCategoriesToIndex(min);
+      }
+    });
   }
 }
