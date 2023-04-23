@@ -155,7 +155,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                         ),
                         _getConfiguration(state),
-                        if (state.order!.isExternalDelivery ?? false)
+                        if (_showReceipts(state))
                           _getReceipts(state),
                         Container(
                           height: 1,
@@ -226,6 +226,20 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   static const double _receiptSize = 40;
+
+  bool _showReceipts(OrderState state) {
+    final order = state.order!;
+    if (!(order.isExternalDelivery ?? false)) {
+      return false;
+    }
+    if (order.paymentType == PaymentType.app) {
+      return true;
+    }
+    if (order.paymentType == PaymentType.cash) {
+      return order.status == OrderStatus.completed;
+    }
+    return false;
+  }
 
   Widget _getReceipts(OrderState state) {
     return Row(
