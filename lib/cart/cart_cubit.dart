@@ -311,7 +311,7 @@ class CartCubit extends Cubit<CartState> {
     _cartRepo.initStripeCheckout(
       mentions: state.mentions,
       isDelivery: state.deliverySelected && state.hasDelivery,
-      deliveryFee: state.deliveryFee,
+      deliveryFee: state.deliverySelected ? state.deliveryFee : 0,
       isExternalDelivery: state.hasExternalDelivery,
       deliveryEta: state.deliveryEta.toInt(),
       paymentType: state.paymentType,
@@ -319,7 +319,9 @@ class CartCubit extends Cubit<CartState> {
       user: _userRepo.user!,
       restaurantStripeAccountId:
           _restaurantsRepo.selectedRestaurant.stripeAccountId,
-      applicationFee: state.hasExternalDelivery ? state.deliveryFee : 0,
+      applicationFee: state.hasExternalDelivery && state.deliverySelected
+          ? state.deliveryFee
+          : 0,
       callback: (stripeData) {
         emit(state.copyWith(
           status: CartStatus.stripeReady,
