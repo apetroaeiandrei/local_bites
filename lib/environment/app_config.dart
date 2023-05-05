@@ -13,6 +13,10 @@ import 'dev_firebase_options.dart';
 class AppConfig {
   static const String flavorDev = 'dev';
   static const String flavorProd = 'prod';
+  static const String stripePublishableKeyLive =
+      'pk_live_STRIPE';
+  static const String stripePublishableKeyTest =
+      'pk_test_STRIPE';
   static bool isProd = false;
 
   static Future<void> init() async {
@@ -64,7 +68,9 @@ class AppConfig {
   }
 
   static Future<void> _initStripe() async {
-    Stripe.publishableKey = "pk_test_STRIPE";
+    Stripe.publishableKey = isProd
+        ? AppConfig.stripePublishableKeyLive
+        : AppConfig.stripePublishableKeyTest;
     Stripe.merchantIdentifier = "STRIPE_MERCHANT_ID";
     await Stripe.instance.applySettings();
   }
