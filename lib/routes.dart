@@ -8,6 +8,7 @@ abstract class Routes {
   static const foodDetails = '/restaurant/food';
   static const restaurantInfo = '/restaurant/info';
   static const orderDetails = '/order/details';
+  static const vouchers = '/vouchers';
 
   static const settings = '/settings';
   static const address = '/addresses/address';

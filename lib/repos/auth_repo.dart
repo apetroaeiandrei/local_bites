@@ -66,4 +66,56 @@ class AuthRepo {
       return false;
     }
   }
+
+  void loginWithPhone(String phoneNumber) {
+    _auth.verifyPhoneNumber(
+      timeout: const Duration(seconds: 60),
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) {
+        _linWithCredential(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        if (e.code == 'invalid-phone-number') {
+          print('The provided phone number is not valid.');
+        } else {
+          print('Something went wrong. Please try later');
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        // Update the UI - wait for the user to enter the SMS code
+        String smsCode = 'xxxx';
+
+        // Create a PhoneAuthCredential with the code
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
+            verificationId: verificationId, smsCode: smsCode);
+
+        // Sign the user in (or link) with the credential
+        //_auth.signInWithCredential(credential);
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+  }
+
+  _linWithCredential(PhoneAuthCredential credential) async {
+    try {
+      final userCredential = await _auth.currentUser
+          ?.linkWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "provider-already-linked":
+          print("The provider has already been linked to the user.");
+          break;
+        case "invalid-credential":
+          print("The provider's credential is not valid.");
+          break;
+        case "credential-already-in-use":
+          print("The account corresponding to the credential already exists, "
+              "or is already linked to a Firebase User.");
+          break;
+        // See the API reference for the full list of error codes.
+        default:
+          print("Unknown error.");
+      }
+    }
+  }
 }

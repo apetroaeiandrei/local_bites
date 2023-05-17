@@ -62,6 +62,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
         }
       },
       builder: (context, state) {
+        print(state.food.imageUrl);
         return Scaffold(
           body: Stack(
             children: [
