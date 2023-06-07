@@ -1,7 +1,10 @@
 abstract class Constants {
+  static const String initialCountryCodePhone = "RO";
+  static const String initialCountryDialCodePhone = "+40";
   static const String targetLanguageCode = "ro";
   static const String labelsSeparator = ',';
   static const String tcUrl = "https://local-restaurants.ro/#/tc";
+  static const String supportEmail = "contact.localbites@gmail.com";
   static const String emailRegex =
       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
 

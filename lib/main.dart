@@ -35,6 +35,8 @@ import 'package:local/settings/notifications/notifications_screen.dart';
 import 'package:local/settings/settings_cubit.dart';
 import 'package:local/settings/settings_screen.dart';
 import 'package:local/theme/theme.dart';
+import 'package:local/vouchers/vouchers_cubit.dart';
+import 'package:local/vouchers/vouchers_screen.dart';
 import 'package:models/food_model.dart';
 import 'package:models/restaurant_model.dart';
 import 'package:models/user_order.dart';
@@ -44,6 +46,8 @@ import 'address/addresses/addresses_screen.dart';
 import 'analytics/metric.dart';
 import 'auth/auth_cubit.dart';
 import 'auth/auth_screen.dart';
+import 'auth/phone/phone_confirm_cubit.dart';
+import 'auth/phone/phone_confirm_screen.dart';
 import 'cart/cart_cubit.dart';
 import 'cart/cart_screen.dart';
 import 'environment/app_config.dart';
@@ -213,6 +217,18 @@ class MyApp extends StatelessWidget {
         Routes.help: (context) => BlocProvider<HelpCubit>(
               create: (context) => HelpCubit(),
               child: const HelpScreen(),
+            ),
+        Routes.vouchers: (context) => BlocProvider<VouchersCubit>(
+              create: (context) => VouchersCubit(
+              ),
+              child: const VouchersScreen(),
+            ),
+        Routes.phone: (context) => BlocProvider<PhoneConfirmCubit>(
+              create: (context) => PhoneConfirmCubit(
+                RepositoryProvider.of<AuthRepo>(context),
+                RepositoryProvider.of<UserRepo>(context),
+              ),
+              child: const PhoneConfirmScreen(),
             ),
       },
       onGenerateRoute: (settings) {

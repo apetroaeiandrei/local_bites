@@ -204,6 +204,27 @@
   "cart_pay_button": "Plătește",
   "cart_payment_failed_message": "Plata a eșuat. Verifică dacă ai internet și încearcă din nou.",
 
-  "help_screen_title" : "Ajutor"
+  "help_screen_title" : "Ajutor",
+  "vouchers_title" : "Voucherele tale",
+  "vouchers_phone_number_rationale" : "Te rugăm să confirmi numărul de telefon pentru a putea folosi voucherele.",
+  "phone_number_title" : "Confirmă numărul de telefon",
+  "phone_number_headline" : "Vei putea accesa contul tău folosind numărul de telefon.",
+  "phone_number_placeholder" : "Numărul tău de telefon",
+  "phone_number_send_sms_button" : "Confirmă",
+  "phone_number_sms_code_headline" : "Introdu codul primit prin SMS",
+  "phone_number_sms_code_placeholder" : "Cod 6 cifre",
+  "phone_number_error_already_used" : "Numărul de telefon este deja folosit de alt cont.\n\nContactează-ne pentru ajutor. Vom reveni către tine în cel mai scurt timp pentru a rezolva problema.",
+  "phone_number_error_already_linked" : "Numărul de telefon era deja confirmat",
+  "phone_number_error_invalid" : "Numărul de telefon este invalid.",
+  "phone_number_error_generic" : "A apărut o eroare. Te rugăm să încerci din nou.",
+  "phone_number_error_invalid_code" : "Codul introdus nu este corect.",
+  "phone_number_error_expired_code" : "Codul a expirat.",
+  "phone_number_action_retry_code" : "Trimite cod nou",
+  "phone_number_action_retry_generic" : "Încearcă din nou",
+  "phone_number_action_contact_support" : "Scrie mail",
+  "phone_number_success_headline" : "Numărul tău de telefon a fost confirmat cu succes. Mulțumim!",
+  "phone_number_support_email_subject": "Nu pot confirma numărul de telefon",
+    "phone_number_support_email_body": "Bună,\n\nNu pot confirma numărul de telefon {phoneNumber}. Primesc eroarea că este deja folosit de alt cont.\n\nMulțumesc!"
+
 
 }

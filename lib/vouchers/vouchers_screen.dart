@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/vouchers/vouchers_cubit.dart';
 
+import '../routes.dart';
+
 class VouchersScreen extends StatefulWidget {
   const VouchersScreen({Key? key}) : super(key: key);
 
@@ -21,9 +23,14 @@ class _VouchersScreenState extends State<VouchersScreen> {
           appBar: AppBar(
             title: const Text("Vouchers"),
           ),
-          body: const Center(
-            child: Text("Vouchers"),
-          ),);
+          body: Center(
+            child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(Routes.phone);
+                },
+                child: const Text("Confirm phone")),
+          ),
+        );
       },
     );
   }
