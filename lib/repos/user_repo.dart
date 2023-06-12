@@ -62,7 +62,8 @@ class UserRepo {
   }
 
   Future<bool> isProfileCompleted() async {
-    bool isCompleted = user != null;
+    bool isCompleted =
+        user != null && user!.phoneNumber.isNotEmpty && user!.name.isNotEmpty;
     return isCompleted;
   }
 

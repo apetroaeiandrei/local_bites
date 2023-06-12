@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:intl_phone_field/phone_number.dart';
 import 'package:local/auth/phone/phone_confirm_cubit.dart';
 
 import '../../constants.dart';
@@ -10,6 +8,7 @@ import '../../generated/l10n.dart';
 import '../../repos/phone_confirm_error.dart';
 import '../../theme/decorations.dart';
 import '../../theme/dimens.dart';
+import '../../utils.dart';
 import '../../widgets/button_loading.dart';
 
 class PhoneConfirmScreen extends StatefulWidget {
@@ -23,7 +22,6 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
   final FocusNode _codeFocus = FocusNode();
-  IntlPhoneField? _phoneField;
   String? countryCode;
   String? phoneNumber;
 
@@ -33,17 +31,12 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
       listener: (context, state) {
         switch (state.status) {
           case PhoneConfirmStatus.initial:
+          case PhoneConfirmStatus.codeSentByUser:
+          case PhoneConfirmStatus.codeRequested:
+          case PhoneConfirmStatus.failure:
             break;
           case PhoneConfirmStatus.phoneLoaded:
             _phoneController.text = state.phoneNumber;
-            _phoneField?.onChanged?.call(PhoneNumber(
-                countryISOCode: "+40",
-                countryCode: "RO",
-                number: state.phoneNumber));
-            break;
-          case PhoneConfirmStatus.codeRequested:
-            break;
-          case PhoneConfirmStatus.failure:
             break;
           case PhoneConfirmStatus.codeConfirmed:
             Future.delayed(const Duration(milliseconds: 1500), () {
@@ -51,6 +44,10 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
             });
             break;
           case PhoneConfirmStatus.codeSent:
+            _codeFocus.requestFocus();
+            break;
+          case PhoneConfirmStatus.phoneCodeInvalid:
+            _codeController.clear();
             _codeFocus.requestFocus();
             break;
         }
@@ -79,6 +76,8 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
       case PhoneConfirmStatus.codeRequested:
         return _getPhoneWidgets(state);
       case PhoneConfirmStatus.codeSent:
+      case PhoneConfirmStatus.phoneCodeInvalid:
+      case PhoneConfirmStatus.codeSentByUser:
         return _getCodeWidgets(state);
       case PhoneConfirmStatus.codeConfirmed:
         return _getSuccessWidgets(state);
@@ -135,6 +134,19 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
 
   List<Widget> _getCodeWidgets(PhoneConfirmState state) {
     return [
+      Visibility(
+        visible: state.status == PhoneConfirmStatus.phoneCodeInvalid,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Text(
+            S.of(context).phone_number_error_invalid_code,
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium
+                ?.copyWith(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+      ),
       Text(
         S.of(context).phone_number_sms_code_headline,
         style: Theme.of(context).textTheme.headlineMedium,
@@ -157,6 +169,12 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
           }
         },
       ),
+      Visibility(
+        visible: state.status == PhoneConfirmStatus.codeSentByUser,
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
     ];
   }
 
@@ -164,10 +182,6 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
     String error = "";
     String buttonText = "";
     switch (state.error!) {
-      case PhoneConfirmError.invalidCode:
-        error = S.of(context).phone_number_error_invalid_code;
-        buttonText = S.of(context).phone_number_action_retry_code;
-        break;
       case PhoneConfirmError.invalidPhoneNumber:
         error = S.of(context).phone_number_error_invalid;
         buttonText = S.of(context).phone_number_action_retry_generic;
@@ -178,12 +192,13 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
         break;
       case PhoneConfirmError.alreadyLinked:
         error = S.of(context).phone_number_error_already_linked;
+        buttonText = S.of(context).phone_number_action_contact_support;
         break;
       case PhoneConfirmError.timeout:
         error = S.of(context).phone_number_error_expired_code;
-        buttonText = S.of(context).phone_number_action_retry_code;
+        buttonText = S.of(context).phone_number_action_retry_generic;
         break;
-      case PhoneConfirmError.unknown:
+      default:
         error = S.of(context).phone_number_error_generic;
         buttonText = S.of(context).phone_number_action_contact_support;
         break;
@@ -220,39 +235,26 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
 
   Function()? _getErrorAction(PhoneConfirmState state) {
     switch (state.error!) {
-      case PhoneConfirmError.invalidCode:
+      case PhoneConfirmError.invalidPhoneNumber:
       case PhoneConfirmError.timeout:
         return () {
-          _codeController.text = "";
-          context.read<PhoneConfirmCubit>().requestCode(_getPhoneNumber(state));
+          _codeController.clear();
+          context.read<PhoneConfirmCubit>().retry();
         };
-      case PhoneConfirmError.alreadyInUse:
+      default:
         return () {
           _codeController.text = "";
           _sendEmail(state);
         };
-      case PhoneConfirmError.invalidPhoneNumber:
-        return () {
-          context.read<PhoneConfirmCubit>().retry();
-        };
-      case PhoneConfirmError.unknown:
-      case PhoneConfirmError.alreadyLinked:
-        return null;
     }
   }
 
-  _sendEmail(PhoneConfirmState state) async {
-    final Email email = Email(
-      body:
-          S.of(context).phone_number_support_email_body(_getPhoneNumber(state)),
-      subject: S.of(context).phone_number_support_email_subject,
-      recipients: [Constants.supportEmail],
-      cc: [],
-      bcc: [],
-      isHTML: false,
-    );
-
-    await FlutterEmailSender.send(email);
+  _sendEmail(PhoneConfirmState state) {
+    Utils.sendSupportEmail(
+        subject: S.of(context).phone_number_support_email_subject,
+        body: S
+            .of(context)
+            .phone_number_support_email_body(_getPhoneNumber(state)));
   }
 
   @override

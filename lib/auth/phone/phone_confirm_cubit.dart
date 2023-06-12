@@ -39,11 +39,12 @@ class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
   }
 
   void confirmCode(String smsCode) {
+    emit(state.copyWith(status: PhoneConfirmStatus.codeSentByUser));
     _authRepo.confirmCode(
       smsCode: smsCode,
       verificationId: verificationId,
-      onError: (error) {
-        _handleError(error);
+      onError: (error, {verificationId}) {
+        _handleError(error, verificationId: verificationId);
       },
       onSuccess: () {
         emit(state.copyWith(status: PhoneConfirmStatus.codeConfirmed));
@@ -54,6 +55,7 @@ class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
   void requestCode(String phoneNumber) {
     emit(state.copyWith(status: PhoneConfirmStatus.codeRequested));
     _authRepo.loginWithPhone(
+      linkCredential: true,
       phoneNumber: phoneNumber,
       onCodeSent: (verificationId) {
         this.verificationId = verificationId;
@@ -61,8 +63,8 @@ class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
           status: PhoneConfirmStatus.codeSent,
         ));
       },
-      onError: (error) {
-        _handleError(error);
+      onError: (error, {verificationId}) {
+        _handleError(error, verificationId: verificationId);
       },
       onSuccess: () {
         emit(state.copyWith(status: PhoneConfirmStatus.codeConfirmed));
@@ -70,11 +72,24 @@ class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
     );
   }
 
-  _handleError(PhoneConfirmError error) {
+  _handleError(PhoneConfirmError error, {String? verificationId}) {
     if (error == PhoneConfirmError.timeout &&
         state.status == PhoneConfirmStatus.failure) {
       return;
     }
-    emit(state.copyWith(status: PhoneConfirmStatus.failure, error: error));
+    if (isClosed) {
+      return;
+    }
+    if (error == PhoneConfirmError.invalidCode) {
+      emit(state.copyWith(
+        status: PhoneConfirmStatus.phoneCodeInvalid,
+        error: error,
+      ));
+      return;
+    }
+    emit(state.copyWith(
+      status: PhoneConfirmStatus.failure,
+      error: error,
+    ));
   }
 }

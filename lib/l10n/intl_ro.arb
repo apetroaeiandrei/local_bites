@@ -1,7 +1,7 @@
 {
   "@@locale": "ro",
   "auth_title": "Bun venit!",
-  "auth_subtitle": "Folosește contul tău pentru mai multe beneficii.",
+  "auth_subtitle": "Folosește numărul de telefon pentru a primi vouchere.",
   "auth_anonymous": "Continuă ca anonim",
   "auth_divider": "sau",
   "auth_login": "Autentificare",
@@ -219,7 +219,6 @@
   "phone_number_error_generic" : "A apărut o eroare. Te rugăm să încerci din nou.",
   "phone_number_error_invalid_code" : "Codul introdus nu este corect.",
   "phone_number_error_expired_code" : "Codul a expirat.",
-  "phone_number_action_retry_code" : "Trimite cod nou",
   "phone_number_action_retry_generic" : "Încearcă din nou",
   "phone_number_action_contact_support" : "Scrie mail",
   "phone_number_success_headline" : "Numărul tău de telefon a fost confirmat cu succes. Mulțumim!",

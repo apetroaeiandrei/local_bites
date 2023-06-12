@@ -7,6 +7,7 @@ enum PhoneConfirmStatus {
   codeSent,
   codeConfirmed,
   failure,
+  phoneCodeInvalid, codeSentByUser,
 }
 
 class PhoneConfirmState extends Equatable {

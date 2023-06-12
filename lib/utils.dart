@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:intl/intl.dart';
 import 'package:local/generated/l10n.dart';
 import 'package:local/theme/wl_colors.dart';
@@ -21,6 +22,21 @@ class Utils {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  static sendSupportEmail({
+    required String subject,
+    required String body,
+  }) async {
+    final Email email = Email(
+      body: body,
+      subject: subject,
+      recipients: [Constants.supportEmail],
+      cc: [],
+      bcc: [],
+      isHTML: false,
+    );
+    await FlutterEmailSender.send(email);
   }
 }
 
@@ -88,11 +104,11 @@ extension DateUtils on DateTime {
 }
 
 Widget defaultFoodImage() => Image.asset(
-  Img.foodPlaceholder,
-  fit: BoxFit.cover,
-);
+      Img.foodPlaceholder,
+      fit: BoxFit.cover,
+    );
 
 Widget defaultRestaurantImage() => Image.asset(
-  Img.restaurantPlaceholder,
-  fit: BoxFit.cover,
-);
+      Img.restaurantPlaceholder,
+      fit: BoxFit.cover,
+    );

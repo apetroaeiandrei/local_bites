@@ -3,5 +3,10 @@ enum AuthStatus {
   authorized,
   unauthorized,
   loadingEmail,
-  loadingAnonymously,
+  phoneCodeRequested,
+  phoneCodeSent,
+  phoneCodeConfirmed,
+  phoneCodeInvalid,
+  phoneCodeSentByUser,
+  phoneAuthError,
 }

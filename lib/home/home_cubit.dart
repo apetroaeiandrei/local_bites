@@ -52,6 +52,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   init() async {
     _analytics.setCurrentScreen(screenName: Routes.home);
+    await _userRepo.getUser();
     if (!await _userRepo.isProfileCompleted()) {
       _analytics.setCurrentScreen(screenName: Routes.profile);
       emit(state.copyWith(status: HomeStatus.profileIncomplete));

@@ -43,6 +43,7 @@ abstract class Metric {
 
   static const String eventAuthError = "auth_error";
   static const String eventAuthLogin = "auth_login";
+  static const String eventAuthPhoneLogin = "auth_login_phone";
   static const String eventAuthRegister = "auth_register";
   static const String eventAuthLoginAnonymously = "auth_login_anonymously";
   static const String eventRegisterError = "register_error";

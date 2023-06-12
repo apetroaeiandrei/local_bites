@@ -54,32 +54,24 @@ class AuthRepo {
     await _auth.signOut();
   }
 
-  Future<bool> loginAnonymously() async {
-    try {
-      final user = await _auth.signInAnonymously();
-      await _firestore.collection(_collectionUsers).doc(user.user?.uid).set({
-        "email": "anonymous ${user.user?.uid}",
-        "uid": user.user?.uid,
-      });
-      return true;
-    } on Exception catch (e) {
-      debugPrint("Auth failed $e");
-      return false;
-    }
-  }
-
   void loginWithPhone({
+    required bool linkCredential,
     required String phoneNumber,
-    required Function(PhoneConfirmError) onError,
+    required Function(PhoneConfirmError, {String? verificationId}) onError,
     required Function() onSuccess,
     required Function(String) onCodeSent,
   }) {
     _auth.verifyPhoneNumber(
-      timeout: const Duration(seconds: 60),
+      timeout: const Duration(seconds: 20),
       phoneNumber: phoneNumber,
-      verificationCompleted: (PhoneAuthCredential credential) {
+      forceResendingToken: 1,
+      verificationCompleted: (PhoneAuthCredential credential) async {
         print("verificationCompleted $credential");
-        _linkWithCredential(credential, onError, onSuccess);
+        if (linkCredential) {
+          _linkWithCredential(credential, onError, onSuccess);
+        } else {
+          _signInWithPhoneCredential(credential, onError, onSuccess);
+        }
       },
       verificationFailed: (FirebaseAuthException e) {
         if (e.code == 'invalid-phone-number') {
@@ -92,13 +84,12 @@ class AuthRepo {
       },
       codeSent: (String verificationId, int? resendToken) {
         // Update the UI - wait for the user to enter the SMS code
+        print("code SENT $verificationId");
         onCodeSent(verificationId);
-        // Sign the user in (or link) with the credential
-        //_auth.signInWithCredential(credential);
       },
       codeAutoRetrievalTimeout: (String verificationId) {
         print("codeAutoRetrievalTimeout $verificationId");
-        onError(PhoneConfirmError.timeout);
+        onError(PhoneConfirmError.timeout, verificationId: verificationId);
       },
     );
   }
@@ -116,15 +107,52 @@ class AuthRepo {
     _linkWithCredential(credential, onError, onSuccess);
   }
 
-  Future<bool> confirmCodeAndSignIn(
-      {required String smsCode, required String verificationId}) async {
+  void confirmCodeAndSignIn({
+    required String smsCode,
+    required String verificationId,
+    required Function(PhoneConfirmError) onError,
+    required Function() onSuccess,
+  }) async {
     // Create a PhoneAuthCredential with the code
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId, smsCode: smsCode);
     print("credential confirmed, signing in $credential");
-    final authCred = await _auth.signInWithCredential(credential);
-    print("signed in $authCred");
-    return true;
+    _signInWithPhoneCredential(credential, onError, onSuccess);
+  }
+
+  _signInWithPhoneCredential(
+    PhoneAuthCredential credential,
+    Function(PhoneConfirmError) onError,
+    Function() onSuccess,
+  ) async {
+    try {
+      final user = await _auth.signInWithCredential(credential);
+      await _firestore.collection(_collectionUsers).doc(user.user?.uid).update({
+        "phoneNumber": user.user?.phoneNumber,
+        "uid": user.user?.uid,
+      });
+      onSuccess();
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "invalid-credential":
+          onError(PhoneConfirmError.invalidCode);
+          print("The provider's credential is not valid.");
+          break;
+        case "invalid-verification-code":
+          onError(PhoneConfirmError.invalidCode);
+          print(
+              "The verification code used to create the phone auth credential "
+              "is invalid.");
+          break;
+        // See the API reference for the full list of error codes.
+        default:
+          onError(PhoneConfirmError.unknown);
+          print("Unknown firebase error. $e");
+      }
+    } on Exception catch (e) {
+      onError(PhoneConfirmError.unknown);
+      print("Unknown exception. $e");
+    }
   }
 
   _linkWithCredential(
@@ -154,7 +182,8 @@ class AuthRepo {
           break;
         case "invalid-verification-code":
           onError(PhoneConfirmError.invalidCode);
-          print("The verification code used to create the phone auth credential "
+          print(
+              "The verification code used to create the phone auth credential "
               "is invalid.");
           break;
         // See the API reference for the full list of error codes.
