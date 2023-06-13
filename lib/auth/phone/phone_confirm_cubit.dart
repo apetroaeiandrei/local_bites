@@ -40,7 +40,7 @@ class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
 
   void confirmCode(String smsCode) {
     emit(state.copyWith(status: PhoneConfirmStatus.codeSentByUser));
-    _authRepo.confirmCode(
+    _authRepo.confirmCodeAndLinkCredential(
       smsCode: smsCode,
       verificationId: verificationId,
       onError: (error, {verificationId}) {

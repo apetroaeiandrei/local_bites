@@ -94,7 +94,7 @@ class AuthRepo {
     );
   }
 
-  confirmCode({
+  confirmCodeAndLinkCredential({
     required String smsCode,
     required String verificationId,
     required Function(PhoneConfirmError) onError,
@@ -127,10 +127,25 @@ class AuthRepo {
   ) async {
     try {
       final user = await _auth.signInWithCredential(credential);
-      await _firestore.collection(_collectionUsers).doc(user.user?.uid).update({
-        "phoneNumber": user.user?.phoneNumber,
-        "uid": user.user?.uid,
-      });
+      //Check if user doc exists
+      final userDoc = await _firestore
+          .collection(_collectionUsers)
+          .doc(user.user?.uid)
+          .get();
+      if (!userDoc.exists) {
+        await _firestore.collection(_collectionUsers).doc(user.user?.uid).set({
+          "phoneNumber": user.user?.phoneNumber,
+          "uid": user.user?.uid,
+        });
+      } else {
+        await _firestore
+            .collection(_collectionUsers)
+            .doc(user.user?.uid)
+            .update({
+          "phoneNumber": user.user?.phoneNumber,
+          "uid": user.user?.uid,
+        });
+      }
       onSuccess();
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

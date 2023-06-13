@@ -6,7 +6,6 @@ import 'package:local/routes.dart';
 
 import '../analytics/analytics.dart';
 import '../analytics/metric.dart';
-import '../constants.dart';
 import '../generated/l10n.dart';
 import '../theme/decorations.dart';
 import '../theme/dimens.dart';
@@ -20,9 +19,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
   final _analytics = Analytics();
-  String? _phoneError;
   String? _nameError;
 
   @override
@@ -30,7 +27,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
         _nameController.text = state.name;
-        _phoneController.text = state.phoneNumber;
         if (state.status == ProfileStatus.success) {
           _analytics.logEvent(name: Metric.eventProfileSaveSuccess);
           Navigator.of(context).pop();
@@ -47,8 +43,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context, state) {
         return WillPopScope(
           onWillPop: () async {
-            final canGoBack =
-                state.name.isNotEmpty && state.phoneNumber.isNotEmpty;
+            final canGoBack = state.name.isNotEmpty;
             if (!canGoBack) {
               _analytics.logEvent(name: Metric.eventProfileNavigateBackBlock);
             }
@@ -82,18 +77,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           controller: _nameController,
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 32),
-                        child: TextField(
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.phone,
-                          autofillHints: const [AutofillHints.telephoneNumber],
-                          decoration: textFieldDecoration(
-                              label: S.of(context).profile_phone_number,
-                              error: _phoneError),
-                          controller: _phoneController,
-                        ),
-                      ),
                       const SizedBox(
                         height: 32,
                       ),
@@ -102,8 +85,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           if (!validate()) {
                             return;
                           }
-                          context.read<ProfileCubit>().setUserDetails(
-                              _nameController.text, _phoneController.text);
+                          context
+                              .read<ProfileCubit>()
+                              .setUserDetails(_nameController.text);
                         },
                         child: Text(S.of(context).generic_save),
                       ),
@@ -145,9 +129,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   bool validate() {
     var isValid = true;
-    if (!_isPhoneValid(_phoneController.text)) {
-      isValid = false;
-    }
     if (!_isNameValid(_nameController.text)) {
       isValid = false;
     }
@@ -163,22 +144,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } else {
       setState(() {
         _nameError = S.of(context).register_name_error;
-      });
-      return false;
-    }
-  }
-
-  bool _isPhoneValid(String phone) {
-    final phoneRegexp = RegExp(Constants.phoneRegex);
-    phone = phone.replaceAll(' ', '');
-    if (phoneRegexp.hasMatch(phone)) {
-      setState(() {
-        _phoneError = null;
-      });
-      return true;
-    } else {
-      setState(() {
-        _phoneError = S.of(context).register_phone_error;
       });
       return false;
     }

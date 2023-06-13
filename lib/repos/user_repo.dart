@@ -57,7 +57,7 @@ class UserRepo {
       _currentAddress = DeliveryAddress.fromMap(doc);
       Analytics().setUserId(_user!.uid);
     } catch (e) {
-      //No-op
+      FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
     }
   }
 
@@ -67,15 +67,17 @@ class UserRepo {
     return isCompleted;
   }
 
-  Future<bool> setUserDetails(String name, String phoneNumber) async {
+  Future<bool> setUserDetails(String name, {String? phoneNumber}) async {
     try {
       final properties = {
         "email":
             _auth.currentUser?.email ?? "anonymous ${_auth.currentUser?.uid}",
         "name": name,
         "uid": _auth.currentUser?.uid,
-        "phoneNumber": phoneNumber,
       };
+      if (phoneNumber != null) {
+        properties["phoneNumber"] = phoneNumber;
+      }
       await _firestore
           .collection(_collectionUsers)
           .doc(_auth.currentUser?.uid)
