@@ -38,6 +38,20 @@ class Utils {
     );
     await FlutterEmailSender.send(email);
   }
+
+  /// Mostly focused on RO phone numbers
+  static String formatPhoneNumberForIntl(String phoneNumber) {
+    if (phoneNumber.isEmpty) {
+      return phoneNumber;
+    }
+    if (phoneNumber.startsWith(Constants.initialCountryDialCodePhone)) {
+      phoneNumber =
+          phoneNumber.substring(Constants.initialCountryDialCodePhone.length);
+    } else if (phoneNumber.startsWith('0')) {
+      phoneNumber = phoneNumber.substring(1);
+    }
+    return phoneNumber;
+  }
 }
 
 extension OrderStatusExtension on OrderStatus {

@@ -4,6 +4,8 @@ import 'package:local/repos/phone_confirm_error.dart';
 import 'package:local/repos/auth_repo.dart';
 import 'package:local/repos/user_repo.dart';
 
+import '../../utils.dart';
+
 part 'phone_confirm_state.dart';
 
 class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
@@ -21,10 +23,8 @@ class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
 
   _init() async {
     Future.delayed(const Duration(milliseconds: 10), () {
-      var phone = _userRepo.user?.phoneNumber ?? '';
-      if (phone.startsWith('0')) {
-        phone = phone.substring(1);
-      }
+      var phone =
+          Utils.formatPhoneNumberForIntl(_userRepo.user?.phoneNumber ?? '');
       emit(
         state.copyWith(
           status: PhoneConfirmStatus.phoneLoaded,
