@@ -14,6 +14,7 @@ import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:models/delivery_zone.dart';
 import 'package:models/food_order.dart';
+import 'package:models/vouchers/voucher.dart';
 
 part 'cart_state.dart';
 
@@ -26,7 +27,7 @@ class CartCubit extends Cubit<CartState> {
                 ? CartStatus.computingDelivery
                 : CartStatus.initial,
             cartCount: _cartRepo.cartCount,
-            cartTotal: _cartRepo.cartTotal,
+            cartTotalProducts: _cartRepo.cartTotalProducts,
             cartItems: _cartRepo.cartItems,
             mentions: "",
             restaurantName: _restaurantsRepo.selectedRestaurant.name,
@@ -61,6 +62,8 @@ class CartCubit extends Cubit<CartState> {
             hasExternalDelivery:
                 _restaurantsRepo.selectedRestaurant.hasExternalDelivery,
             hasPayments: _restaurantsRepo.selectedRestaurant.stripeConfigured,
+            clearVoucher: false,
+            vouchers: _userRepo.vouchers,
             paymentType: _restaurantsRepo.selectedRestaurant.stripeConfigured
                 ? PaymentType.app
                 : PaymentType.cash)) {
@@ -157,7 +160,12 @@ class CartCubit extends Cubit<CartState> {
 
   void remove(FoodOrder item) {
     _cartRepo.decreaseItemQuantity(item);
-    _refreshCart();
+    if (!_isVoucherApplicable()) {
+      emit(state.copyWith(clearVoucher: true));
+    }
+    Future.delayed(_delayedDuration, () {
+      _refreshCart();
+    });
   }
 
   void _refreshCart() {
@@ -166,7 +174,8 @@ class CartCubit extends Cubit<CartState> {
     CartStatus status = state.status;
     if (!_restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
         state.deliverySelected) {
-      amountToMinOrder = state.minOrder - _cartRepo.cartTotal;
+      //todo account for voucher value
+      amountToMinOrder = state.minOrder - _cartRepo.cartTotalProducts;
       amountToMinOrder = double.parse(amountToMinOrder.toStringAsFixed(2));
       amountToMinOrder = amountToMinOrder > 0 ? amountToMinOrder : 0;
       deliveryFee = amountToMinOrder <= 0 ? 0 : _deliveryZone.deliveryFee;
@@ -176,11 +185,12 @@ class CartCubit extends Cubit<CartState> {
     }
     emit(state.copyWith(
         cartCount: _cartRepo.cartCount,
-        cartTotal: _cartRepo.cartTotal,
+        cartTotalProducts: _cartRepo.cartTotalProducts,
         cartItems: _cartRepo.cartItems,
         deliveryFee: deliveryFee,
         amountToMinOrder: amountToMinOrder,
         status: status,
+        clearVoucher: false,
         paymentType:
             _userChangedPaymentType ? null : _getDefaultPaymentType()));
   }
@@ -211,9 +221,9 @@ class CartCubit extends Cubit<CartState> {
   }
 
   bool _isNotMinimumOrder() {
-    return _cartRepo.cartTotal < _deliveryZone.minimumOrder &&
+    return _cartRepo.cartTotalProducts < _deliveryZone.minimumOrder &&
             _deliveryZone.deliveryFee == 0 ||
-        _cartRepo.cartTotal == 0;
+        _cartRepo.cartTotalProducts == 0;
   }
 
   _getDelivery() async {
@@ -322,6 +332,8 @@ class CartCubit extends Cubit<CartState> {
       applicationFee: state.hasExternalDelivery && state.deliverySelected
           ? state.deliveryFee
           : 0,
+      voucherDiscount:
+          state.selectedVoucher != null ? state.selectedVoucher!.value : 0,
       callback: (stripeData) {
         emit(state.copyWith(
           status: CartStatus.stripeReady,
@@ -351,4 +363,22 @@ class CartCubit extends Cubit<CartState> {
     _currentOrderSubscription?.cancel();
     return super.close();
   }
+
+  //region Vouchers
+  void onVoucherSelected(Voucher voucher) {
+    if (_isVoucherApplicable()) {
+      emit(state.copyWith(selectedVoucher: voucher));
+    }
+  }
+
+  bool _isVoucherApplicable() {
+    if (state.selectedVoucher == null) {
+      return true;
+    }
+    if (state.selectedVoucher!.minPurchase > _cartRepo.cartTotalProducts) {
+      return false;
+    }
+    return true;
+  }
+//endregion
 }

@@ -23,7 +23,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
           foods: const [],
           categories: const [],
           cartCount: _cartRepo.cartCount,
-          cartTotal: _cartRepo.cartTotal,
+          cartTotal: _cartRepo.cartTotalProducts,
           deliveryFee: _restaurant.deliveryFee,
           minimumOrder: _restaurant.minimumOrder,
         )) {
@@ -86,7 +86,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
   void refreshCart() {
     emit(state.copyWith(
       cartCount: _cartRepo.cartCount,
-      cartTotal: _cartRepo.cartTotal,
+      cartTotal: _cartRepo.cartTotalProducts,
     ));
   }
 

@@ -16,7 +16,7 @@ enum CartStatus {
 class CartState extends Equatable {
   final CartStatus status;
   final int cartCount;
-  final double cartTotal;
+  final double cartTotalProducts;
   final List<FoodOrder> cartItems;
   final String mentions;
   final String restaurantName;
@@ -40,16 +40,20 @@ class CartState extends Equatable {
   final bool deliverySelected;
   final bool hasExternalDelivery;
   final bool hasPayments;
+  final bool clearVoucher;
+  final List<Voucher> vouchers;
+  final Voucher? selectedVoucher;
   final PaymentType paymentType;
   final StripePayData? stripePayData;
-  /// When generating copyWith take care of the extra clearPayData flag
-  /// Used to be able to set stripePayData to null if payment method is later changed
+
+  /// When generating copyWith take care of the extra clearPayData and clearVoucher flags
+  /// Used to be able to set stripePayData and selectedVoucher to null if payment method is later changed
 
   @override
   List<Object?> get props => [
         status,
         cartCount,
-        cartTotal,
+        cartTotalProducts,
         cartItems,
         mentions,
         restaurantName,
@@ -73,6 +77,9 @@ class CartState extends Equatable {
         deliverySelected,
         hasExternalDelivery,
         hasPayments,
+        clearVoucher,
+        vouchers,
+        selectedVoucher,
         paymentType,
         stripePayData,
       ];
@@ -80,7 +87,7 @@ class CartState extends Equatable {
   const CartState({
     required this.status,
     required this.cartCount,
-    required this.cartTotal,
+    required this.cartTotalProducts,
     required this.cartItems,
     required this.mentions,
     required this.restaurantName,
@@ -104,14 +111,17 @@ class CartState extends Equatable {
     required this.deliverySelected,
     required this.hasExternalDelivery,
     required this.hasPayments,
+    required this.clearVoucher,
+    required this.vouchers,
     required this.paymentType,
+    this.selectedVoucher,
     this.stripePayData,
   });
 
   CartState copyWith({
     CartStatus? status,
     int? cartCount,
-    double? cartTotal,
+    double? cartTotalProducts,
     List<FoodOrder>? cartItems,
     String? mentions,
     String? restaurantName,
@@ -135,14 +145,17 @@ class CartState extends Equatable {
     bool? deliverySelected,
     bool? hasExternalDelivery,
     bool? hasPayments,
+    List<Voucher>? vouchers,
+    Voucher? selectedVoucher,
     PaymentType? paymentType,
     StripePayData? stripePayData,
     bool clearPayData = false,
+    bool? clearVoucher,
   }) {
     return CartState(
       status: status ?? this.status,
       cartCount: cartCount ?? this.cartCount,
-      cartTotal: cartTotal ?? this.cartTotal,
+      cartTotalProducts: cartTotalProducts ?? this.cartTotalProducts,
       cartItems: cartItems ?? this.cartItems,
       mentions: mentions ?? this.mentions,
       restaurantName: restaurantName ?? this.restaurantName,
@@ -167,8 +180,13 @@ class CartState extends Equatable {
       deliverySelected: deliverySelected ?? this.deliverySelected,
       hasExternalDelivery: hasExternalDelivery ?? this.hasExternalDelivery,
       hasPayments: hasPayments ?? this.hasPayments,
+      vouchers: vouchers ?? this.vouchers,
       paymentType: paymentType ?? this.paymentType,
       stripePayData: clearPayData ? null : stripePayData ?? this.stripePayData,
+      selectedVoucher: clearVoucher != null && clearVoucher
+          ? null
+          : selectedVoucher ?? this.selectedVoucher,
+      clearVoucher: clearVoucher ?? this.clearVoucher,
     );
   }
 }

@@ -62,7 +62,7 @@ class CartRepo {
   get cartCount =>
       _foodOrders.fold<int>(0, (sum, element) => sum + element.quantity);
 
-  get cartTotal {
+  get cartTotalProducts {
     double total =
         _foodOrders.fold<double>(0, (sum, element) => sum + element.price);
     total = double.parse(total.toStringAsFixed(2));
@@ -147,8 +147,8 @@ class CartRepo {
       name: user.name,
       phoneNumber: user.phoneNumber,
       number: orderId,
-      totalProducts: cartTotal,
-      total: cartTotal + (isDelivery ? deliveryFee : 0),
+      totalProducts: cartTotalProducts,
+      total: cartTotalProducts + (isDelivery ? deliveryFee : 0),
       courierId: '',
       courierName: '',
     );
@@ -191,6 +191,7 @@ class CartRepo {
       required String orderId,
       required String restaurantStripeAccountId,
       required num applicationFee,
+      required num voucherDiscount,
       required Function(StripePayData) callback}) async {
     final batch = _firestore.batch();
 
@@ -202,7 +203,8 @@ class CartRepo {
     final checkoutSessionData = {
       "client": "mobile",
       "mode": "payment",
-      "amount": ((cartTotal + deliveryFee) * 100).round(),
+      "amount":
+          ((cartTotalProducts + deliveryFee - voucherDiscount) * 100).round(),
       "currency": "RON",
       "application_fee_amount": (applicationFee * 100).round(),
       "on_behalf_of": restaurantStripeAccountId,

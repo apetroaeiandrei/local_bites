@@ -5,6 +5,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:local/analytics/metric.dart';
 import 'package:local/cart/cart_cubit.dart';
+import 'package:local/cart/voucher_selection_bottom_sheet.dart';
 import 'package:local/environment/app_config.dart';
 import 'package:models/payment_type.dart';
 import 'package:local/routes.dart';
@@ -36,8 +37,10 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<CartCubit, CartState>(
       listener: (context, state) {
-        if (state.cartTotal == 0) {
+        if (state.cartTotalProducts == 0) {
           Navigator.of(context).pop();
+        } else if (state.clearVoucher) {
+          _showVoucherRemovedSnackBar();
         }
         if (state.status == CartStatus.orderSuccess) {
           Navigator.of(context).popUntil((route) => route.isFirst);
@@ -96,44 +99,9 @@ class _CartScreenState extends State<CartScreen> {
                         );
                       }),
                       const SizedBox(height: 4),
-                      GestureDetector(
-                        onTap: () {
-                          _analytics.setCurrentScreen(
-                              screenName: Routes.mentions);
-                          Navigator.of(context)
-                              .pushNamed(Routes.mentions,
-                                  arguments: state.mentions)
-                              .then((value) {
-                            _analytics.setCurrentScreen(
-                                screenName: Routes.cart);
-                            context
-                                .read<CartCubit>()
-                                .updateMentions(value as String?);
-                          });
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(S.of(context).cart_mentions,
-                                style:
-                                    Theme.of(context).textTheme.displaySmall),
-                            const Icon(
-                              Icons.arrow_forward_ios,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 4.0,
-                          right: 50,
-                        ),
-                        child: Text(
-                            state.mentions.isNotEmpty
-                                ? state.mentions
-                                : S.of(context).cart_mentions_hint,
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ),
+                      _getMentionsWidget(state),
+                      const SizedBox(height: Dimens.defaultPadding),
+                      _getVouchersWidget(state),
                       const SizedBox(height: Dimens.defaultPadding),
                       _getConfiguration(state),
                       _getPaymentMethods(state),
@@ -144,52 +112,7 @@ class _CartScreenState extends State<CartScreen> {
                           vertical: Dimens.defaultPadding,
                         ),
                       ),
-                      Text(S.of(context).cart_summary,
-                          style: Theme.of(context).textTheme.displaySmall),
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.of(context).cart_products,
-                              style: Theme.of(context).textTheme.titleMedium),
-                          Text(
-                              S.of(context).price_currency_ron(
-                                  state.cartTotal.toStringAsFixed(2)),
-                              style: Theme.of(context).textTheme.titleMedium),
-                        ],
-                      ),
-                      const SizedBox(height: 2),
-                      Visibility(
-                        visible: state.hasDelivery && state.deliverySelected,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(S.of(context).cart_delivery_fee,
-                                style: Theme.of(context).textTheme.titleMedium),
-                            Text(
-                                state.deliveryFee > 0
-                                    ? S.of(context).cart_delivery_fee_currency(
-                                        state.deliveryFee.toStringAsFixed(1))
-                                    : S.of(context).cart_delivery_fee_free,
-                                style: Theme.of(context).textTheme.titleMedium),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.of(context).cart_total.toUpperCase(),
-                              style:
-                                  Theme.of(context).textTheme.headlineMedium),
-                          Text(
-                              S.of(context).price_currency_ron(
-                                  _getTotalWithDelivery(state)
-                                      .toStringAsFixed(2)),
-                              style:
-                                  Theme.of(context).textTheme.headlineMedium),
-                        ],
-                      ),
+                      _getSummary(state),
                       const SizedBox(height: 70),
                     ],
                   ),
@@ -256,9 +179,13 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   double _getTotalWithDelivery(CartState state) {
-    return state.hasDelivery && state.deliverySelected
-        ? state.cartTotal + state.deliveryFee
-        : state.cartTotal;
+    double total = state.hasDelivery && state.deliverySelected
+        ? state.cartTotalProducts + state.deliveryFee
+        : state.cartTotalProducts;
+    if (state.selectedVoucher != null) {
+      total -= state.selectedVoucher!.value;
+    }
+    return total;
   }
 
   void _showRestaurantClosedDialog(BuildContext context) {
@@ -631,6 +558,192 @@ class _CartScreenState extends State<CartScreen> {
   _showGenericPaymentError() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(S.of(context).cart_payment_failed_message)),
+    );
+  }
+
+  _getMentionsWidget(CartState state) {
+    return GestureDetector(
+      onTap: () {
+        _analytics.setCurrentScreen(screenName: Routes.mentions);
+        Navigator.of(context)
+            .pushNamed(Routes.mentions, arguments: state.mentions)
+            .then((value) {
+          _analytics.setCurrentScreen(screenName: Routes.cart);
+          context.read<CartCubit>().updateMentions(value as String?);
+        });
+      },
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(S.of(context).cart_mentions,
+                    style: Theme.of(context).textTheme.displaySmall),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 4.0,
+                    right: 50,
+                  ),
+                  child: Text(
+                      state.mentions.isNotEmpty
+                          ? state.mentions
+                          : S.of(context).cart_mentions_hint,
+                      style: Theme.of(context).textTheme.bodyMedium),
+                ),
+              ],
+            ),
+          ),
+          const Icon(
+            Icons.arrow_forward_ios,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getVouchersWidget(CartState state) {
+    if (state.vouchers.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return InkWell(
+      onTap: () {
+        _showVoucherSelectionBottomSheet(state);
+      },
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                    state.selectedVoucher == null
+                        ? S.of(context).cart_vouchers_headline
+                        : S.of(context).cart_vouchers_headline_used,
+                    style: Theme.of(context).textTheme.displaySmall),
+                const SizedBox(height: 4),
+                Text(
+                    state.selectedVoucher == null
+                        ? S.of(context).cart_vouchers_info
+                        : S.of(context).cart_vouchers_info_used(
+                            state.selectedVoucher!.value),
+                    style: Theme.of(context).textTheme.bodyMedium),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Icon(
+            Icons.arrow_forward_ios,
+          ),
+        ],
+      ),
+    );
+  }
+
+  _showVoucherSelectionBottomSheet(CartState state) {
+    final parentContext = context;
+    showModalBottomSheet(
+      constraints: const BoxConstraints(
+        maxHeight: 500,
+      ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      useRootNavigator: true,
+      builder: (context) {
+        return VoucherSelectionBottomSheet(
+          vouchers: state.vouchers,
+          cartTotalProducts: state.cartTotalProducts,
+          onVoucherSelected: (voucher) {
+            Navigator.of(context).pop();
+            parentContext.read<CartCubit>().onVoucherSelected(voucher);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _getSummary(CartState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(S.of(context).cart_summary,
+            style: Theme.of(context).textTheme.displaySmall),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(S.of(context).cart_products,
+                style: Theme.of(context).textTheme.titleMedium),
+            Text(
+                S.of(context).price_currency_ron(
+                    state.cartTotalProducts.toStringAsFixed(2)),
+                style: Theme.of(context).textTheme.titleMedium),
+          ],
+        ),
+        const SizedBox(height: 2),
+        if (state.selectedVoucher != null)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(S.of(context).cart_summary_vouchers,
+                  style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                  S.of(context).cart_summary_voucher_value(
+                        (state.selectedVoucher!.value).toStringAsFixed(2),
+                      ),
+                  style: Theme.of(context).textTheme.titleMedium),
+            ],
+          ),
+        Visibility(
+          visible: state.selectedVoucher != null,
+          child: const SizedBox(height: 2),
+        ),
+        Visibility(
+          visible: state.hasDelivery && state.deliverySelected,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(S.of(context).cart_delivery_fee,
+                  style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                  state.deliveryFee > 0
+                      ? S.of(context).cart_delivery_fee_currency(
+                          state.deliveryFee.toStringAsFixed(1))
+                      : S.of(context).cart_delivery_fee_free,
+                  style: Theme.of(context).textTheme.titleMedium),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(S.of(context).cart_total.toUpperCase(),
+                style: Theme.of(context).textTheme.headlineMedium),
+            Text(
+                S.of(context).price_currency_ron(
+                    _getTotalWithDelivery(state).toStringAsFixed(2)),
+                style: Theme.of(context).textTheme.headlineMedium),
+          ],
+        ),
+      ],
+    );
+  }
+
+  _showVoucherRemovedSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(S.of(context).cart_voucher_removed_min_value),
+      ),
     );
   }
 }
