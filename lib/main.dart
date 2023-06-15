@@ -220,6 +220,7 @@ class MyApp extends StatelessWidget {
             ),
         Routes.vouchers: (context) => BlocProvider<VouchersCubit>(
               create: (context) => VouchersCubit(
+                RepositoryProvider.of<UserRepo>(context),
               ),
               child: const VouchersScreen(),
             ),

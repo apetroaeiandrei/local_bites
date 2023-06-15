@@ -1,10 +1,24 @@
 part of 'vouchers_cubit.dart';
 
-abstract class VouchersState extends Equatable {
-  const VouchersState();
-}
+class VouchersState extends Equatable {
+  final bool phoneVerified;
+  final List<Voucher> vouchers;
 
-class VouchersInitial extends VouchersState {
   @override
-  List<Object> get props => [];
+  List<Object> get props => [phoneVerified, vouchers];
+
+  const VouchersState({
+    required this.phoneVerified,
+    required this.vouchers,
+  });
+
+  VouchersState copyWith({
+    bool? phoneVerified,
+    List<Voucher>? vouchers,
+  }) {
+    return VouchersState(
+      phoneVerified: phoneVerified ?? this.phoneVerified,
+      vouchers: vouchers ?? this.vouchers,
+    );
+  }
 }

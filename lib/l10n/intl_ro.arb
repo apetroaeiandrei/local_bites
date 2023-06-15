@@ -205,8 +205,6 @@
   "cart_payment_failed_message": "Plata a eșuat. Verifică dacă ai internet și încearcă din nou.",
 
   "help_screen_title" : "Ajutor",
-  "vouchers_title" : "Voucherele tale",
-  "vouchers_phone_number_rationale" : "Te rugăm să confirmi numărul de telefon pentru a putea folosi voucherele.",
   "phone_number_title" : "Confirmă numărul de telefon",
   "phone_number_headline" : "Vei putea accesa contul tău folosind numărul de telefon.",
   "phone_number_placeholder" : "Numărul tău de telefon",
@@ -223,7 +221,12 @@
   "phone_number_action_contact_support" : "Scrie mail",
   "phone_number_success_headline" : "Numărul tău de telefon a fost confirmat cu succes. Mulțumim!",
   "phone_number_support_email_subject": "Nu pot confirma numărul de telefon",
-    "phone_number_support_email_body": "Bună,\n\nNu pot confirma numărul de telefon {phoneNumber}. Primesc eroarea că este deja folosit de alt cont.\n\nMulțumesc!"
+  "phone_number_support_email_body": "Bună,\n\nNu pot confirma numărul de telefon {phoneNumber}. Primesc eroarea că este deja folosit de alt cont.\n\nMulțumesc!",
 
-
+  "vouchers_title" : "Vouchere",
+  "vouchers_phone_number_rationale" : "Confirmă numărul tău de telefon pentru a activa ofertele.",
+  "vouchers_phone_number_bonus" : "Bonus: primești 10 lei cadou!",
+  "vouchers_phone_number_button" : "Confirmă",
+  "voucher_card_value" : "Valoare: {value} RON",
+  "voucher_card_expiration_interval" : "Expiră în {interval} zile"
 }

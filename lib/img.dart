@@ -12,4 +12,6 @@ class Img {
   static const lottieCancelledFood = "lib/assets/lottie/rejected.json";
   static const lottiePendingFood = "lib/assets/lottie/pending.json";
   static const lottieReadyForDelivery = "lib/assets/lottie/ready_for_delivery.json";
+  static const lottieConfirmPerson = "lib/assets/lottie/confirm_person.json";
+
 }

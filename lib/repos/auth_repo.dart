@@ -136,6 +136,7 @@ class AuthRepo {
         await _firestore.collection(_collectionUsers).doc(user.user?.uid).set({
           "phoneNumber": user.user?.phoneNumber,
           "uid": user.user?.uid,
+          "phoneVerified": true,
         });
       } else {
         await _firestore
@@ -178,7 +179,12 @@ class AuthRepo {
     try {
       final userCredential =
           await _auth.currentUser?.linkWithCredential(credential);
-      print("linkWithCredential $userCredential");
+      await _firestore
+          .collection(_collectionUsers)
+          .doc(userCredential?.user?.uid)
+          .update({
+        "phoneVerified": true,
+      });
       onSuccess();
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

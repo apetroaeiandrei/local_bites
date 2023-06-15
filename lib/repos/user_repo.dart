@@ -11,6 +11,8 @@ import 'package:models/feedback_model.dart';
 import 'package:models/local_user.dart';
 import 'package:collection/collection.dart';
 import 'package:models/user_order.dart';
+import 'package:models/vouchers/voucher.dart';
+import 'package:models/vouchers/voucher_factory.dart';
 
 class UserRepo {
   static UserRepo? instance;
@@ -18,6 +20,7 @@ class UserRepo {
   static const _collectionAddresses = "addresses";
   static const _collectionRestaurants = "restaurants";
   static const _collectionFeedback = "feedback";
+  static const _collectionVouchers = "vouchers";
 
   UserRepo._privateConstructor(this._restaurantsRepo, this._ordersRepo);
 
@@ -29,6 +32,7 @@ class UserRepo {
   DeliveryAddress? _currentAddress;
   StreamSubscription? _addressesSubscription;
   final List<DeliveryAddress> _addresses = [];
+  final List<Voucher> _vouchers = [];
   final StreamController<List<DeliveryAddress>> _addressesController =
       StreamController<List<DeliveryAddress>>.broadcast();
 
@@ -43,6 +47,8 @@ class UserRepo {
 
   List<DeliveryAddress> get addresses => _addresses;
 
+  List<Voucher> get vouchers => _vouchers;
+
   Stream<List<DeliveryAddress>> get addressesStream =>
       _addressesController.stream;
 
@@ -55,6 +61,7 @@ class UserRepo {
       final doc = firebaseUser.data()!;
       _user = LocalUser.fromMap(doc);
       _currentAddress = DeliveryAddress.fromMap(doc);
+      await _getVouchers();
       Analytics().setUserId(_user!.uid);
     } catch (e) {
       FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
@@ -249,5 +256,18 @@ class UserRepo {
       FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
       return false;
     }
+  }
+
+  Future<void> _getVouchers() {
+    return _firestore
+        .collection(_collectionUsers)
+        .doc(_auth.currentUser?.uid)
+        .collection(_collectionVouchers)
+        .get()
+        .then((value) {
+      _vouchers.clear();
+      _vouchers.addAll(
+          value.docs.map((e) => VoucherFactory.parse(e.data())).toList());
+    });
   }
 }
