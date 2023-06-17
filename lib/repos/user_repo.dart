@@ -31,8 +31,11 @@ class UserRepo {
   LocalUser? _user;
   DeliveryAddress? _currentAddress;
   StreamSubscription? _addressesSubscription;
+  StreamSubscription? _vouchersSubscription;
   final List<DeliveryAddress> _addresses = [];
   final List<Voucher> _vouchers = [];
+  final StreamController<List<Voucher>> _vouchersController =
+      StreamController<List<Voucher>>.broadcast();
   final StreamController<List<DeliveryAddress>> _addressesController =
       StreamController<List<DeliveryAddress>>.broadcast();
 
@@ -52,6 +55,8 @@ class UserRepo {
   Stream<List<DeliveryAddress>> get addressesStream =>
       _addressesController.stream;
 
+  Stream<List<Voucher>> get vouchersStream => _vouchersController.stream;
+
   getUser() async {
     try {
       final firebaseUser = await _firestore
@@ -61,7 +66,7 @@ class UserRepo {
       final doc = firebaseUser.data()!;
       _user = LocalUser.fromMap(doc);
       _currentAddress = DeliveryAddress.fromMap(doc);
-      await _getVouchers();
+      await _listenForVouchers();
       Analytics().setUserId(_user!.uid);
     } catch (e) {
       FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
@@ -102,6 +107,7 @@ class UserRepo {
     _user = null;
     _currentAddress = null;
     _addresses.clear();
+    _vouchers.clear();
   }
 
   Future<bool> deleteUser() async {
@@ -126,6 +132,7 @@ class UserRepo {
     _addressesSubscription = null;
     await _restaurantsRepo.cancelAllRestaurantsSubscriptions();
     await _ordersRepo.stopListeningForOrderInProgress();
+    await _vouchersSubscription?.cancel();
   }
 
   //region Address
@@ -258,16 +265,19 @@ class UserRepo {
     }
   }
 
-  Future<void> _getVouchers() {
-    return _firestore
+  _listenForVouchers() {
+    _vouchersSubscription = _firestore
         .collection(_collectionUsers)
         .doc(_auth.currentUser?.uid)
         .collection(_collectionVouchers)
-        .get()
-        .then((value) {
+        .where("isUsed", isEqualTo: false)
+        .snapshots()
+        .listen((event) {
+      print("Vouchers changed ${event.docs.length}");
       _vouchers.clear();
       _vouchers.addAll(
-          value.docs.map((e) => VoucherFactory.parse(e.data())).toList());
+          event.docs.map((e) => VoucherFactory.parse(e.data())).toList());
+      _vouchersController.add(List.from(_vouchers));
     });
   }
 }
