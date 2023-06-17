@@ -90,6 +90,8 @@ class CartRepo {
     required int deliveryEta,
     required PaymentType paymentType,
     required String orderId,
+    required String voucherId,
+    required double voucherValue,
   }) async {
     final restaurantDoc = _firestore
         .collection(_collectionRestaurants)
@@ -105,6 +107,8 @@ class CartRepo {
       paymentType: paymentType,
       orderId: orderId,
       isExternalDelivery: isExternalDelivery,
+      voucherId: voucherId,
+      voucherValue: voucherValue,
     );
     await orderDoc.set(order.toMap());
     clearCart();
@@ -120,6 +124,8 @@ class CartRepo {
     required int deliveryEta,
     required PaymentType paymentType,
     required String orderId,
+    required String voucherId,
+    required double voucherValue,
   }) {
     final address = _userRepo.address!;
     final user = _userRepo.user!;
@@ -148,9 +154,11 @@ class CartRepo {
       phoneNumber: user.phoneNumber,
       number: orderId,
       totalProducts: cartTotalProducts,
-      total: cartTotalProducts + (isDelivery ? deliveryFee : 0),
+      total: cartTotalProducts + (isDelivery ? deliveryFee : 0) - voucherValue,
       courierId: '',
       courierName: '',
+      voucherId: voucherId,
+      voucherValue: voucherValue,
     );
   }
 
@@ -191,7 +199,8 @@ class CartRepo {
       required String orderId,
       required String restaurantStripeAccountId,
       required num applicationFee,
-      required num voucherDiscount,
+      required double voucherDiscount,
+      required String voucherId,
       required Function(StripePayData) callback}) async {
     final batch = _firestore.batch();
 
@@ -224,6 +233,8 @@ class CartRepo {
       paymentType: paymentType,
       orderId: orderId,
       isExternalDelivery: isExternalDelivery,
+      voucherId: voucherId,
+      voucherValue: voucherDiscount.toDouble(),
     );
     batch.set(orderRef, order.toMap());
 

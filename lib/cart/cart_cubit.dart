@@ -143,6 +143,8 @@ class CartCubit extends Cubit<CartState> {
       paymentType: state.paymentType,
       isExternalDelivery: state.hasExternalDelivery,
       orderId: _orderId,
+      voucherId: state.selectedVoucher?.id ?? "",
+      voucherValue: state.selectedVoucher?.value ?? 0.0,
     );
     if (!success) {
       emit(state.copyWith(status: CartStatus.orderError));
@@ -334,6 +336,7 @@ class CartCubit extends Cubit<CartState> {
           : 0,
       voucherDiscount:
           state.selectedVoucher != null ? state.selectedVoucher!.value : 0,
+      voucherId: state.selectedVoucher?.id ?? "",
       callback: (stripeData) {
         emit(state.copyWith(
           status: CartStatus.stripeReady,
