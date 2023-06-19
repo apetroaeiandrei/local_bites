@@ -273,7 +273,6 @@ class UserRepo {
         .where("isUsed", isEqualTo: false)
         .snapshots()
         .listen((event) {
-      print("Vouchers changed ${event.docs.length}");
       _vouchers.clear();
       _vouchers.addAll(
           event.docs.map((e) => VoucherFactory.parse(e.data())).toList());

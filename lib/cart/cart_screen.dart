@@ -607,7 +607,7 @@ class _CartScreenState extends State<CartScreen> {
       return const SizedBox.shrink();
     }
 
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         _showVoucherSelectionBottomSheet(state);
       },
@@ -690,23 +690,6 @@ class _CartScreenState extends State<CartScreen> {
           ],
         ),
         const SizedBox(height: 2),
-        if (state.selectedVoucher != null)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(S.of(context).cart_summary_vouchers,
-                  style: Theme.of(context).textTheme.titleMedium),
-              Text(
-                  S.of(context).cart_summary_voucher_value(
-                        (state.selectedVoucher!.value).toStringAsFixed(2),
-                      ),
-                  style: Theme.of(context).textTheme.titleMedium),
-            ],
-          ),
-        Visibility(
-          visible: state.selectedVoucher != null,
-          child: const SizedBox(height: 2),
-        ),
         Visibility(
           visible: state.hasDelivery && state.deliverySelected,
           child: Row(
@@ -724,6 +707,23 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ),
         const SizedBox(height: 8),
+        if (state.selectedVoucher != null)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(S.of(context).cart_summary_vouchers,
+                  style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                  S.of(context).cart_summary_voucher_value(
+                        (state.selectedVoucher!.value).toStringAsFixed(2),
+                      ),
+                  style: Theme.of(context).textTheme.titleMedium),
+            ],
+          ),
+        Visibility(
+          visible: state.selectedVoucher != null,
+          child: const SizedBox(height: 4),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

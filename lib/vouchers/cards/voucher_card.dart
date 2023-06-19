@@ -64,9 +64,7 @@ class VoucherCard extends StatelessWidget {
                     const SizedBox(
                       height: 4,
                     ),
-                    Text(
-                        S.of(context).voucher_card_expiration_interval(
-                            _getExpirationIntervalDays()),
+                    Text(_getExpirationDaysText(context),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: WlColors.goldContrast,
                             )),
@@ -104,8 +102,25 @@ class VoucherCard extends StatelessWidget {
   }
 
   int _getExpirationIntervalDays() {
+    if (voucher.expiryDate.isBefore(DateTime.now())) {
+      return -1;
+    }
+
     final now = DateTime.now();
     final difference = voucher.expiryDate.difference(now);
     return difference.inDays;
+  }
+
+  String _getExpirationDaysText(BuildContext context) {
+    final days = _getExpirationIntervalDays();
+    if (days == 0) {
+      return S.of(context).voucher_card_expiration_today;
+    } else if (days == 1) {
+      return S.of(context).voucher_card_expiration_tomorrow;
+    } else if (days < 0) {
+      return S.of(context).voucher_card_expiration_expired;
+    } else {
+      return S.of(context).voucher_card_expiration_interval(days);
+    }
   }
 }

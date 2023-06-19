@@ -229,6 +229,9 @@
   "vouchers_phone_number_button" : "Confirmă",
   "voucher_card_value" : "Valoare: {value} RON",
   "voucher_card_expiration_interval" : "Expiră în {interval} zile",
+  "voucher_card_expiration_today" : "Expiră astăzi",
+  "voucher_card_expiration_tomorrow" : "Expiră mâine",
+  "voucher_card_expiration_expired" : "Expirat!",
   "voucher_card_min_purchase": "Comandă minimă: {minPurchase} RON",
 
   "cart_vouchers_headline": "Adaugă voucher",
