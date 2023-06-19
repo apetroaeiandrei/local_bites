@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:local/vouchers/cards/voucher_phone_card.dart';
+import 'package:local/vouchers/cards/voucher_card.dart';
 import 'package:local/vouchers/vouchers_cubit.dart';
 import 'package:lottie/lottie.dart';
 
@@ -55,10 +55,10 @@ class _VouchersScreenState extends State<VouchersScreen> {
     }
 
     state.vouchers
-        .map((e) => _listViewWidgets.add(VoucherPhoneCard(
-            title: e.name,
-            value: e.value.roundToDouble(),
-            expiryDate: e.expiryDate)))
+        .map((e) => _listViewWidgets.add(VoucherCard(
+              voucher: e,
+              isCartVoucher: false,
+            )))
         .toList();
   }
 

@@ -30,6 +30,8 @@ abstract class Dimens {
   static const maxWidth = 500.0;
 
   static const double foodCardPhotoRadius = 10.0;
+  static const int voucherDashLeftFlex = 1;
+  static const int voucherDashRightFlex = 3;
 
   static double getGoldenRatioFromWidth(BuildContext context) {
     return MediaQuery.of(context).size.width / goldenRatio;

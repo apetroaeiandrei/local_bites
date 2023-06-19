@@ -1,96 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:local/theme/wl_colors.dart';
 
+import '../../theme/dimens.dart';
+
 class VoucherPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     double strokeWidth = 2.0;
-    double circleRadius = 20;
-    double cornerRadius = 8;
-    double dashedLineWidth = 50;
+    double circleRadius = 14;
+    double dashedLineWidth = size.width /
+        ((Dimens.voucherDashLeftFlex + Dimens.voucherDashRightFlex) /
+            Dimens.voucherDashLeftFlex);
 
     // Paint for the border of voucher
     var borderPaint = Paint()
-      ..color = Colors.black
+      ..color = WlColors.goldContrast
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
 
-    const goldDark = Color.fromRGBO(209, 174, 24, 1);
-    const goldBright = Color.fromRGBO(255, 249, 133, 1);
-
-    var leftFillPaint = Paint()
-      ..shader = const LinearGradient(
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-        colors: [goldDark, goldBright],
-        stops: [0.1, 0.6],
-      ).createShader(Rect.fromLTWH(0, 0, dashedLineWidth, size.height))
-      ..style = PaintingStyle.fill;
-
-    // Paint for the fill of right side of voucher
-    var rightFillPaint = Paint()
-      ..color = WlColors.primary.withOpacity(0.0)
+    var fillPaint = Paint()
+      ..shader = const RadialGradient(
+        center: Alignment.topRight,
+        colors: [WlColors.goldBright, WlColors.goldDark],
+        tileMode: TileMode.mirror,
+        radius: 1.0,
+        stops: [0.1, 0.9],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.fill;
 
     // Paint for the dashed line
     var dashedLinePaint = Paint()
-      ..color = Colors.black
+      ..color = WlColors.goldContrast
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
 
     // Create the main voucher shape
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    RRect rRect = RRect.fromRectAndRadius(rect, Radius.circular(cornerRadius));
-    Path mainPath = Path()..addRRect(rRect);
+    Path mainPath = Path()..addRect(rect);
 
-    // Create cutouts at the middle of the left and right edges
-    double centerY = size.height / 2;
-
-    // Create a circle at the middle of the left edge
-    Path leftCircle = Path()
-      ..addOval(
-          Rect.fromCircle(center: Offset(0, centerY), radius: circleRadius));
-
-    // Create a circle at the middle of the right edge
-    Path rightCircle = Path()
+    // Create cutouts
+    Path cutoutPath = Path()
       ..addOval(Rect.fromCircle(
-          center: Offset(size.width, centerY), radius: circleRadius));
+          center: const Offset(0, 0), radius: circleRadius)) // top left
+      ..addOval(Rect.fromCircle(
+          center: Offset(size.width, 0), radius: circleRadius)) // top right
+      ..addOval(Rect.fromCircle(
+          center: Offset(0, size.height), radius: circleRadius)) // bottom left
+      ..addOval(Rect.fromCircle(
+          center: Offset(size.width, size.height),
+          radius: circleRadius)) // bottom right
+      ..addOval(Rect.fromCircle(
+          center: Offset(dashedLineWidth, 0),
+          radius: circleRadius)) // above dashed line
+      ..addOval(Rect.fromCircle(
+          center: Offset(dashedLineWidth, size.height),
+          radius: circleRadius)); // below dashed line
 
-    // Subtract the circles from the main path to create cutouts
-    mainPath = Path.combine(PathOperation.difference, mainPath, leftCircle);
-    mainPath = Path.combine(PathOperation.difference, mainPath, rightCircle);
+    // Subtract the cutouts from the main path
+    mainPath = Path.combine(PathOperation.difference, mainPath, cutoutPath);
 
-    // Create a filled path for the left side of the voucher
-    Path leftFillPath = Path.combine(PathOperation.intersect, mainPath,
-        Path()..addRect(Rect.fromLTWH(0, 0, dashedLineWidth, size.height)));
+    // Draw the filled voucher
+    canvas.drawPath(mainPath, fillPaint);
 
-    // Create a filled path for the right side of the voucher
-    Path rightFillPath = Path.combine(
-        PathOperation.intersect,
-        mainPath,
-        Path()
-          ..addRect(Rect.fromLTWH(
-              dashedLineWidth, 0, size.width - dashedLineWidth, size.height)));
-
-    // Draw the filled left side of the voucher
-    canvas.drawPath(leftFillPath, leftFillPaint);
-
-    // Draw the filled right side of the voucher
-    canvas.drawPath(rightFillPath, rightFillPaint);
-
-    // Draw the voucher shape
+    // Draw the voucher border
     canvas.drawPath(mainPath, borderPaint);
 
-    // Draw a vertical dashed line close to the left edge
-    for (int i = 0; i < size.height.toInt(); i += 10) {
-      if (i % 20 == 0) {
-        canvas.drawLine(
-          Offset(dashedLineWidth, i.toDouble()),
-          Offset(dashedLineWidth, i.toDouble() + 10),
-          dashedLinePaint,
-        );
-      }
+    // Calculate the length and gap of the dashes based on the circle radius
+    double dashLength = circleRadius / 3;
+    double dashGap = circleRadius / 3;
+
+// Start drawing the dashed line from the bottom of the top cutout and stop at the top of the bottom cutout
+    for (double i = circleRadius;
+        i < size.height - circleRadius;
+        i += dashLength + dashGap) {
+      // Draw a dash
+      canvas.drawLine(
+        Offset(dashedLineWidth, i),
+        Offset(dashedLineWidth, i + dashLength),
+        dashedLinePaint,
+      );
     }
   }
 

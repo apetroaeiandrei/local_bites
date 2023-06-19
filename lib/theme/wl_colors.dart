@@ -25,4 +25,8 @@ abstract class WlColors {
   static const unused = Color(0xFFFFFFFF);
 
   static const notificationGreen = Color(0xFF22C393);
+
+  static const goldDark = Color.fromRGBO(209, 174, 24, 1);
+  static const goldBright = Color.fromRGBO(255, 249, 133, 1);
+  static const goldContrast = Color.fromRGBO(154, 72, 0, 1);
 }

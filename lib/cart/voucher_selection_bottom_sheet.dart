@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:local/vouchers/cards/voucher_cart_card.dart';
 import 'package:models/vouchers/voucher.dart';
+
+import '../vouchers/cards/voucher_card.dart';
 
 class VoucherSelectionBottomSheet extends StatelessWidget {
   const VoucherSelectionBottomSheet(
@@ -29,8 +30,9 @@ class VoucherSelectionBottomSheet extends StatelessWidget {
             }
             onVoucherSelected(voucher);
           },
-          child: VoucherCartCard(
+          child: VoucherCard(
             voucher: voucher,
+            isCartVoucher: true,
           ),
         );
       },
