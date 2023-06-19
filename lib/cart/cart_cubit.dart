@@ -66,7 +66,9 @@ class CartCubit extends Cubit<CartState> {
             vouchers: _userRepo.vouchers,
             paymentType: _restaurantsRepo.selectedRestaurant.stripeConfigured
                 ? PaymentType.app
-                : PaymentType.cash)) {
+                : PaymentType.cash,
+            acceptsVouchers: _restaurantsRepo.selectedRestaurant.acceptsVouchers,
+  )) {
     init();
   }
 

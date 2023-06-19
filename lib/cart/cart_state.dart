@@ -45,6 +45,7 @@ class CartState extends Equatable {
   final Voucher? selectedVoucher;
   final PaymentType paymentType;
   final StripePayData? stripePayData;
+  final bool acceptsVouchers;
 
   /// When generating copyWith take care of the extra clearPayData and clearVoucher flags
   /// Used to be able to set stripePayData and selectedVoucher to null if payment method is later changed
@@ -82,6 +83,7 @@ class CartState extends Equatable {
         selectedVoucher,
         paymentType,
         stripePayData,
+        acceptsVouchers,
       ];
 
   const CartState({
@@ -114,6 +116,7 @@ class CartState extends Equatable {
     required this.clearVoucher,
     required this.vouchers,
     required this.paymentType,
+    required this.acceptsVouchers,
     this.selectedVoucher,
     this.stripePayData,
   });
@@ -151,6 +154,7 @@ class CartState extends Equatable {
     StripePayData? stripePayData,
     bool clearPayData = false,
     bool? clearVoucher,
+    bool? acceptsVouchers,
   }) {
     return CartState(
       status: status ?? this.status,
@@ -187,6 +191,7 @@ class CartState extends Equatable {
           ? null
           : selectedVoucher ?? this.selectedVoucher,
       clearVoucher: clearVoucher ?? this.clearVoucher,
+      acceptsVouchers: acceptsVouchers ?? this.acceptsVouchers,
     );
   }
 }

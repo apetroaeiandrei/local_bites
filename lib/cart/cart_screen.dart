@@ -603,7 +603,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _getVouchersWidget(CartState state) {
-    if (state.vouchers.isEmpty) {
+    if (state.vouchers.isEmpty || !state.acceptsVouchers) {
       return const SizedBox.shrink();
     }
 
