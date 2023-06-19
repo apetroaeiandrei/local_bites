@@ -14,7 +14,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   final UserRepo _userRepo;
 
   Future<void> logout() async {
-    await _userRepo.logout();
+    await _userRepo.onLogout();
     _authRepo.logout();
     emit(state.copyWith(isLoggedIn: false));
   }

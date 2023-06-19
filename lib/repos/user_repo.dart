@@ -102,7 +102,7 @@ class UserRepo {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> onLogout() async {
     await _stopSubscriptions();
     _user = null;
     _currentAddress = null;
@@ -112,14 +112,12 @@ class UserRepo {
 
   Future<bool> deleteUser() async {
     try {
-      await _stopSubscriptions();
       await _firestore
           .collection(_collectionUsers)
           .doc(_auth.currentUser?.uid)
           .delete();
       await _auth.currentUser?.delete();
-      _user = null;
-      _currentAddress = null;
+      onLogout();
       return true;
     } catch (error) {
       FirebaseCrashlytics.instance.recordError(error, StackTrace.current);
