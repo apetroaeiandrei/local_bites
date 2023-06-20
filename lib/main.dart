@@ -66,10 +66,10 @@ Future<void> main() async {
       const SystemUiOverlayStyle(statusBarColor: Colors.white));
 
   final analytics = Analytics();
-  final authRepo = AuthRepo();
   final restaurantsRepo = RestaurantsRepo();
   final ordersRepo = OrdersRepo();
   final userRepo = UserRepo(restaurantsRepo, ordersRepo);
+  final authRepo = AuthRepo(userRepo);
   final isLoggedIn = await authRepo.isLoggedIn();
 
   if (isLoggedIn) {

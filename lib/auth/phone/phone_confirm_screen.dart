@@ -169,6 +169,9 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
           }
         },
       ),
+      const SizedBox(
+        height: Dimens.defaultPadding,
+      ),
       Visibility(
         visible: state.status == PhoneConfirmStatus.codeSentByUser,
         child: const Center(

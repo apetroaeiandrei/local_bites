@@ -23,11 +23,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _nameError;
 
   @override
+  void initState() {
+    print("Profile Screen init state $hashCode");
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
         _nameController.text = state.name;
         if (state.status == ProfileStatus.success) {
+          print("Profile save success POP SCREEN!!!");
           _analytics.logEvent(name: Metric.eventProfileSaveSuccess);
           Navigator.of(context).pop();
         } else if (state.status == ProfileStatus.failure) {
@@ -47,7 +54,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if (!canGoBack) {
               _analytics.logEvent(name: Metric.eventProfileNavigateBackBlock);
             }
-            return canGoBack;
+            print("Can go back: $canGoBack");
+            return true;
           },
           child: Scaffold(
             appBar: AppBar(

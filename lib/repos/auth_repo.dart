@@ -1,19 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:local/repos/phone_confirm_error.dart';
+import 'package:local/repos/user_repo.dart';
 
 class AuthRepo {
   static AuthRepo? instance;
-  static const String _collectionUsers = "users";
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final UserRepo _userRepo;
 
-  AuthRepo._privateConstructor();
+  AuthRepo._privateConstructor(this._userRepo);
 
-  factory AuthRepo() {
-    instance ??= AuthRepo._privateConstructor();
+  factory AuthRepo(UserRepo userRepo) {
+    instance ??= AuthRepo._privateConstructor(userRepo);
     return instance!;
   }
 
@@ -27,15 +27,12 @@ class AuthRepo {
 
   Future<bool> register(String email, String password) async {
     try {
-      final user = await _auth.createUserWithEmailAndPassword(
+      await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      await _firestore.collection(_collectionUsers).doc(user.user?.uid).set({
-        "email": email,
-        "uid": user.user?.uid,
-      });
+      await _userRepo.createUser(phoneVerified: false);
       return true;
     } on Exception catch (e) {
-      debugPrint("Auth failed $e");
+      FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
       return false;
     }
   }
@@ -127,26 +124,8 @@ class AuthRepo {
   ) async {
     try {
       final user = await _auth.signInWithCredential(credential);
-      //Check if user doc exists
-      final userDoc = await _firestore
-          .collection(_collectionUsers)
-          .doc(user.user?.uid)
-          .get();
-      if (!userDoc.exists) {
-        await _firestore.collection(_collectionUsers).doc(user.user?.uid).set({
-          "phoneNumber": user.user?.phoneNumber,
-          "uid": user.user?.uid,
-          "phoneVerified": true,
-        });
-      } else {
-        await _firestore
-            .collection(_collectionUsers)
-            .doc(user.user?.uid)
-            .update({
-          "phoneNumber": user.user?.phoneNumber,
-          "uid": user.user?.uid,
-        });
-      }
+      await _userRepo.createOrUpdateUser(
+          user.user!.uid, user.user!.phoneNumber!);
       onSuccess();
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -177,14 +156,9 @@ class AuthRepo {
     Function() onSuccess,
   ) async {
     try {
-      final userCredential =
-          await _auth.currentUser?.linkWithCredential(credential);
-      await _firestore
-          .collection(_collectionUsers)
-          .doc(userCredential?.user?.uid)
-          .update({
-        "phoneVerified": true,
-      });
+      await _auth.currentUser?.linkWithCredential(credential);
+      await _userRepo.updateUserDetails(
+          phoneVerified: true, phoneNumber: _auth.currentUser!.phoneNumber!);
       onSuccess();
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

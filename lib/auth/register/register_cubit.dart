@@ -21,7 +21,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     if (success) {
       phone = phone.replaceAll(' ', '');
       final userSuccess =
-          await _userRepo.setUserDetails(name, phoneNumber: phone);
+          await _userRepo.updateUserDetails(name: name, phoneNumber: phone);
       emit(state.copyWith(
         status: userSuccess ? RegisterStatus.success : RegisterStatus.failure,
       ));

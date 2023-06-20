@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:local/analytics/analytics.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
@@ -32,12 +33,15 @@ class UserRepo {
   DeliveryAddress? _currentAddress;
   StreamSubscription? _addressesSubscription;
   StreamSubscription? _vouchersSubscription;
+  StreamSubscription? _userSubscription;
   final List<DeliveryAddress> _addresses = [];
   final List<Voucher> _vouchers = [];
   final StreamController<List<Voucher>> _vouchersController =
       StreamController<List<Voucher>>.broadcast();
   final StreamController<List<DeliveryAddress>> _addressesController =
       StreamController<List<DeliveryAddress>>.broadcast();
+  final StreamController<LocalUser> _userController =
+      StreamController<LocalUser>.broadcast();
 
   factory UserRepo(RestaurantsRepo restaurantsRepo, OrdersRepo ordersRepo) {
     instance ??= UserRepo._privateConstructor(restaurantsRepo, ordersRepo);
@@ -57,46 +61,129 @@ class UserRepo {
 
   Stream<List<Voucher>> get vouchersStream => _vouchersController.stream;
 
+  Stream<LocalUser> get userStream => _userController.stream;
+
   getUser() async {
+    final userSnap = await _firestore
+        .collection(_collectionUsers)
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .get();
+    final doc = userSnap.data()!;
+    _handleUserChanged(doc);
+    await _listenForVouchers();
+    Analytics().setUserId(_user!.uid);
+    _listenForUserChanges();
+  }
+
+  _listenForUserChanges() {
     try {
-      final firebaseUser = await _firestore
+      _userSubscription = _firestore
           .collection(_collectionUsers)
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .get();
-      final doc = firebaseUser.data()!;
-      _user = LocalUser.fromMap(doc);
-      _currentAddress = DeliveryAddress.fromMap(doc);
-      await _listenForVouchers();
-      Analytics().setUserId(_user!.uid);
+          .snapshots()
+          .listen((event) async {
+        final doc = event.data()!;
+        _handleUserChanged(doc);
+      });
     } catch (e) {
       FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
     }
   }
 
-  Future<bool> isProfileCompleted() async {
+  _handleUserChanged(Map<String, dynamic> doc) {
+    _user = LocalUser.fromMap(doc);
+    _tryToParseAddress(doc);
+    _userController.add(_user!);
+  }
+
+  _tryToParseAddress(Map<String, dynamic> doc) {
+    try {
+      _currentAddress = DeliveryAddress.fromMap(doc);
+    } catch (e) {
+      debugPrint("Error parsing address");
+    }
+  }
+
+  bool isProfileCompleted() {
     bool isCompleted =
         user != null && user!.phoneNumber.isNotEmpty && user!.name.isNotEmpty;
     return isCompleted;
   }
 
-  Future<bool> setUserDetails(String name, {String? phoneNumber}) async {
+  Future<bool> createOrUpdateUser(String userId, String phoneNumber) async {
     try {
-      final properties = {
-        "email":
-            _auth.currentUser?.email ?? "anonymous ${_auth.currentUser?.uid}",
-        "name": name,
+      final userDoc =
+          await _firestore.collection(_collectionUsers).doc(userId).get();
+      if (!userDoc.exists) {
+        await createUser(
+          phoneNumber: phoneNumber,
+          phoneVerified: true,
+        );
+      } else {
+        await updateUserDetails(
+          phoneNumber: phoneNumber,
+          phoneVerified: true,
+        );
+      }
+    } catch (e) {
+      FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> createUser({
+    String? name,
+    String? phoneNumber,
+    required bool phoneVerified,
+  }) async {
+    String email = "";
+    if (_auth.currentUser?.email != null) {
+      email = _auth.currentUser!.email ?? "";
+    } else if (_auth.currentUser?.phoneNumber != null) {
+      email = _auth.currentUser!.phoneNumber ?? "";
+    } else {
+      email = "anonymous ${_auth.currentUser?.uid}";
+    }
+
+    try {
+      await _firestore
+          .collection(_collectionUsers)
+          .doc(_auth.currentUser?.uid)
+          .set({
+        "email": email,
         "uid": _auth.currentUser?.uid,
-      };
+        "name": name,
+        "phoneNumber": phoneNumber,
+        "phoneVerified": phoneVerified,
+      });
+    } catch (e) {
+      FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
+    }
+  }
+
+  Future<bool> updateUserDetails(
+      {String? name, String? phoneNumber, bool? phoneVerified}) async {
+    print("updateUserDetails");
+    try {
+      final properties = <String, dynamic>{};
+      if (name != null) {
+        properties["name"] = name;
+      }
       if (phoneNumber != null) {
         properties["phoneNumber"] = phoneNumber;
       }
+      if (phoneVerified != null) {
+        properties["phoneVerified"] = phoneVerified;
+      }
+
       await _firestore
           .collection(_collectionUsers)
           .doc(_auth.currentUser?.uid)
           .update(properties);
-      _user = LocalUser.fromMap(properties);
       return true;
     } on Exception catch (e) {
+      print(e);
       FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
       return false;
     }
@@ -126,6 +213,7 @@ class UserRepo {
   }
 
   _stopSubscriptions() async {
+    await _userSubscription?.cancel();
     await _addressesSubscription?.cancel();
     _addressesSubscription = null;
     await _restaurantsRepo.cancelAllRestaurantsSubscriptions();
@@ -263,7 +351,8 @@ class UserRepo {
     }
   }
 
-  _listenForVouchers() {
+  _listenForVouchers() async {
+    await _vouchersSubscription?.cancel();
     _vouchersSubscription = _firestore
         .collection(_collectionUsers)
         .doc(_auth.currentUser?.uid)

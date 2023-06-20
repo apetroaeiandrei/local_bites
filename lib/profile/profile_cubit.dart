@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:local/profile/profile_state.dart';
 import 'package:local/repos/user_repo.dart';
-import 'package:local/utils.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit(
@@ -24,7 +23,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   setUserDetails(
     String name,
   ) async {
-    final success = await _userRepo.setUserDetails(name);
+    final success = await _userRepo.updateUserDetails(name: name);
+    print("Profile updat Success: $success");
     emit(state.copyWith(
       status: success ? ProfileStatus.success : ProfileStatus.failure,
     ));
