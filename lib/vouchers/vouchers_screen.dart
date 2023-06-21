@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/vouchers/cards/voucher_card.dart';
 import 'package:local/vouchers/vouchers_cubit.dart';
 import 'package:lottie/lottie.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../generated/l10n.dart';
 import '../img.dart';
@@ -55,6 +56,19 @@ class _VouchersScreenState extends State<VouchersScreen> {
       );
     }
 
+    if (state.referralEnabled) {
+      _listViewWidgets.add(
+        _getReferralWidget(state),
+      );
+    }
+
+    _listViewWidgets.add(
+      Container(
+        height: 1,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+    );
+
     state.vouchers
         .map((e) => _listViewWidgets.add(VoucherCard(
               voucher: e,
@@ -95,6 +109,56 @@ class _VouchersScreenState extends State<VouchersScreen> {
                   },
                   child: Text(
                     S.of(context).vouchers_phone_number_button,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getReferralWidget(VouchersState state) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+      child: Row(
+        children: [
+          Lottie.asset(
+            Img.lottieSendInvitation,
+            width: 90,
+            height: 90,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  S.of(context).vouchers_referral_rationale,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  S.of(context).vouchers_referral_code(state.referralCode),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  S.of(context).vouchers_referral_bonus(
+                      state.referralValue.toStringAsFixed(0)),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    Share.share(
+                        S.of(context).vouchers_referral_share_message(
+                            state.referralCode),
+                        subject: S.of(context).vouchers_referral_share_subject);
+                  },
+                  child: Text(
+                    S.of(context).vouchers_referral_button,
                   ),
                 ),
               ],

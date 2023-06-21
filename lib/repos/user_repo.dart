@@ -13,6 +13,7 @@ import 'package:models/local_user.dart';
 import 'package:collection/collection.dart';
 import 'package:models/user_order.dart';
 import 'package:models/vouchers/voucher.dart';
+import 'package:models/vouchers/voucher_config.dart';
 import 'package:models/vouchers/voucher_factory.dart';
 
 class UserRepo {
@@ -22,6 +23,7 @@ class UserRepo {
   static const _collectionRestaurants = "restaurants";
   static const _collectionFeedback = "feedback";
   static const _collectionVouchers = "vouchers";
+  static const _collectionVouchersConfig = "vouchers";
 
   UserRepo._privateConstructor(this._restaurantsRepo, this._ordersRepo);
 
@@ -36,6 +38,8 @@ class UserRepo {
   StreamSubscription? _userSubscription;
   final List<DeliveryAddress> _addresses = [];
   final List<Voucher> _vouchers = [];
+  final List<VoucherConfig> _vouchersConfig = [];
+
   final StreamController<List<Voucher>> _vouchersController =
       StreamController<List<Voucher>>.broadcast();
   final StreamController<List<DeliveryAddress>> _addressesController =
@@ -56,6 +60,8 @@ class UserRepo {
 
   List<Voucher> get vouchers => _vouchers;
 
+  List<VoucherConfig> get vouchersConfig => _vouchersConfig;
+
   Stream<List<DeliveryAddress>> get addressesStream =>
       _addressesController.stream;
 
@@ -73,6 +79,7 @@ class UserRepo {
     await _listenForVouchers();
     Analytics().setUserId(_user!.uid);
     _listenForUserChanges();
+    _getVouchersConfig();
   }
 
   _listenForUserChanges() {
@@ -378,5 +385,14 @@ class UserRepo {
       _vouchers.addAll(newVouchers);
       _vouchersController.add(List.from(newVouchers));
     });
+  }
+
+  _getVouchersConfig() async {
+    final docsSnap =
+        await _firestore.collection(_collectionVouchersConfig).get();
+    final vouchersConfigDocs =
+        docsSnap.docs.map((e) => VoucherConfig.fromMap(e.data())).toList();
+    _vouchersConfig.clear();
+    _vouchersConfig.addAll(vouchersConfigDocs);
   }
 }
