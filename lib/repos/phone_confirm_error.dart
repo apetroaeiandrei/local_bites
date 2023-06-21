@@ -3,6 +3,7 @@ enum PhoneConfirmError {
   invalidPhoneNumber,
   alreadyInUse,
   alreadyLinked,
+  tooManyRequests,
   timeout,
   unknown,
 }

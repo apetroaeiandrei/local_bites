@@ -354,7 +354,6 @@ class _AuthScreenState extends State<AuthScreen> {
     switch (state.phoneConfirmError!) {
       case PhoneConfirmError.invalidPhoneNumber:
         error = S.of(context).phone_number_error_invalid;
-        buttonText = S.of(context).phone_number_action_retry_generic;
         break;
       case PhoneConfirmError.alreadyInUse:
         error = S.of(context).phone_number_error_already_used;
@@ -362,13 +361,17 @@ class _AuthScreenState extends State<AuthScreen> {
         break;
       case PhoneConfirmError.timeout:
         error = S.of(context).phone_number_error_expired_code;
-        buttonText = S.of(context).phone_number_action_retry_generic;
         break;
-      default:
+      case PhoneConfirmError.tooManyRequests:
+        error = S.of(context).phone_number_error_too_many_tries;
+        break;
+      case PhoneConfirmError.invalidCode:
+      case PhoneConfirmError.alreadyLinked:
+      case PhoneConfirmError.unknown:
         error = S.of(context).phone_number_error_generic;
         buttonText = S.of(context).phone_number_action_contact_support;
-        break;
     }
+
     return Padding(
       padding: const EdgeInsets.all(Dimens.defaultPadding),
       child: Column(
@@ -384,32 +387,28 @@ class _AuthScreenState extends State<AuthScreen> {
           const SizedBox(
             height: Dimens.defaultPadding,
           ),
+          ElevatedButton(
+            onPressed: () {
+              context.read<AuthCubit>().retry();
+            },
+            child: Text(S.of(context).phone_number_action_retry_generic),
+          ),
+          const SizedBox(
+            height: Dimens.defaultPadding,
+          ),
           Visibility(
             visible: buttonText.isNotEmpty,
             child: ElevatedButton(
-              onPressed: _getErrorAction(state),
+              onPressed: () {
+                _codeController.clear();
+                _sendEmail();
+              },
               child: Text(buttonText),
             ),
           ),
         ],
       ),
     );
-  }
-
-  Function()? _getErrorAction(AuthState state) {
-    switch (state.phoneConfirmError!) {
-      case PhoneConfirmError.timeout:
-      case PhoneConfirmError.invalidPhoneNumber:
-        return () {
-          _codeController.clear();
-          context.read<AuthCubit>().retry();
-        };
-      default:
-        return () {
-          _codeController.clear();
-          _sendEmail();
-        };
-    }
   }
 
   _sendEmail() {

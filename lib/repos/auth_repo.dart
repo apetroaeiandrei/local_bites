@@ -74,9 +74,15 @@ class AuthRepo {
         if (e.code == 'invalid-phone-number') {
           onError(PhoneConfirmError.invalidPhoneNumber);
           print('The provided phone number is not valid.');
-        } else {
+        } if (e.code == 'too-many-requests') {
+          onError(PhoneConfirmError.tooManyRequests);
+          FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
+          print('Too many requests. Please try later.');
+        }
+        else {
           onError(PhoneConfirmError.unknown);
-          print('Something went wrong. Please try later');
+          FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
+          print('Something went wrong. Please try later, $e');
         }
       },
       codeSent: (String verificationId, int? resendToken) {

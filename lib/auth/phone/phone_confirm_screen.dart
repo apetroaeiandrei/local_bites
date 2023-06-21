@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:local/auth/phone/phone_confirm_cubit.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../constants.dart';
 import '../../generated/l10n.dart';
+import '../../img.dart';
 import '../../repos/phone_confirm_error.dart';
 import '../../theme/decorations.dart';
 import '../../theme/dimens.dart';
@@ -201,6 +203,10 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
         error = S.of(context).phone_number_error_expired_code;
         buttonText = S.of(context).phone_number_action_retry_generic;
         break;
+      case PhoneConfirmError.tooManyRequests:
+        error = S.of(context).phone_number_error_too_many_tries;
+        buttonText = S.of(context).phone_number_action_contact_support;
+        break;
       default:
         error = S.of(context).phone_number_error_generic;
         buttonText = S.of(context).phone_number_action_contact_support;
@@ -232,6 +238,16 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
       Text(
         S.of(context).phone_number_success_headline,
         style: Theme.of(context).textTheme.headlineMedium,
+      ),
+      const SizedBox(
+        height: Dimens.defaultPadding,
+      ),
+      Center(
+        child: Lottie.asset(
+          Img.lottieConfirmPerson,
+          height: 200,
+          width: 200,
+        ),
       ),
     ];
   }
