@@ -187,6 +187,7 @@ class HomeCubit extends Cubit<HomeState> {
     final notificationsAllowed =
         await _notificationsRepo.registerNotifications();
     if (notificationsAllowed) {
+      _notificationsRepo.updateFcmToken();
       _analytics.logEvent(name: Metric.eventFCMPermissionGranted);
       emit(state.copyWith(showNotificationsPrompt: false));
     } else {

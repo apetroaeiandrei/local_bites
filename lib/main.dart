@@ -104,7 +104,7 @@ Future<void> main() async {
         create: (context) => ordersRepo,
       ),
       RepositoryProvider<NotificationsRepo>(
-        create: (context) => NotificationsRepo(),
+        create: (context) => NotificationsRepo(userRepo),
       ),
     ],
     child: MyApp(
@@ -163,6 +163,7 @@ class MyApp extends StatelessWidget {
               create: (context) => SettingsCubit(
                 RepositoryProvider.of<AuthRepo>(context),
                 RepositoryProvider.of<UserRepo>(context),
+                RepositoryProvider.of<NotificationsRepo>(context),
               ),
               child: SettingsScreen(),
             ),

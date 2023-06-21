@@ -5,10 +5,12 @@ import 'package:equatable/equatable.dart';
 import 'package:local/repos/auth_repo.dart';
 import 'package:local/repos/user_repo.dart';
 
+import '../repos/notifications_repo.dart';
+
 part 'settings_state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
-  SettingsCubit(this._authRepo, this._userRepo)
+  SettingsCubit(this._authRepo, this._userRepo, this._notificationsRepo)
       : super(
             SettingsState(name: _userRepo.user?.name ?? "", isLoggedIn: true)) {
     _init();
@@ -16,6 +18,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   final AuthRepo _authRepo;
   final UserRepo _userRepo;
+  final NotificationsRepo _notificationsRepo;
   StreamSubscription? _userSubscription;
 
   _init() {
@@ -26,6 +29,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   Future<void> logout() async {
     await _userRepo.onLogout();
+    await _notificationsRepo.onLogout();
     _authRepo.logout();
     emit(state.copyWith(isLoggedIn: false));
   }

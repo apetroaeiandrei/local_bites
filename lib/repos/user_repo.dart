@@ -184,7 +184,11 @@ class UserRepo {
   }
 
   Future<bool> updateUserDetails(
-      {String? name, String? phoneNumber, bool? phoneVerified, String? referredBy}) async {
+      {String? name,
+      String? phoneNumber,
+      bool? phoneVerified,
+      String? referredBy,
+      String? fcmToken}) async {
     try {
       final properties = <String, dynamic>{};
       if (name != null) {
@@ -198,6 +202,9 @@ class UserRepo {
       }
       if (referredBy != null) {
         properties["referredBy"] = referredBy;
+      }
+      if (fcmToken != null) {
+        properties["fcmToken"] = fcmToken;
       }
 
       await _firestore
