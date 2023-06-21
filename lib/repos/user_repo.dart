@@ -92,8 +92,17 @@ class UserRepo {
 
   _handleUserChanged(Map<String, dynamic> doc) {
     _user = LocalUser.fromMap(doc);
+    _setUserReferralCodeIfNeeded();
     _tryToParseAddress(doc);
     _userController.add(_user!);
+  }
+
+  _setUserReferralCodeIfNeeded() async {
+    if (_user != null && _user!.referralCode.isEmpty) {
+      await _firestore.collection(_collectionUsers).doc(_user!.uid).update({
+        "referralCode": _getUserReferralCode(_user!.uid),
+      });
+    }
   }
 
   _tryToParseAddress(Map<String, dynamic> doc) {
@@ -102,6 +111,10 @@ class UserRepo {
     } catch (e) {
       debugPrint("Error parsing address");
     }
+  }
+
+  String _getUserReferralCode(String uid) {
+    return uid.substring(0, 6).toUpperCase();
   }
 
   bool isProfileCompleted() {
@@ -156,6 +169,7 @@ class UserRepo {
         "name": name,
         "phoneNumber": phoneNumber,
         "phoneVerified": phoneVerified,
+        "referralCode": _getUserReferralCode(_auth.currentUser?.uid ?? ""),
       });
     } catch (e) {
       FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
