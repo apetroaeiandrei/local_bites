@@ -475,6 +475,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5652549XFN;
 				ENABLE_BITCODE = NO;
+				FIREBASE_ENCODED_APP_ID = "app-1-GCM_DEV-ios-a921922926c0d5082105f3";
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Local Bites";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
@@ -564,6 +565,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5652549XFN;
 				ENABLE_BITCODE = NO;
+				FIREBASE_ENCODED_APP_ID = "app-1-GCM_PROD-ios-5811dd740037aedb6bef9f";
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Local Bites";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
@@ -650,6 +652,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5652549XFN;
 				ENABLE_BITCODE = NO;
+				FIREBASE_ENCODED_APP_ID = "app-1-GCM_DEV-ios-a921922926c0d5082105f3";
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Local Bites";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
@@ -735,6 +738,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5652549XFN;
 				ENABLE_BITCODE = NO;
+				FIREBASE_ENCODED_APP_ID = "app-1-GCM_PROD-ios-5811dd740037aedb6bef9f";
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Local Bites";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
@@ -818,6 +822,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5652549XFN;
 				ENABLE_BITCODE = NO;
+				FIREBASE_ENCODED_APP_ID = "";
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Local Bites";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
@@ -958,6 +963,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5652549XFN;
 				ENABLE_BITCODE = NO;
+				FIREBASE_ENCODED_APP_ID = "app-1-GCM_DEV-ios-a921922926c0d5082105f3";
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Local Bites";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
@@ -992,6 +998,7 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 5652549XFN;
 				ENABLE_BITCODE = NO;
+				FIREBASE_ENCODED_APP_ID = "";
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Local Bites";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
