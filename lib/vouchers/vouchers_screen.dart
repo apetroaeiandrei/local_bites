@@ -22,7 +22,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<VouchersCubit, VouchersState>(
       listener: (context, state) {
-        // TODO: implement listener
+        print("VouchersScreen: listener: $state");
       },
       builder: (context, state) {
         _buildWidgetList(state);
@@ -46,6 +46,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
   }
 
   _buildWidgetList(VouchersState state) {
+    print("Building widget list");
     _listViewWidgets.clear();
     //Verify phone number widget
     if (!state.phoneVerified) {
@@ -60,6 +61,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
               isCartVoucher: false,
             )))
         .toList();
+    print("Widget list length: ${_listViewWidgets.length}");
   }
 
   Widget _getConfirmPhoneWidget() {

@@ -164,7 +164,6 @@ class UserRepo {
 
   Future<bool> updateUserDetails(
       {String? name, String? phoneNumber, bool? phoneVerified}) async {
-    print("updateUserDetails");
     try {
       final properties = <String, dynamic>{};
       if (name != null) {
@@ -183,7 +182,6 @@ class UserRepo {
           .update(properties);
       return true;
     } on Exception catch (e) {
-      print(e);
       FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
       return false;
     }
@@ -360,10 +358,11 @@ class UserRepo {
         .where("isUsed", isEqualTo: false)
         .snapshots()
         .listen((event) {
+      final newVouchers =
+          event.docs.map((e) => VoucherFactory.parse(e.data())).toList();
       _vouchers.clear();
-      _vouchers.addAll(
-          event.docs.map((e) => VoucherFactory.parse(e.data())).toList());
-      _vouchersController.add(List.from(_vouchers));
+      _vouchers.addAll(newVouchers);
+      _vouchersController.add(List.from(newVouchers));
     });
   }
 }
