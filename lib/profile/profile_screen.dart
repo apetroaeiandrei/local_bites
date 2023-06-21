@@ -19,12 +19,13 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _nameController = TextEditingController();
+  final _referredByController = TextEditingController();
+
   final _analytics = Analytics();
   String? _nameError;
 
   @override
   void initState() {
-    print("Profile Screen init state $hashCode");
     super.initState();
   }
 
@@ -34,7 +35,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       listener: (context, state) {
         _nameController.text = state.name;
         if (state.status == ProfileStatus.success) {
-          print("Profile save success POP SCREEN!!!");
           _analytics.logEvent(name: Metric.eventProfileSaveSuccess);
           Navigator.of(context).pop();
         } else if (state.status == ProfileStatus.failure) {
@@ -54,7 +54,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if (!canGoBack) {
               _analytics.logEvent(name: Metric.eventProfileNavigateBackBlock);
             }
-            print("Can go back: $canGoBack");
             return true;
           },
           child: Scaffold(
@@ -86,6 +85,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(
+                        height: Dimens.defaultPadding,
+                      ),
+                      Visibility(
+                        visible: state.firstTime,
+                        child: TextField(
+                          textAlign: TextAlign.center,
+                          textCapitalization: TextCapitalization.characters,
+                          decoration: textFieldDecoration(
+                            label: S.of(context).profile_referred_by,
+                          ),
+                          controller: _referredByController,
+                        ),
+                      ),
+                      const SizedBox(
                         height: 32,
                       ),
                       ElevatedButton(
@@ -93,9 +106,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           if (!validate()) {
                             return;
                           }
-                          context
-                              .read<ProfileCubit>()
-                              .setUserDetails(_nameController.text);
+                          context.read<ProfileCubit>().setUserDetails(
+                              _nameController.text,
+                              referredBy: _referredByController.text);
                         },
                         child: Text(S.of(context).generic_save),
                       ),

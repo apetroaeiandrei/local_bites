@@ -348,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   void _showProfileScreen(BuildContext context) {
     Navigator.of(context)
-        .pushNamed(Routes.profile)
+        .pushNamed(Routes.profile, arguments: true)
         .then((value) => context.read<HomeCubit>().init());
   }
 

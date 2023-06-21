@@ -48,8 +48,9 @@ class SettingsScreen extends StatelessWidget {
                       name: S.of(context).settings_profile,
                       onTap: () {
                         _analytics.setCurrentScreen(screenName: Routes.profile);
-                        Navigator.of(context).pushNamed(Routes.profile).then(
-                            (value) => _analytics.setCurrentScreen(
+                        Navigator.of(context)
+                            .pushNamed(Routes.profile, arguments: false)
+                            .then((value) => _analytics.setCurrentScreen(
                                 screenName: Routes.settings));
                       }),
                   CustomMenuItem(

@@ -40,7 +40,9 @@ class VouchersCubit extends Cubit<VouchersState> {
       if (element.type == VoucherType.referral) {
         Future.delayed(Duration.zero, () {
           emit(state.copyWith(
-              referralEnabled: element.enabled, referralValue: element.value));
+            referralEnabled: element.enabled && state.phoneVerified,
+            referralValue: element.value,
+          ));
         });
       }
     }

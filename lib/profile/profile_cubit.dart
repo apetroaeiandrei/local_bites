@@ -5,9 +5,11 @@ import 'package:local/repos/user_repo.dart';
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit(
     this._userRepo,
+    bool firstTime,
   ) : super(ProfileState(
           status: ProfileStatus.initial,
           name: _userRepo.user?.name ?? "",
+          firstTime: firstTime,
         )) {
     init();
   }
@@ -20,11 +22,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     });
   }
 
-  setUserDetails(
-    String name,
-  ) async {
-    final success = await _userRepo.updateUserDetails(name: name);
-    print("Profile updat Success: $success");
+  setUserDetails(String name, {String referredBy = ""}) async {
+    final success =
+        await _userRepo.updateUserDetails(name: name, referredBy: referredBy);
     emit(state.copyWith(
       status: success ? ProfileStatus.success : ProfileStatus.failure,
     ));

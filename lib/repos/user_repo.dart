@@ -184,7 +184,7 @@ class UserRepo {
   }
 
   Future<bool> updateUserDetails(
-      {String? name, String? phoneNumber, bool? phoneVerified}) async {
+      {String? name, String? phoneNumber, bool? phoneVerified, String? referredBy}) async {
     try {
       final properties = <String, dynamic>{};
       if (name != null) {
@@ -195,6 +195,9 @@ class UserRepo {
       }
       if (phoneVerified != null) {
         properties["phoneVerified"] = phoneVerified;
+      }
+      if (referredBy != null) {
+        properties["referredBy"] = referredBy;
       }
 
       await _firestore

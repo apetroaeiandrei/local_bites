@@ -28,6 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _referredByController = TextEditingController();
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   final _nameFocusNode = FocusNode();
@@ -153,7 +154,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         autofillHints: const [AutofillHints.name],
                         textInputAction: TextInputAction.next,
                         decoration: textFieldDecoration(
-                            label: S.of(context).profile_name, error: _nameError),
+                            label: S.of(context).profile_name,
+                            error: _nameError),
                       ),
                       const SizedBox(
                         height: textsSpacing,
@@ -167,6 +169,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         decoration: textFieldDecoration(
                             label: S.of(context).profile_phone_number,
                             error: _phoneError),
+                      ),
+                      const SizedBox(
+                        height: textsSpacing,
+                      ),
+                      TextField(
+                        controller: _referredByController,
+                        textCapitalization: TextCapitalization.characters,
+                        textInputAction: TextInputAction.done,
+                        decoration: textFieldDecoration(
+                          label: S.of(context).profile_referred_by,
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(40.0),
@@ -206,6 +219,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   password: _passwordController.text,
                                   name: _nameController.text,
                                   phone: _phoneController.text,
+                                  referredBy: _referredByController.text,
                                 );
                           }
                         },

@@ -148,12 +148,6 @@ class MyApp extends StatelessWidget {
               ),
               child: const RegisterScreen(),
             ),
-        Routes.profile: (context) => BlocProvider<ProfileCubit>(
-              create: (context) => ProfileCubit(
-                RepositoryProvider.of<UserRepo>(context),
-              ),
-              child: const ProfileScreen(),
-            ),
         Routes.home: (context) => BlocProvider<HomeCubit>(
               create: (context) => HomeCubit(
                 RepositoryProvider.of<UserRepo>(context),
@@ -272,6 +266,17 @@ class MyApp extends StatelessWidget {
                 userOrder.restaurantId,
               ),
               child: const OrderScreen(),
+            ),
+          );
+        }
+        if (settings.name == Routes.profile) {
+          return MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => BlocProvider<ProfileCubit>(
+              create: (context) => ProfileCubit(
+                  RepositoryProvider.of<UserRepo>(context),
+                  settings.arguments as bool),
+              child: const ProfileScreen(),
             ),
           );
         }
