@@ -216,21 +216,6 @@ class UserRepo {
     _addresses.clear();
   }
 
-  Future<bool> deleteUser() async {
-    try {
-      await _firestore
-          .collection(_collectionUsers)
-          .doc(_auth.currentUser?.uid)
-          .delete();
-      await _auth.currentUser?.delete();
-      onLogout();
-      return true;
-    } catch (error) {
-      FirebaseCrashlytics.instance.recordError(error, StackTrace.current);
-    }
-    return false;
-  }
-
   _stopSubscriptions() async {
     await _userSubscription?.cancel();
     await _addressesSubscription?.cancel();

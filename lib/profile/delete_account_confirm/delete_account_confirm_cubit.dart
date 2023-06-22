@@ -1,22 +1,60 @@
+import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:local/repos/phone_confirm_error.dart';
-import 'package:local/repos/user_repo.dart';
+import 'package:local/auth/auth_status.dart';
 
-import '../repos/auth_repo.dart';
-import 'auth_status.dart';
+import '../../repos/auth_repo.dart';
+import '../../repos/phone_confirm_error.dart';
+import '../../utils.dart';
 
-part 'auth_state.dart';
+part 'delete_account_confirm_state.dart';
 
-class AuthCubit extends Cubit<AuthState> {
-  AuthCubit(this._authRepo,)
-      : super(const AuthState(
-            status: AuthStatus.initial, phoneConfirmError: null));
+class DeleteAccountConfirmCubit extends Cubit<DeleteAccountConfirmState> {
+  DeleteAccountConfirmCubit(this._authRepo)
+      : super(const DeleteAccountConfirmState(
+          status: AuthStatus.initial,
+          hasEmailCredential: false,
+          hasPhoneCredential: false,
+          phoneNumber: "",
+          email: "",
+        )) {
+    _init();
+  }
+
   final AuthRepo _authRepo;
+  String verificationId = '';
+
+  _init() async {
+    final providers = _authRepo.getUserProviders();
+    var hasEmailCredential = false;
+    var hasPhoneCredential = false;
+    var phoneNumber = "";
+    var email = "";
+
+    providers?.forEach((element) {
+      if (element.providerId == 'phone') {
+        hasPhoneCredential = true;
+        phoneNumber = Utils.formatPhoneNumberForIntl(element.phoneNumber!);
+      }
+      if (element.providerId == 'password') {
+        hasEmailCredential = true;
+        email = element.email!;
+      }
+      print(element);
+    });
+    Future.delayed(const Duration(milliseconds: 10), () {
+      emit(state.copyWith(
+        hasEmailCredential: hasEmailCredential,
+        hasPhoneCredential: hasPhoneCredential,
+        phoneNumber: phoneNumber,
+        email: email,
+      ));
+    });
+  }
 
   login(String email, String password) async {
     emit(state.copyWith(status: AuthStatus.loadingEmail));
-    final success = await _authRepo.login(email, password);
+    final success =
+        await _authRepo.login(email, password, reauthenticate: true);
     emit(state.copyWith(
       status: success ? AuthStatus.authorized : AuthStatus.unauthorized,
     ));
@@ -29,6 +67,7 @@ class AuthCubit extends Cubit<AuthState> {
   void confirm(String smsCode) {
     emit(state.copyWith(status: AuthStatus.phoneCodeSentByUser));
     _authRepo.confirmCodeAndSignIn(
+      reauthenticate: true,
       smsCode: smsCode,
       verificationId: verificationId,
       onError: (error) {
@@ -40,11 +79,11 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  String verificationId = '';
-
   void loginWithPhone(String phoneNumber) {
+    print("loginWithPhone - phoneNumber: $phoneNumber");
     emit(state.copyWith(status: AuthStatus.phoneCodeRequested));
     _authRepo.loginWithPhone(
+      reauthenticate: true,
       linkCredential: false,
       phoneNumber: phoneNumber,
       onCodeSent: (verificationId) {

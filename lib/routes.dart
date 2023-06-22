@@ -21,6 +21,7 @@ abstract class Routes {
 
   static const String orders = '/orders';
   static const String phone = '/phone';
+  static const String deleteConfirmation = '/delete_confirmation';
 
   //used only for analytics
   static const String feedback = '/feedback';

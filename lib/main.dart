@@ -15,6 +15,8 @@ import 'package:local/help/help_cubit.dart';
 import 'package:local/help/help_screen.dart';
 import 'package:local/orders/orders_cubit.dart';
 import 'package:local/orders/orders_screen.dart';
+import 'package:local/profile/delete_account_confirm/delete_account_confirm_cubit.dart';
+import 'package:local/profile/delete_account_confirm/delete_account_confirm_screen.dart';
 import 'package:local/profile/profile_cubit.dart';
 import 'package:local/home/home_cubit.dart';
 import 'package:local/home/home_screen.dart';
@@ -144,7 +146,6 @@ class MyApp extends StatelessWidget {
         Routes.auth: (context) => BlocProvider<AuthCubit>(
               create: (context) => AuthCubit(
                 RepositoryProvider.of<AuthRepo>(context),
-                RepositoryProvider.of<UserRepo>(context),
               ),
               child: const AuthScreen(),
             ),
@@ -237,6 +238,13 @@ class MyApp extends StatelessWidget {
               ),
               child: const PhoneConfirmScreen(),
             ),
+        Routes.deleteConfirmation: (context) =>
+            BlocProvider<DeleteAccountConfirmCubit>(
+              create: (context) => DeleteAccountConfirmCubit(
+                RepositoryProvider.of<AuthRepo>(context),
+              ),
+              child: const DeleteAccountConfirmScreen(),
+            ),
       },
       onGenerateRoute: (settings) {
         if (settings.name == Routes.restaurant) {
@@ -287,6 +295,9 @@ class MyApp extends StatelessWidget {
             builder: (context) => BlocProvider<ProfileCubit>(
               create: (context) => ProfileCubit(
                   RepositoryProvider.of<UserRepo>(context),
+                  RepositoryProvider.of<AuthRepo>(context),
+                  RepositoryProvider.of<NotificationsRepo>(context),
+                  RepositoryProvider.of<VouchersRepo>(context),
                   settings.arguments as bool),
               child: const ProfileScreen(),
             ),

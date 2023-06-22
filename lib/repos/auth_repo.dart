@@ -37,9 +37,16 @@ class AuthRepo {
     }
   }
 
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(String email, String password,
+      {bool reauthenticate = false}) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      if (reauthenticate) {
+        await _auth.currentUser?.reauthenticateWithCredential(
+            EmailAuthProvider.credential(email: email, password: password));
+      } else {
+        await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+      }
       return true;
     } on Exception catch (e) {
       debugPrint("Auth failed $e");
@@ -52,6 +59,7 @@ class AuthRepo {
   }
 
   void loginWithPhone({
+    bool reauthenticate = false,
     required bool linkCredential,
     required String phoneNumber,
     required Function(PhoneConfirmError, {String? verificationId}) onError,
@@ -64,7 +72,9 @@ class AuthRepo {
       forceResendingToken: 1,
       verificationCompleted: (PhoneAuthCredential credential) async {
         print("verificationCompleted $credential");
-        if (linkCredential) {
+        if (reauthenticate) {
+          _reauthenticateWithCredential(credential, onError, onSuccess);
+        } else if (linkCredential) {
           _linkWithCredential(credential, onError, onSuccess);
         } else {
           _signInWithPhoneCredential(credential, onError, onSuccess);
@@ -74,12 +84,12 @@ class AuthRepo {
         if (e.code == 'invalid-phone-number') {
           onError(PhoneConfirmError.invalidPhoneNumber);
           print('The provided phone number is not valid.');
-        } if (e.code == 'too-many-requests') {
+        }
+        if (e.code == 'too-many-requests') {
           onError(PhoneConfirmError.tooManyRequests);
           FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
           print('Too many requests. Please try later.');
-        }
-        else {
+        } else {
           onError(PhoneConfirmError.unknown);
           FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
           print('Something went wrong. Please try later, $e');
@@ -111,6 +121,7 @@ class AuthRepo {
   }
 
   void confirmCodeAndSignIn({
+    bool reauthenticate = false,
     required String smsCode,
     required String verificationId,
     required Function(PhoneConfirmError) onError,
@@ -120,7 +131,11 @@ class AuthRepo {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId, smsCode: smsCode);
     print("credential confirmed, signing in $credential");
-    _signInWithPhoneCredential(credential, onError, onSuccess);
+    if (reauthenticate) {
+      _reauthenticateWithCredential(credential, onError, onSuccess);
+    } else {
+      _signInWithPhoneCredential(credential, onError, onSuccess);
+    }
   }
 
   _signInWithPhoneCredential(
@@ -196,5 +211,33 @@ class AuthRepo {
       onError(PhoneConfirmError.unknown);
       print("Unknown exception. $e");
     }
+  }
+
+  Future<void> _reauthenticateWithCredential(
+    AuthCredential credential,
+    Function(PhoneConfirmError) onError,
+    Function() onSuccess,
+  ) async {
+    try {
+      await _auth.currentUser?.reauthenticateWithCredential(credential);
+      onSuccess();
+    } catch (error) {
+      FirebaseCrashlytics.instance.recordError(error, StackTrace.current);
+      onError(PhoneConfirmError.unknown);
+    }
+  }
+
+  Future<bool> deleteUser() async {
+    try {
+      await _auth.currentUser?.delete();
+      return true;
+    } catch (error) {
+      FirebaseCrashlytics.instance.recordError(error, StackTrace.current);
+    }
+    return false;
+  }
+
+  List<UserInfo>? getUserProviders() {
+    return _auth.currentUser?.providerData;
   }
 }

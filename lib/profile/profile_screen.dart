@@ -44,6 +44,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Navigator.of(context)
               .pushNamedAndRemoveUntil(Routes.auth, (route) => false);
         } else if (state.status == ProfileStatus.deletedFailure) {
+          Navigator.of(context)
+              .pushNamed(Routes.deleteConfirmation)
+              .then((value) => {
+                    if (value != null && value as bool)
+                      {context.read<ProfileCubit>().deleteUser()}
+                    else
+                      {context.read<ProfileCubit>().retry()}
+                  });
           _analytics.logEvent(name: Metric.eventProfileDeleteError);
         }
       },
