@@ -15,61 +15,59 @@ import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:models/delivery_zone.dart';
 import 'package:models/food_order.dart';
+import 'package:models/restaurant_model.dart';
 import 'package:models/vouchers/voucher.dart';
 
 part 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
-  CartCubit(
-      this._cartRepo, this._restaurantsRepo, this._userRepo, this._ordersRepo, this._vouchersRepo)
+  CartCubit(this._cartRepo, this._restaurantsRepo, this._userRepo,
+      this._ordersRepo, this._vouchersRepo)
       : super(CartState(
-            status: _restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
-                    _restaurantsRepo.selectedRestaurant.couriersAvailable
-                ? CartStatus.computingDelivery
-                : CartStatus.initial,
-            cartCount: _cartRepo.cartCount,
-            cartTotalProducts: _cartRepo.cartTotalProducts,
-            cartItems: _cartRepo.cartItems,
-            mentions: "",
-            restaurantName: _restaurantsRepo.selectedRestaurant.name,
-            deliveryStreet: _userRepo.address?.street ?? "",
-            deliveryPropertyDetails: _userRepo.address?.propertyDetails ?? "",
-            deliveryLatitude: _userRepo.address?.latitude ?? 0.0,
-            deliveryLongitude: _userRepo.address?.longitude ?? 0.0,
-            restaurantLatitude:
-                _restaurantsRepo.selectedRestaurant.location.latitude,
-            restaurantLongitude:
-                _restaurantsRepo.selectedRestaurant.location.longitude,
-            restaurantAddress: _restaurantsRepo.selectedRestaurant.address,
-            minOrder: _restaurantsRepo.selectedRestaurant.minimumOrder,
-            deliveryFee: _restaurantsRepo.selectedRestaurant.hasExternalDelivery
-                ? Constants.deliveryPriceErrorDefault
-                : _restaurantsRepo.selectedRestaurant.deliveryFee,
-            deliveryEta: 0,
-            amountToMinOrder: 0,
-            hasDelivery: _restaurantsRepo.selectedRestaurant.hasDelivery ||
-                (_restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
-                    _restaurantsRepo.selectedRestaurant.couriersAvailable),
-            hasPickup: _restaurantsRepo.selectedRestaurant.hasPickup,
-            hasDeliveryCash:
-                _restaurantsRepo.selectedRestaurant.hasDeliveryCash,
-            hasDeliveryCard:
-                _restaurantsRepo.selectedRestaurant.hasDeliveryCard,
-            hasPickupCash: _restaurantsRepo.selectedRestaurant.hasPickupCash,
-            hasPickupCard: _restaurantsRepo.selectedRestaurant.hasPickupCard,
-            deliverySelected:
-                _restaurantsRepo.selectedRestaurant.hasExternalDelivery ||
-                    _restaurantsRepo.selectedRestaurant.hasDelivery,
-            hasExternalDelivery:
-                _restaurantsRepo.selectedRestaurant.hasExternalDelivery,
-            hasPayments: _restaurantsRepo.selectedRestaurant.stripeConfigured,
-            clearVoucher: false,
-            vouchers: _vouchersRepo.vouchers,
-            paymentType: _restaurantsRepo.selectedRestaurant.stripeConfigured
-                ? PaymentType.app
-                : PaymentType.cash,
-            acceptsVouchers: _restaurantsRepo.selectedRestaurant.acceptsVouchers,
-  )) {
+          status: _restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
+                  _restaurantsRepo.selectedRestaurant.couriersAvailable
+              ? CartStatus.computingDelivery
+              : CartStatus.initial,
+          cartCount: _cartRepo.cartCount,
+          cartTotalProducts: _cartRepo.cartTotalProducts,
+          cartItems: _cartRepo.cartItems,
+          mentions: "",
+          restaurantName: _restaurantsRepo.selectedRestaurant.name,
+          deliveryStreet: _userRepo.address?.street ?? "",
+          deliveryPropertyDetails: _userRepo.address?.propertyDetails ?? "",
+          deliveryLatitude: _userRepo.address?.latitude ?? 0.0,
+          deliveryLongitude: _userRepo.address?.longitude ?? 0.0,
+          restaurantLatitude:
+              _restaurantsRepo.selectedRestaurant.location.latitude,
+          restaurantLongitude:
+              _restaurantsRepo.selectedRestaurant.location.longitude,
+          restaurantAddress: _restaurantsRepo.selectedRestaurant.address,
+          minOrder: _restaurantsRepo.selectedRestaurant.minimumOrder,
+          deliveryFee: _restaurantsRepo.selectedRestaurant.hasExternalDelivery
+              ? Constants.deliveryPriceErrorDefault
+              : _restaurantsRepo.selectedRestaurant.deliveryFee,
+          deliveryEta: 0,
+          amountToMinOrder: 0,
+          hasDelivery: _restaurantsRepo.selectedRestaurant.hasDelivery ||
+              (_restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
+                  _restaurantsRepo.selectedRestaurant.couriersAvailable),
+          hasPickup: _restaurantsRepo.selectedRestaurant.hasPickup,
+          hasDeliveryCash: _restaurantsRepo.selectedRestaurant.hasDeliveryCash,
+          hasDeliveryCard: _restaurantsRepo.selectedRestaurant.hasDeliveryCard,
+          hasPickupCash: _restaurantsRepo.selectedRestaurant.hasPickupCash,
+          hasPickupCard: _restaurantsRepo.selectedRestaurant.hasPickupCard,
+          deliverySelected:
+              _getInitialDeliverySelected(_restaurantsRepo.selectedRestaurant),
+          hasExternalDelivery:
+              _restaurantsRepo.selectedRestaurant.hasExternalDelivery,
+          hasPayments: _restaurantsRepo.selectedRestaurant.stripeConfigured,
+          clearVoucher: false,
+          vouchers: _vouchersRepo.vouchers,
+          paymentType: _restaurantsRepo.selectedRestaurant.stripeConfigured
+              ? PaymentType.app
+              : PaymentType.cash,
+          acceptsVouchers: _restaurantsRepo.selectedRestaurant.acceptsVouchers,
+        )) {
     init();
   }
 
@@ -88,12 +86,30 @@ class CartCubit extends Cubit<CartState> {
   final _delayedDuration = const Duration(milliseconds: 10);
   bool _userChangedPaymentType = false;
 
+  static bool _getInitialDeliverySelected(RestaurantModel restaurantModel) {
+    if (restaurantModel.hasExternalDelivery &&
+        restaurantModel.couriersAvailable) {
+      return true;
+    }
+    if (restaurantModel.hasDelivery && !restaurantModel.hasExternalDelivery) {
+      return true;
+    }
+    return false;
+  }
+
   Future<void> init() async {
     _listenForOrders();
+    _listenForVouchers();
     _orderId = _generateOrderId();
     await _getDelivery();
     Future.delayed(_delayedDuration, () {
       _refreshCart();
+    });
+  }
+
+  _listenForVouchers() {
+    _vouchersRepo.vouchersStream.listen((vouchers) {
+      emit(state.copyWith(vouchers: vouchers));
     });
   }
 
@@ -180,8 +196,8 @@ class CartCubit extends Cubit<CartState> {
     CartStatus status = state.status;
     if (!_restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
         state.deliverySelected) {
-      //todo account for voucher value
-      amountToMinOrder = state.minOrder - _cartRepo.cartTotalProducts;
+      final voucherValue = state.selectedVoucher?.value ?? 0;
+      amountToMinOrder = state.minOrder - (_cartRepo.cartTotalProducts - voucherValue);
       amountToMinOrder = double.parse(amountToMinOrder.toStringAsFixed(2));
       amountToMinOrder = amountToMinOrder > 0 ? amountToMinOrder : 0;
       deliveryFee = amountToMinOrder <= 0 ? 0 : _deliveryZone.deliveryFee;
@@ -375,6 +391,7 @@ class CartCubit extends Cubit<CartState> {
   void onVoucherSelected(Voucher voucher) {
     if (_isVoucherApplicable()) {
       emit(state.copyWith(selectedVoucher: voucher));
+      _refreshCart();
     }
   }
 
