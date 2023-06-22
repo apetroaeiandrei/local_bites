@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../environment/app_config.dart';
@@ -22,7 +23,9 @@ class NotificationsRepo {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  NotificationsRepo._privateConstructor(this._userRepo);
+  NotificationsRepo._privateConstructor(this._userRepo) {
+    tz.initializeTimeZones();
+  }
 
   factory NotificationsRepo(UserRepo userRepo) {
     _instance ??= NotificationsRepo._privateConstructor(userRepo);
@@ -133,19 +136,20 @@ class NotificationsRepo {
 
   Future<void> clearAllVoucherScheduledNotifications() async {
     final prefs = await SharedPreferences.getInstance();
-    final notificationIds = prefs.getStringList(_voucherNotificationsPrefKey) ?? [];
+    final notificationIds =
+        prefs.getStringList(_voucherNotificationsPrefKey) ?? [];
     for (String id in notificationIds) {
       await flutterLocalNotificationsPlugin.cancel(int.parse(id));
     }
+    await prefs.remove(_voucherNotificationsPrefKey);
   }
 
-  void scheduleVoucherNotifications(
+  Future<void> scheduleVoucherNotifications(
       {required String title,
       required String body,
       required DateTime notificationDate}) async {
     final tz.TZDateTime scheduledDate =
         tz.TZDateTime.from(notificationDate, tz.local);
-
     NotificationDetails notificationDetails =
         _getNormalPriorityNotificationDetails(
       vouchersChannelId,
@@ -154,7 +158,6 @@ class NotificationsRepo {
     );
 
     final id = await _getNextAvailableNotificationId();
-
     await flutterLocalNotificationsPlugin.zonedSchedule(
       id,
       title,
@@ -169,14 +172,17 @@ class NotificationsRepo {
 
   _storeVoucherNotificationId(int id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final notificationIds = prefs.getStringList(_voucherNotificationsPrefKey) ?? [];
+    final notificationIds =
+        prefs.getStringList(_voucherNotificationsPrefKey) ?? [];
     notificationIds.add(id.toString());
     prefs.setStringList(_voucherNotificationsPrefKey, notificationIds);
   }
 
   Future<int> _getNextAvailableNotificationId() async {
-    final pendingNotifications = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
-    return pendingNotifications.length + 1;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final notificationIds = prefs.getStringList(_voucherNotificationsPrefKey);
+    int currentLength = notificationIds?.length ?? 0;
+    return currentLength + 1;
   }
 
   NotificationDetails _getNormalPriorityNotificationDetails(

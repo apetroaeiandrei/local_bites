@@ -242,6 +242,11 @@
   "voucher_card_expiration_expired" : "Expirat!",
   "voucher_card_min_purchase": "Comandă minimă: {minPurchase} RON",
 
+  "voucher_notification_reminder_title" : "Atenție!",
+  "voucher_notification_reminder_today_body" : "Ai un voucher care expiră astăzi. Nu-l irosi!",
+  "voucher_notification_reminder_tomorrow_body" : "Ai un voucher care expiră mâine. Folosește-l acum!",
+  "voucher_notification_reminder_soon_body" : "Ai mai multe vouchere care expiră în curând. Nu le risipi!",
+
   "cart_vouchers_headline": "Adaugă voucher",
   "cart_vouchers_headline_used": "Felicitări!",
   "cart_vouchers_info": "Ai vouchere disponibile. Folosește unul acum!",

@@ -172,6 +172,7 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<AuthRepo>(context),
                 RepositoryProvider.of<UserRepo>(context),
                 RepositoryProvider.of<NotificationsRepo>(context),
+                RepositoryProvider.of<VouchersRepo>(context),
               ),
               child: SettingsScreen(),
             ),
