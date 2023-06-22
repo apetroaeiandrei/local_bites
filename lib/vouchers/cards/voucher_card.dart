@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:local/theme/wl_colors.dart';
-import 'package:local/vouchers/cards/voucher_painter.dart';
+import 'package:local/vouchers/cards/voucher_border.dart';
 import 'package:models/vouchers/voucher.dart';
 
 import '../../generated/l10n.dart';
@@ -19,8 +18,9 @@ class VoucherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: VoucherPainter(),
+    return Card(
+      elevation: 8,
+      shape: VoucherBorder(),
       child: Container(
         height: voucherHeight,
         padding: EdgeInsets.symmetric(vertical: voucherVerticalPadding),
@@ -28,16 +28,20 @@ class VoucherCard extends StatelessWidget {
           children: [
             Expanded(
               flex: Dimens.voucherDashLeftFlex,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _getStars(context),
+              child: Center(
+                child: RotatedBox(
+                  quarterTurns: 3,
+                  child: Text(
+                    voucher.id.substring(0, 5).toUpperCase(),
+                    style: Theme.of(context).textTheme.displaySmall,
+                  ),
+                ),
               ),
             ),
             Expanded(
               flex: Dimens.voucherDashRightFlex,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.fromLTRB(18, 8, 18, 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -57,17 +61,12 @@ class VoucherCard extends StatelessWidget {
                             ? S.of(context).voucher_card_min_purchase(
                                 voucher.minPurchase.roundToDouble())
                             : voucher.name,
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: WlColors.goldContrast,
-                                )),
+                        style: Theme.of(context).textTheme.headlineSmall),
                     const SizedBox(
                       height: 4,
                     ),
                     Text(_getExpirationDaysText(context),
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: WlColors.goldContrast,
-                            )),
+                        style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
               ),
@@ -76,29 +75,6 @@ class VoucherCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  List<Widget> _getStars(BuildContext context) {
-    var starNumber = voucher.value ~/ 10;
-    if (starNumber > maxStars) {
-      starNumber = maxStars;
-    }
-
-    List<Widget> stars = [];
-    var starSize = (voucherHeight - 2 * voucherVerticalPadding) / starNumber;
-    if (starSize > maxStarSize) {
-      starSize = maxStarSize;
-    }
-    for (int i = 0; i < starNumber; i++) {
-      stars.add(
-        Icon(
-          Icons.star,
-          size: starSize,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      );
-    }
-    return stars;
   }
 
   int _getExpirationIntervalDays() {
