@@ -155,8 +155,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                         ),
                         _getConfiguration(state),
-                        if (_showReceipts(state))
-                          _getReceipts(state),
+                        if (_showReceipts(state)) _getReceipts(state),
                         Container(
                           height: 1,
                           color: WlColors.onSurface,
@@ -229,7 +228,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   bool _showReceipts(OrderState state) {
     final order = state.order!;
-    if (!(order.isExternalDelivery ?? false)) {
+    if (!(order.isExternalDelivery && order.isDelivery)) {
       return false;
     }
     if (order.paymentType == PaymentType.app) {
