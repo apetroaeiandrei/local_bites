@@ -12,9 +12,6 @@ import 'package:models/feedback_model.dart';
 import 'package:models/local_user.dart';
 import 'package:collection/collection.dart';
 import 'package:models/user_order.dart';
-import 'package:models/vouchers/voucher.dart';
-import 'package:models/vouchers/voucher_config.dart';
-import 'package:models/vouchers/voucher_factory.dart';
 
 class UserRepo {
   static UserRepo? instance;
@@ -22,10 +19,11 @@ class UserRepo {
   static const _collectionAddresses = "addresses";
   static const _collectionRestaurants = "restaurants";
   static const _collectionFeedback = "feedback";
-  static const _collectionVouchers = "vouchers";
-  static const _collectionVouchersConfig = "vouchers";
 
-  UserRepo._privateConstructor(this._restaurantsRepo, this._ordersRepo);
+  UserRepo._privateConstructor(
+    this._restaurantsRepo,
+    this._ordersRepo,
+  );
 
   final RestaurantsRepo _restaurantsRepo;
   final OrdersRepo _ordersRepo;
@@ -34,21 +32,22 @@ class UserRepo {
   LocalUser? _user;
   DeliveryAddress? _currentAddress;
   StreamSubscription? _addressesSubscription;
-  StreamSubscription? _vouchersSubscription;
   StreamSubscription? _userSubscription;
   final List<DeliveryAddress> _addresses = [];
-  final List<Voucher> _vouchers = [];
-  final List<VoucherConfig> _vouchersConfig = [];
 
-  final StreamController<List<Voucher>> _vouchersController =
-      StreamController<List<Voucher>>.broadcast();
   final StreamController<List<DeliveryAddress>> _addressesController =
       StreamController<List<DeliveryAddress>>.broadcast();
   final StreamController<LocalUser> _userController =
       StreamController<LocalUser>.broadcast();
 
-  factory UserRepo(RestaurantsRepo restaurantsRepo, OrdersRepo ordersRepo) {
-    instance ??= UserRepo._privateConstructor(restaurantsRepo, ordersRepo);
+  factory UserRepo(
+    RestaurantsRepo restaurantsRepo,
+    OrdersRepo ordersRepo,
+  ) {
+    instance ??= UserRepo._privateConstructor(
+      restaurantsRepo,
+      ordersRepo,
+    );
     return instance!;
   }
 
@@ -58,14 +57,8 @@ class UserRepo {
 
   List<DeliveryAddress> get addresses => _addresses;
 
-  List<Voucher> get vouchers => _vouchers;
-
-  List<VoucherConfig> get vouchersConfig => _vouchersConfig;
-
   Stream<List<DeliveryAddress>> get addressesStream =>
       _addressesController.stream;
-
-  Stream<List<Voucher>> get vouchersStream => _vouchersController.stream;
 
   Stream<LocalUser> get userStream => _userController.stream;
 
@@ -76,10 +69,8 @@ class UserRepo {
         .get();
     final doc = userSnap.data()!;
     _handleUserChanged(doc);
-    await _listenForVouchers();
     Analytics().setUserId(_user!.uid);
     _listenForUserChanges();
-    _getVouchersConfig();
   }
 
   _listenForUserChanges() {
@@ -223,7 +214,6 @@ class UserRepo {
     _user = null;
     _currentAddress = null;
     _addresses.clear();
-    _vouchers.clear();
   }
 
   Future<bool> deleteUser() async {
@@ -247,7 +237,6 @@ class UserRepo {
     _addressesSubscription = null;
     await _restaurantsRepo.cancelAllRestaurantsSubscriptions();
     await _ordersRepo.stopListeningForOrderInProgress();
-    await _vouchersSubscription?.cancel();
   }
 
   //region Address
@@ -378,31 +367,5 @@ class UserRepo {
       FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
       return false;
     }
-  }
-
-  _listenForVouchers() async {
-    await _vouchersSubscription?.cancel();
-    _vouchersSubscription = _firestore
-        .collection(_collectionUsers)
-        .doc(_auth.currentUser?.uid)
-        .collection(_collectionVouchers)
-        .where("isUsed", isEqualTo: false)
-        .snapshots()
-        .listen((event) {
-      final newVouchers =
-          event.docs.map((e) => VoucherFactory.parse(e.data())).toList();
-      _vouchers.clear();
-      _vouchers.addAll(newVouchers);
-      _vouchersController.add(List.from(newVouchers));
-    });
-  }
-
-  _getVouchersConfig() async {
-    final docsSnap =
-        await _firestore.collection(_collectionVouchersConfig).get();
-    final vouchersConfigDocs =
-        docsSnap.docs.map((e) => VoucherConfig.fromMap(e.data())).toList();
-    _vouchersConfig.clear();
-    _vouchersConfig.addAll(vouchersConfigDocs);
   }
 }

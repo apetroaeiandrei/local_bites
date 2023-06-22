@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 import '../environment/app_config.dart';
 
@@ -14,6 +15,7 @@ class NotificationsRepo {
   static const String sharedPrefsTokenTimestamp = 'last_token_timestamp';
   static const String vouchersChannelId = 'vouchers_notifications';
   static const String vouchersChannelName = 'Vouchere';
+  static const String _voucherNotificationsPrefKey = 'voucher_notification_ids';
 
   static NotificationsRepo? _instance;
   final UserRepo _userRepo;
@@ -127,5 +129,70 @@ class NotificationsRepo {
     prefs.remove(notificationTopic + topicPromo);
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     await messaging.deleteToken();
+  }
+
+  Future<void> clearAllVoucherScheduledNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final notificationIds = prefs.getStringList(_voucherNotificationsPrefKey) ?? [];
+    for (String id in notificationIds) {
+      await flutterLocalNotificationsPlugin.cancel(int.parse(id));
+    }
+  }
+
+  void scheduleVoucherNotifications(
+      {required String title,
+      required String body,
+      required DateTime notificationDate}) async {
+    final tz.TZDateTime scheduledDate =
+        tz.TZDateTime.from(notificationDate, tz.local);
+
+    NotificationDetails notificationDetails =
+        _getNormalPriorityNotificationDetails(
+      vouchersChannelId,
+      vouchersChannelName,
+      'Alerte expirare voucher',
+    );
+
+    final id = await _getNextAvailableNotificationId();
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id,
+      title,
+      body,
+      scheduledDate,
+      notificationDetails,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.wallClockTime,
+    );
+    await _storeVoucherNotificationId(id);
+  }
+
+  _storeVoucherNotificationId(int id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final notificationIds = prefs.getStringList(_voucherNotificationsPrefKey) ?? [];
+    notificationIds.add(id.toString());
+    prefs.setStringList(_voucherNotificationsPrefKey, notificationIds);
+  }
+
+  Future<int> _getNextAvailableNotificationId() async {
+    final pendingNotifications = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    return pendingNotifications.length + 1;
+  }
+
+  NotificationDetails _getNormalPriorityNotificationDetails(
+      String channelId, String channelName, String channelDescription) {
+    AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      channelId,
+      channelName,
+      channelDescription: channelDescription,
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+    );
+    const DarwinNotificationDetails iOSNotificationDetails =
+        DarwinNotificationDetails(interruptionLevel: InterruptionLevel.active);
+    return NotificationDetails(
+        android: androidNotificationDetails, iOS: iOSNotificationDetails);
   }
 }

@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:google_directions_api/google_directions_api.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:local/repos/orders_repo.dart';
+import 'package:local/repos/vouchers_repo.dart';
 import 'package:models/payment_type.dart';
 import 'package:local/cart/stripe_pay_data.dart';
 import 'package:local/constants.dart';
@@ -20,7 +21,7 @@ part 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
   CartCubit(
-      this._cartRepo, this._restaurantsRepo, this._userRepo, this._ordersRepo)
+      this._cartRepo, this._restaurantsRepo, this._userRepo, this._ordersRepo, this._vouchersRepo)
       : super(CartState(
             status: _restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
                     _restaurantsRepo.selectedRestaurant.couriersAvailable
@@ -63,7 +64,7 @@ class CartCubit extends Cubit<CartState> {
                 _restaurantsRepo.selectedRestaurant.hasExternalDelivery,
             hasPayments: _restaurantsRepo.selectedRestaurant.stripeConfigured,
             clearVoucher: false,
-            vouchers: _userRepo.vouchers,
+            vouchers: _vouchersRepo.vouchers,
             paymentType: _restaurantsRepo.selectedRestaurant.stripeConfigured
                 ? PaymentType.app
                 : PaymentType.cash,
@@ -76,6 +77,7 @@ class CartCubit extends Cubit<CartState> {
   final CartRepo _cartRepo;
   final RestaurantsRepo _restaurantsRepo;
   final UserRepo _userRepo;
+  final VouchersRepo _vouchersRepo;
 
   late final DeliveryZone _deliveryZone;
   late final String _orderId;

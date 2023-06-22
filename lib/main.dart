@@ -25,6 +25,7 @@ import 'package:local/repos/notifications_repo.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
+import 'package:local/repos/vouchers_repo.dart';
 import 'package:local/restaurant/info/restaurant_info_cubit.dart';
 import 'package:local/restaurant/info/restaurant_info_screen.dart';
 import 'package:local/restaurant/restaurant_cubit.dart';
@@ -52,6 +53,7 @@ import 'cart/cart_cubit.dart';
 import 'cart/cart_screen.dart';
 import 'environment/app_config.dart';
 import 'generated/l10n.dart';
+import 'navigation_service.dart';
 import 'order/order_cubit.dart';
 import 'order/order_screen.dart';
 
@@ -70,6 +72,7 @@ Future<void> main() async {
   final ordersRepo = OrdersRepo();
   final userRepo = UserRepo(restaurantsRepo, ordersRepo);
   final authRepo = AuthRepo(userRepo);
+  final notificationsRepo = NotificationsRepo(userRepo);
   final isLoggedIn = await authRepo.isLoggedIn();
 
   if (isLoggedIn) {
@@ -104,7 +107,10 @@ Future<void> main() async {
         create: (context) => ordersRepo,
       ),
       RepositoryProvider<NotificationsRepo>(
-        create: (context) => NotificationsRepo(userRepo),
+        create: (context) => notificationsRepo,
+      ),
+      RepositoryProvider<VouchersRepo>(
+        create: (context) => VouchersRepo(notificationsRepo),
       ),
     ],
     child: MyApp(
@@ -122,6 +128,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: NavigationService.navigatorKey,
       title: 'Local Bites',
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
@@ -156,6 +163,7 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<CartRepo>(context),
                 RepositoryProvider.of<NotificationsRepo>(context),
                 RepositoryProvider.of<Analytics>(context),
+                RepositoryProvider.of<VouchersRepo>(context),
               ),
               child: const HomeScreen(),
             ),
@@ -187,6 +195,7 @@ class MyApp extends StatelessWidget {
                 RepositoryProvider.of<RestaurantsRepo>(context),
                 RepositoryProvider.of<UserRepo>(context),
                 RepositoryProvider.of<OrdersRepo>(context),
+                RepositoryProvider.of<VouchersRepo>(context),
               ),
               child: const CartScreen(),
             ),
@@ -216,6 +225,7 @@ class MyApp extends StatelessWidget {
         Routes.vouchers: (context) => BlocProvider<VouchersCubit>(
               create: (context) => VouchersCubit(
                 RepositoryProvider.of<UserRepo>(context),
+                RepositoryProvider.of<VouchersRepo>(context),
               ),
               child: const VouchersScreen(),
             ),

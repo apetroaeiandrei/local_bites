@@ -12,6 +12,7 @@ import 'package:local/repos/notifications_repo.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:local/repos/user_repo.dart';
+import 'package:local/repos/vouchers_repo.dart';
 import 'package:models/delivery_address.dart';
 import 'package:models/restaurant_model.dart';
 import 'package:models/user_order.dart';
@@ -30,6 +31,7 @@ class HomeCubit extends Cubit<HomeState> {
     this._cartRepo,
     this._notificationsRepo,
     this._analytics,
+    this._vouchersRepo,
   ) : super(const HomeState(
             status: HomeStatus.initial,
             restaurants: [],
@@ -45,6 +47,7 @@ class HomeCubit extends Cubit<HomeState> {
   final OrdersRepo _ordersRepo;
   final CartRepo _cartRepo;
   final NotificationsRepo _notificationsRepo;
+  final VouchersRepo _vouchersRepo;
   final Analytics _analytics;
   StreamSubscription? _currentOrderSubscription;
   StreamSubscription? _restaurantsSubscription;
@@ -65,6 +68,8 @@ class HomeCubit extends Cubit<HomeState> {
       emit(state.copyWith(status: HomeStatus.addressError));
       return;
     }
+    await _vouchersRepo.getVouchersConfig();
+    await _vouchersRepo.listenForVouchers();
 
     try {
       await _restaurantsSubscription?.cancel();
