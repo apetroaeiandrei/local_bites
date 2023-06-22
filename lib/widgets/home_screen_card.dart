@@ -40,19 +40,26 @@ class HomeScreenCard extends StatelessWidget {
                 child: Text(
                   restaurant.name,
                   style: Theme.of(context).textTheme.displayLarge!.copyWith(
-                        foreground: Paint()
-                          ..style = PaintingStyle.stroke
-                          ..strokeWidth = 4
-                          ..color = Theme.of(context).colorScheme.primary,
-                      ),
-                ),
-              ),
-              Center(
-                child: Text(
-                  restaurant.name,
-                  style: Theme.of(context).textTheme.displayLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    shadows: [
+                      Shadow(
+                          // bottomLeft
+                          offset: const Offset(-1.5, -1.5),
+                          color: Theme.of(context).colorScheme.primary),
+                      Shadow(
+                          // bottomRight
+                          offset: const Offset(1.5, -1.5),
+                          color: Theme.of(context).colorScheme.primary),
+                      Shadow(
+                          // topRight
+                          offset: const Offset(1.5, 1.5),
+                          color: Theme.of(context).colorScheme.primary),
+                      Shadow(
+                          // topLeft
+                          offset: const Offset(-1.5, 1.5),
+                          color: Theme.of(context).colorScheme.primary),
+                    ],
+                  ),
                 ),
               ),
               Visibility(
