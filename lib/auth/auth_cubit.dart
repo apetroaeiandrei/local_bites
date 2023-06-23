@@ -9,8 +9,9 @@ import 'auth_status.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit(this._authRepo,)
-      : super(const AuthState(
+  AuthCubit(
+    this._authRepo,
+  ) : super(const AuthState(
             status: AuthStatus.initial, phoneConfirmError: null));
   final AuthRepo _authRepo;
 
@@ -18,7 +19,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(state.copyWith(status: AuthStatus.loadingEmail));
     final success = await _authRepo.login(email, password);
     emit(state.copyWith(
-      status: success ? AuthStatus.authorized : AuthStatus.unauthorized,
+      status:
+          success ? AuthStatus.authorized : AuthStatus.invalidEmailCredentials,
     ));
   }
 
@@ -86,5 +88,14 @@ class AuthCubit extends Cubit<AuthState> {
 
   void retry() {
     emit(state.copyWith(status: AuthStatus.initial));
+  }
+
+  Future<void> resetPassword(String text) async {
+    final success = await _authRepo.sendPasswordReset(text);
+    emit(state.copyWith(
+      status: success
+          ? AuthStatus.passwordResetRequested
+          : AuthStatus.passwordResetError,
+    ));
   }
 }

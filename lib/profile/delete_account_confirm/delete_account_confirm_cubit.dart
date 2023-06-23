@@ -56,7 +56,8 @@ class DeleteAccountConfirmCubit extends Cubit<DeleteAccountConfirmState> {
     final success =
         await _authRepo.login(email, password, reauthenticate: true);
     emit(state.copyWith(
-      status: success ? AuthStatus.authorized : AuthStatus.unauthorized,
+      status:
+          success ? AuthStatus.authorized : AuthStatus.invalidEmailCredentials,
     ));
   }
 
@@ -125,5 +126,14 @@ class DeleteAccountConfirmCubit extends Cubit<DeleteAccountConfirmState> {
 
   void retry() {
     emit(state.copyWith(status: AuthStatus.initial));
+  }
+
+  Future<void> resetPassword(String text) async {
+    final success = await _authRepo.sendPasswordReset(text);
+    emit(state.copyWith(
+      status: success
+          ? AuthStatus.passwordResetRequested
+          : AuthStatus.passwordResetError,
+    ));
   }
 }

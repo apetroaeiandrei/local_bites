@@ -14,6 +14,7 @@ import '../../theme/dimens.dart';
 import '../../theme/wl_colors.dart';
 import '../../utils.dart';
 import '../../widgets/button_loading.dart';
+import '../../widgets/dialog_utils.dart';
 
 class DeleteAccountConfirmScreen extends StatefulWidget {
   const DeleteAccountConfirmScreen({super.key});
@@ -62,12 +63,20 @@ class _DeleteAccountConfirmScreenState
           case AuthStatus.phoneCodeSent:
             _codeFocus.requestFocus();
             break;
-          case AuthStatus.unauthorized:
+          case AuthStatus.invalidEmailCredentials:
             _analytics.logEvent(name: Metric.eventAuthError);
             break;
           case AuthStatus.phoneCodeInvalid:
             _codeController.clear();
             _codeFocus.requestFocus();
+            break;
+          case AuthStatus.passwordResetRequested:
+            _showInfoDialog(S.of(context).auth_reset_password_success_title,
+                S.of(context).auth_reset_password_success_message);
+            break;
+          case AuthStatus.passwordResetError:
+            _showInfoDialog(S.of(context).auth_reset_password_error_title,
+                S.of(context).auth_reset_password_error_message);
             break;
           default:
             break;
@@ -90,7 +99,9 @@ class _DeleteAccountConfirmScreenState
       case AuthStatus.loadingEmail:
       case AuthStatus.phoneCodeRequested:
       case AuthStatus.authorized:
-      case AuthStatus.unauthorized:
+      case AuthStatus.invalidEmailCredentials:
+      case AuthStatus.passwordResetRequested:
+      case AuthStatus.passwordResetError:
         return _getLoginContent(state);
       case AuthStatus.phoneCodeSent:
       case AuthStatus.phoneCodeConfirmed:
@@ -100,6 +111,22 @@ class _DeleteAccountConfirmScreenState
       case AuthStatus.phoneAuthError:
         return _getErrorContent(state);
     }
+  }
+
+  _showInfoDialog(String title, String content) {
+    showPlatformDialog(
+        context: context,
+        title: title,
+        content: content,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              context.read<DeleteAccountConfirmCubit>().retry();
+            },
+            child: Text(S.of(context).generic_ok),
+          ),
+        ]);
   }
 
   Widget _getPhoneConfirmContent(DeleteAccountConfirmState state) {
@@ -248,7 +275,7 @@ class _DeleteAccountConfirmScreenState
         },
         child: state.status == AuthStatus.phoneCodeRequested
             ? const ButtonLoading()
-            : Text(S.of(context).auth_login),
+            : Text(S.of(context).delete_account_confirm_button),
       ),
     ];
   }
@@ -287,17 +314,33 @@ class _DeleteAccountConfirmScreenState
         ),
       ),
       SizedBox(
-        height: state.status == AuthStatus.unauthorized ? 4 : 0,
+        height: state.status == AuthStatus.invalidEmailCredentials ? 4 : 0,
       ),
       Center(
         child: Visibility(
-          visible: state.status == AuthStatus.unauthorized,
-          child: Text(
-            S.of(context).auth_error,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(color: WlColors.error),
+          visible: state.status == AuthStatus.invalidEmailCredentials,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                S.of(context).auth_error,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(color: WlColors.error),
+              ),
+              const SizedBox(
+                height: 4,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  context
+                      .read<DeleteAccountConfirmCubit>()
+                      .resetPassword(_emailController.text);
+                },
+                child: Text(S.of(context).auth_reset_password_button),
+              ),
+            ],
           ),
         ),
       ),
@@ -317,7 +360,7 @@ class _DeleteAccountConfirmScreenState
         },
         child: state.status == AuthStatus.loadingEmail
             ? const ButtonLoading()
-            : Text(S.of(context).auth_login),
+            : Text(S.of(context).delete_account_confirm_button),
       ),
       const SizedBox(
         height: 12,

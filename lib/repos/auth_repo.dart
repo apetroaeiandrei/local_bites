@@ -240,4 +240,14 @@ class AuthRepo {
   List<UserInfo>? getUserProviders() {
     return _auth.currentUser?.providerData;
   }
+
+  Future<bool> sendPasswordReset(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return true;
+    } catch (error) {
+      FirebaseCrashlytics.instance.recordError(error, StackTrace.current);
+      return false;
+    }
+  }
 }

@@ -11,6 +11,11 @@
   "auth_forgot_password": "Ai uitat parola?",
   "auth_reset_password": "Resetare parolă",
   "auth_error": "E-mail sau parolă incorecte",
+  "auth_reset_password_button": "Resetează parola",
+  "auth_reset_password_success_title": "Solicitare trimisă",
+  "auth_reset_password_success_message": "Vă rugăm să urmați pașii din email pentru resetarea parolei. Reveniți la aplicație după ce ați terminat.",
+  "auth_reset_password_error_title": "Ceva nu a mers bine",
+  "auth_reset_password_error_message": "Verifică adresa de e-mail cu care te-ai înregistrat și încearcă din nou.",
 
   "register_title": "Înregistrare",
   "register_subtitle": "Completează formularul de mai jos pentru a te înregistra.",
@@ -257,5 +262,6 @@
   "cart_summary_voucher_value": "- {value} RON",
 
   "delete_account_confirm_title" : "Confirmă ștergerea contului",
-  "delete_account_confirm_headline" : "Confirmă identitatea pentru a șterge contul."
+  "delete_account_confirm_headline" : "Confirmă identitatea pentru a șterge contul.",
+  "delete_account_confirm_button" : "Confirmă"
 }

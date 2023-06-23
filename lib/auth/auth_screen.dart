@@ -63,12 +63,20 @@ class _AuthScreenState extends State<AuthScreen> {
           case AuthStatus.phoneCodeSent:
             _codeFocus.requestFocus();
             break;
-          case AuthStatus.unauthorized:
+          case AuthStatus.invalidEmailCredentials:
             _analytics.logEvent(name: Metric.eventAuthError);
             break;
           case AuthStatus.phoneCodeInvalid:
             _codeController.clear();
             _codeFocus.requestFocus();
+            break;
+          case AuthStatus.passwordResetRequested:
+            _showInfoDialog(S.of(context).auth_reset_password_success_title,
+                S.of(context).auth_reset_password_success_message);
+            break;
+          case AuthStatus.passwordResetError:
+            _showInfoDialog(S.of(context).auth_reset_password_error_title,
+                S.of(context).auth_reset_password_error_message);
             break;
           default:
             break;
@@ -91,7 +99,9 @@ class _AuthScreenState extends State<AuthScreen> {
       case AuthStatus.loadingEmail:
       case AuthStatus.phoneCodeRequested:
       case AuthStatus.authorized:
-      case AuthStatus.unauthorized:
+      case AuthStatus.invalidEmailCredentials:
+      case AuthStatus.passwordResetRequested:
+      case AuthStatus.passwordResetError:
         return _getLoginContent(state);
       case AuthStatus.phoneCodeSent:
       case AuthStatus.phoneCodeConfirmed:
@@ -304,17 +314,33 @@ class _AuthScreenState extends State<AuthScreen> {
         ),
       ),
       SizedBox(
-        height: state.status == AuthStatus.unauthorized ? 4 : 0,
+        height: state.status == AuthStatus.invalidEmailCredentials ? 4 : 0,
       ),
       Center(
         child: Visibility(
-          visible: state.status == AuthStatus.unauthorized,
-          child: Text(
-            S.of(context).auth_error,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(color: WlColors.error),
+          visible: state.status == AuthStatus.invalidEmailCredentials,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                S.of(context).auth_error,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(color: WlColors.error),
+              ),
+              const SizedBox(
+                height: 4,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  context
+                      .read<AuthCubit>()
+                      .resetPassword(_emailController.text);
+                },
+                child: Text(S.of(context).auth_reset_password_button),
+              ),
+            ],
           ),
         ),
       ),
@@ -422,6 +448,22 @@ class _AuthScreenState extends State<AuthScreen> {
   bool _buttonsActive(AuthState state) {
     return state.status != AuthStatus.loadingEmail &&
         state.status != AuthStatus.phoneCodeRequested;
+  }
+
+  _showInfoDialog(String title, String content) {
+    showPlatformDialog(
+        context: context,
+        title: title,
+        content: content,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              context.read<AuthCubit>().retry();
+            },
+            child: Text(S.of(context).generic_ok),
+          ),
+        ]);
   }
 
   _checkAppVersion() async {

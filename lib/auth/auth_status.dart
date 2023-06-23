@@ -1,8 +1,10 @@
 enum AuthStatus {
   initial,
   authorized,
-  unauthorized,
+  invalidEmailCredentials,
   loadingEmail,
+  passwordResetRequested,
+  passwordResetError,
   phoneCodeRequested,
   phoneCodeSent,
   phoneCodeConfirmed,
