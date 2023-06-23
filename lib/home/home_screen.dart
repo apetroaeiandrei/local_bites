@@ -7,6 +7,7 @@ import 'package:local/feedback/feedback_cubit.dart';
 import 'package:local/home/home_address_tile.dart';
 import 'package:local/home/home_cubit.dart';
 import 'package:local/repos/user_repo.dart';
+import 'package:local/utils.dart';
 import 'package:local/widgets/dialog_utils.dart';
 import 'package:local/widgets/order_mini.dart';
 import 'package:models/delivery_address.dart';
@@ -30,7 +31,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-  static const _orderMiniHeight = 210.0;
   final _analytics = Analytics();
 
   @override
@@ -56,6 +56,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeState>(
       listener: (BuildContext context, HomeState state) {
+        if (state.showCurrentOrder) {
+          _showCurrentOrdersBottomSheet(context, state);
+        }
         switch (state.status) {
           case HomeStatus.profileIncomplete:
             _showProfileScreen(context);
@@ -122,61 +125,54 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               ),
             ],
           ),
-          bottomSheet: !state.showCurrentOrder
-              ? null
-              : Container(
-                  width: double.infinity,
-                  height: _orderMiniHeight,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.25),
-                        spreadRadius: 0,
-                        blurRadius: 4,
-                        offset:
-                            const Offset(0, -4), // changes position of shadow
+          bottomSheet: state.showCurrentOrder && !_bottomSheetShown
+              ? GestureDetector(
+                  onTapDown: (_) {
+                    _showCurrentOrdersBottomSheet(context, state);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
                       ),
-                    ],
-                  ),
-                  child: CarouselSlider.builder(
-                    options: CarouselOptions(
-                      height: _orderMiniHeight,
-                      viewportFraction: 1,
-                      enableInfiniteScroll: state.currentOrders.length > 1,
-                      autoPlay: state.currentOrders.length > 1,
-                      autoPlayInterval: const Duration(seconds: 8),
-                      initialPage: 0,
-                    ),
-                    itemCount: state.currentOrders.length,
-                    itemBuilder:
-                        (BuildContext context, int index, int realIndex) {
-                      return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          _analytics.setCurrentScreen(
-                              screenName: Routes.orderDetails);
-                          Navigator.of(context)
-                              .pushNamed(Routes.orderDetails,
-                                  arguments: state.currentOrders[index])
-                              .then((value) => _analytics.setCurrentScreen(
-                                  screenName: Routes.home));
-                        },
-                        child: OrderMini(
-                          order: state.currentOrders[index],
-                          onFeedback: (liked) {
-                            if (liked != null) {
-                              _showFeedbackScreen(context, state, index, liked);
-                            }
-                            context
-                                .read<HomeCubit>()
-                                .rateOrder(state.currentOrders[index], liked);
-                          },
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          spreadRadius: 1,
+                          blurRadius: 4,
+                          offset: const Offset(0, -2),
                         ),
-                      );
-                    },
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Center(
+                          child: Container(
+                            height: 4,
+                            width: 30,
+                            margin: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(2),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.4),
+                            ),
+                          ),
+                        ),
+                        _getMiniBottomSheetContent(state),
+                        SizedBox(
+                          height: MediaQuery.of(context).padding.bottom,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                )
+              : null,
           body: state.restaurants.isEmpty
               ? _getEmptyRestaurants(state)
               : ListView.builder(
@@ -200,25 +196,31 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
   }
 
-  void _showFeedbackScreen(
-      BuildContext context, HomeState state, int index, bool liked) {
+  void _showFeedbackScreen(HomeState state, int index, bool liked) {
     _analytics.setCurrentScreen(screenName: Routes.feedback);
     Navigator.of(context)
         .push(
-          MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (context) => BlocProvider<FeedbackCubit>(
-              create: (context) => FeedbackCubit(
-                RepositoryProvider.of<Analytics>(context),
-                RepositoryProvider.of<UserRepo>(context),
-                state.currentOrders[index],
-                liked,
-              ),
-              child: const FeedbackScreen(),
-            ),
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => BlocProvider<FeedbackCubit>(
+          create: (context) => FeedbackCubit(
+            RepositoryProvider.of<Analytics>(context),
+            RepositoryProvider.of<UserRepo>(context),
+            state.currentOrders[index],
+            liked,
           ),
-        )
-        .then((value) => _analytics.setCurrentScreen(screenName: Routes.home));
+          child: const FeedbackScreen(),
+        ),
+      ),
+    )
+        .then((value) {
+      _analytics.setCurrentScreen(screenName: Routes.home);
+      //hide bottom sheet
+      Navigator.of(context).pop();
+      setState(() {
+        _bottomSheetShown = false;
+      });
+    });
   }
 
   Widget _getEmptyRestaurants(HomeState state) {
@@ -498,5 +500,106 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         title: S.of(context).home_location_permission_dialog_title,
         content: S.of(context).home_location_permission_dialog_content,
         actions: actions);
+  }
+
+  bool _bottomSheetShown = false;
+  ValueNotifier<HomeState>? _bottomSheetStateNotifier;
+
+  _showCurrentOrdersBottomSheet(BuildContext parentContext, HomeState state) {
+    if (_bottomSheetShown) {
+      _bottomSheetStateNotifier!.value = state;
+      return;
+    }
+    _bottomSheetStateNotifier = ValueNotifier(state);
+    _bottomSheetShown = true;
+    Future.delayed(const Duration(milliseconds: 200), () {
+      showModalBottomSheet(
+        useRootNavigator: true,
+        context: parentContext,
+        showDragHandle: true,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        builder: (context) => ValueListenableBuilder<HomeState>(
+            valueListenable: _bottomSheetStateNotifier!,
+            builder: (context, state, child) {
+              return CarouselSlider.builder(
+                options: CarouselOptions(
+                  viewportFraction: 1,
+                  enableInfiniteScroll: state.currentOrders.length > 1,
+                  autoPlay: state.currentOrders.length > 1,
+                  autoPlayInterval: const Duration(seconds: 8),
+                  initialPage: 0,
+                ),
+                itemCount: state.currentOrders.length,
+                itemBuilder: (BuildContext context, int index, int realIndex) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      _analytics.setCurrentScreen(
+                          screenName: Routes.orderDetails);
+                      Navigator.of(parentContext)
+                          .pushNamed(Routes.orderDetails,
+                              arguments: state.currentOrders[index])
+                          .then((value) => _analytics.setCurrentScreen(
+                              screenName: Routes.home));
+                    },
+                    child: OrderMini(
+                      order: state.currentOrders[index],
+                      onFeedback: (liked) {
+                        if (liked != null) {
+                          _showFeedbackScreen(state, index, liked);
+                        }
+                        parentContext
+                            .read<HomeCubit>()
+                            .rateOrder(state.currentOrders[index], liked);
+                      },
+                    ),
+                  );
+                },
+              );
+            }),
+        enableDrag: true,
+        shape: _getBottomSheetShape(),
+      ).then((value) {
+        setState(() {
+          _bottomSheetShown = false;
+        });
+      });
+    });
+  }
+
+  ShapeBorder _getBottomSheetShape() {
+    return const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(16),
+        topRight: Radius.circular(16),
+      ),
+    );
+  }
+
+  _getMiniBottomSheetContent(HomeState state) {
+    return StatefulBuilder(builder: (context, setState) {
+      return CarouselSlider.builder(
+        options: CarouselOptions(
+          height: 30,
+          viewportFraction: 1,
+          enableInfiniteScroll: state.currentOrders.length > 1,
+          autoPlay: state.currentOrders.length > 1,
+          autoPlayInterval: const Duration(seconds: 8),
+          initialPage: 0,
+        ),
+        itemCount: state.currentOrders.length,
+        itemBuilder: (BuildContext context, int index, int realIndex) {
+          final restaurantName = state.currentOrders[index].restaurantName;
+          final orderStatus =
+              state.currentOrders[index].status.toUserString(context);
+          return Text(
+            "$restaurantName - $orderStatus",
+            style: Theme.of(context).textTheme.headlineSmall,
+          );
+        },
+      );
+    });
   }
 }

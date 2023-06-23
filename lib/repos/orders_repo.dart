@@ -85,8 +85,7 @@ class OrdersRepo {
     return orders;
   }
 
-  void rateOrder(UserOrder currentOrder, bool? liked) {
-    //todo implement rating. For now used only for settlement
+  void markOrderSettled(UserOrder currentOrder) {
     _firestore
         .collection(_collectionUsers)
         .doc(FirebaseAuth.instance.currentUser?.uid)

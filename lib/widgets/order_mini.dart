@@ -14,115 +14,107 @@ class OrderMini extends StatelessWidget {
       : super(key: key);
   final UserOrder order;
   final Function(bool? liked) onFeedback;
+  static const _orderMiniHeight = 210.0;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topRight,
-          child: CloseButton(
-            onPressed: () {
-              onFeedback(null);
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
+      height: _orderMiniHeight,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Lottie.asset(
-                    order.status.toLottieResource(),
-                    width: 100,
-                    height: 100,
-                  ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          order.restaurantName,
-                          style: Theme.of(context).textTheme.displaySmall,
-                        ),
-                        const SizedBox(
-                          height: 2,
-                        ),
-                        Visibility(
-                          visible: _isEtaVisible(),
-                          child: Text(
-                            _getEta(context, order),
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                          order.status.toUserString(context),
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall
-                              ?.copyWith(
-                                color: order.status.toTextColor(),
-                              ),
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Visibility(
-                          visible: order.status == OrderStatus.cancelled &&
-                              order.paymentType == PaymentType.app,
-                          child: Text(S.of(context).order_mini_refund_info),
-                        ),
-                        Text(
-                          S.of(context).price_currency_ron(
-                              order.total.toStringAsFixed(2)),
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              Lottie.asset(
+                order.status.toLottieResource(),
+                width: 100,
+                height: 100,
               ),
-              Visibility(
-                visible: order.status == OrderStatus.completed ||
-                    order.status == OrderStatus.cancelled,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              const SizedBox(
+                width: 12,
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        onFeedback(false);
-                      },
-                      icon: const Icon(
-                        Icons.thumb_down_alt_outlined,
-                        color: WlColors.error,
+                    Text(
+                      order.restaurantName,
+                      style: Theme.of(context).textTheme.displaySmall,
+                    ),
+                    const SizedBox(
+                      height: 2,
+                    ),
+                    Visibility(
+                      visible: _isEtaVisible(),
+                      child: Text(
+                        _getEta(context, order),
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        onFeedback(true);
-                      },
-                      icon: const Icon(
-                        Icons.thumb_up_alt_outlined,
-                        color: WlColors.notificationGreen,
-                      ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      order.status.toUserString(context),
+                      style: Theme.of(context)
+                          .textTheme
+                          .displaySmall
+                          ?.copyWith(
+                            color: order.status.toTextColor(),
+                          ),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Visibility(
+                      visible: order.status == OrderStatus.cancelled &&
+                          order.paymentType == PaymentType.app,
+                      child: Text(S.of(context).order_mini_refund_info),
+                    ),
+                    Text(
+                      S.of(context).price_currency_ron(
+                          order.total.toStringAsFixed(2)),
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
                 ),
               ),
             ],
           ),
-        ),
-      ],
+          Visibility(
+            visible: order.status == OrderStatus.completed ||
+                order.status == OrderStatus.cancelled,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    onFeedback(false);
+                  },
+                  icon: const Icon(
+                    Icons.thumb_down_alt_outlined,
+                    color: WlColors.error,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    onFeedback(true);
+                  },
+                  icon: const Icon(
+                    Icons.thumb_up_alt_outlined,
+                    color: WlColors.notificationGreen,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

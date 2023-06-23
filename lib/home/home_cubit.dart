@@ -90,7 +90,8 @@ class HomeCubit extends Cubit<HomeState> {
     await _currentOrderSubscription?.cancel();
     _currentOrderSubscription = _ordersRepo.currentOrderStream.listen((orders) {
       if (orders.isNotEmpty) {
-        _analytics.logEventWithParams(name: Metric.eventOrderUpdate, parameters: {
+        _analytics
+            .logEventWithParams(name: Metric.eventOrderUpdate, parameters: {
           Metric.propertyOrderStatus: orders.map((e) => e.status).join(','),
           Metric.propertyOrderCount: orders.length,
         });
@@ -144,7 +145,7 @@ class HomeCubit extends Cubit<HomeState> {
       Metric.propertyOrderLiked:
           liked?.toString() ?? Metric.propertyValueOrderClosed,
     });
-    _ordersRepo.rateOrder(currentOrder, liked);
+    _ordersRepo.markOrderSettled(currentOrder);
   }
 
   bool hasCartOnDifferentRestaurant(String restaurantId) {
