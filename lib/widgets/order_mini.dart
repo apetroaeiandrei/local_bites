@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:local/theme/wl_colors.dart';
 import 'package:local/utils.dart';
+import 'package:local/widgets/button_loading.dart';
 import 'package:lottie/lottie.dart';
 import 'package:models/order_status.dart';
 import 'package:models/payment_type.dart';
@@ -9,12 +10,32 @@ import 'package:models/user_order.dart';
 
 import '../generated/l10n.dart';
 
-class OrderMini extends StatelessWidget {
-  const OrderMini({Key? key, required this.order, required this.onFeedback})
+class OrderMini extends StatefulWidget {
+  const OrderMini(
+      {Key? key,
+      required this.order,
+      required this.onFeedback,
+      required this.onOrderCancelled})
       : super(key: key);
   final UserOrder order;
   final Function(bool? liked) onFeedback;
+  final Function(UserOrder order) onOrderCancelled;
+
+  @override
+  State<OrderMini> createState() => _OrderMiniState();
+}
+
+class _OrderMiniState extends State<OrderMini> {
+  static const _cancelOrderButtonTimeSeconds = 60;
   static const _orderMiniHeight = 210.0;
+
+  @override
+  void initState() {
+    _checkCancelButtonAfterOneMin();
+    super.initState();
+  }
+
+  bool _cancellingOrder = false;
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +44,13 @@ class OrderMini extends StatelessWidget {
       height: _orderMiniHeight,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Lottie.asset(
-                order.status.toLottieResource(),
+                widget.order.status.toLottieResource(),
                 width: 100,
                 height: 100,
               ),
@@ -43,7 +64,7 @@ class OrderMini extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      order.restaurantName,
+                      widget.order.restaurantName,
                       style: Theme.of(context).textTheme.displaySmall,
                     ),
                     const SizedBox(
@@ -52,7 +73,7 @@ class OrderMini extends StatelessWidget {
                     Visibility(
                       visible: _isEtaVisible(),
                       child: Text(
-                        _getEta(context, order),
+                        _getEta(context, widget.order),
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                     ),
@@ -60,25 +81,22 @@ class OrderMini extends StatelessWidget {
                       height: 8,
                     ),
                     Text(
-                      order.status.toUserString(context),
-                      style: Theme.of(context)
-                          .textTheme
-                          .displaySmall
-                          ?.copyWith(
-                            color: order.status.toTextColor(),
+                      widget.order.status.toUserString(context),
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                            color: widget.order.status.toTextColor(),
                           ),
                     ),
                     const SizedBox(
                       height: 4,
                     ),
                     Visibility(
-                      visible: order.status == OrderStatus.cancelled &&
-                          order.paymentType == PaymentType.app,
+                      visible: widget.order.status == OrderStatus.cancelled &&
+                          widget.order.paymentType == PaymentType.app,
                       child: Text(S.of(context).order_mini_refund_info),
                     ),
                     Text(
                       S.of(context).price_currency_ron(
-                          order.total.toStringAsFixed(2)),
+                          widget.order.total.toStringAsFixed(2)),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],
@@ -87,14 +105,14 @@ class OrderMini extends StatelessWidget {
             ],
           ),
           Visibility(
-            visible: order.status == OrderStatus.completed ||
-                order.status == OrderStatus.cancelled,
+            visible: widget.order.status == OrderStatus.completed ||
+                widget.order.status == OrderStatus.cancelled,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
                   onPressed: () {
-                    onFeedback(false);
+                    widget.onFeedback(false);
                   },
                   icon: const Icon(
                     Icons.thumb_down_alt_outlined,
@@ -103,7 +121,7 @@ class OrderMini extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {
-                    onFeedback(true);
+                    widget.onFeedback(true);
                   },
                   icon: const Icon(
                     Icons.thumb_up_alt_outlined,
@@ -113,15 +131,52 @@ class OrderMini extends StatelessWidget {
               ],
             ),
           ),
+          Visibility(
+            visible: _cancelButtonVisible(),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (!_cancellingOrder) {
+                    widget.onOrderCancelled(widget.order);
+                  }
+                  setState(() {
+                    _cancellingOrder = true;
+                  });
+                },
+                child: _cancellingOrder
+                    ? const ButtonLoading()
+                    : Text(S.of(context).order_mini_cancel_button),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
+  void _checkCancelButtonAfterOneMin() {
+    if (_cancelButtonVisible()) {
+      return;
+    }
+    Future.delayed(const Duration(seconds: _cancelOrderButtonTimeSeconds + 10),
+        () {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  bool _cancelButtonVisible() {
+    return widget.order.status == OrderStatus.pending &&
+        DateTime.now().difference(widget.order.date).inSeconds >
+            _cancelOrderButtonTimeSeconds;
+  }
+
   bool _isEtaVisible() {
-    return order.eta != 0 &&
-        !(order.status == OrderStatus.completed ||
-            order.status == OrderStatus.cancelled);
+    return widget.order.eta != 0 &&
+        !(widget.order.status == OrderStatus.completed ||
+            widget.order.status == OrderStatus.cancelled);
   }
 
   String _getEta(BuildContext context, UserOrder order) {

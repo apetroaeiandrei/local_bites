@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:models/order.dart' as o;
+import 'package:models/order_status.dart';
 import 'package:models/user_order.dart';
 
 class OrdersRepo {
@@ -13,6 +14,7 @@ class OrdersRepo {
   static const _collectionRestaurants = "restaurants";
   StreamSubscription? _orderSubscription;
   final List<UserOrder> _currentOrders = [];
+
   OrdersRepo._privateConstructor();
 
   static OrdersRepo? _instance;
@@ -114,10 +116,20 @@ class OrdersRepo {
           .ref()
           .child("receipts")
           .child(folder)
-          .child(receiptName).getDownloadURL();
+          .child(receiptName)
+          .getDownloadURL();
       return url;
     } on FirebaseException {
       return null;
     }
+  }
+
+  void cancelOrder(UserOrder order) {
+    _firestore
+        .collection(_collectionRestaurants)
+        .doc(order.restaurantId)
+        .collection(_collectionOrders)
+        .doc(order.orderId)
+        .update({"status": OrderStatus.cancelled.toSimpleString()});
   }
 }

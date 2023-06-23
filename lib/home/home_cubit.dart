@@ -284,4 +284,8 @@ class HomeCubit extends Cubit<HomeState> {
     await _userRepo.setDeliveryAddress(deliveryAddress);
     init();
   }
+
+  void cancelOrder(UserOrder order) {
+    _ordersRepo.cancelOrder(order);
+  }
 }

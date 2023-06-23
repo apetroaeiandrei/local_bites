@@ -512,7 +512,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
     _bottomSheetStateNotifier = ValueNotifier(state);
     _bottomSheetShown = true;
-    Future.delayed(const Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 400), () {
       showModalBottomSheet(
         useRootNavigator: true,
         context: parentContext,
@@ -553,6 +553,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         parentContext
                             .read<HomeCubit>()
                             .rateOrder(state.currentOrders[index], liked);
+                      },
+                      onOrderCancelled: (order) {
+                        parentContext.read<HomeCubit>().cancelOrder(order);
                       },
                     ),
                   );
