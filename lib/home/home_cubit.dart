@@ -51,6 +51,7 @@ class HomeCubit extends Cubit<HomeState> {
   final Analytics _analytics;
   StreamSubscription? _currentOrderSubscription;
   StreamSubscription? _restaurantsSubscription;
+  StreamSubscription? _locationSubscription;
   DateTime? _lastLocationCheckTime;
 
   init() async {
@@ -125,7 +126,7 @@ class HomeCubit extends Cubit<HomeState> {
     ));
     _checkNotificationsPermissions();
 
-    _userRepo.addressesStream.listen((address) {
+    _locationSubscription = _userRepo.addressesStream.listen((address) {
       _checkDistance();
     });
     _userRepo.listenForAddresses();
@@ -135,6 +136,7 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> close() {
     _currentOrderSubscription?.cancel();
     _restaurantsSubscription?.cancel();
+    _locationSubscription?.cancel();
     _ordersRepo.stopListeningForOrderInProgress();
     _restaurantsRepo.cancelAllRestaurantsSubscriptions();
     return super.close();
