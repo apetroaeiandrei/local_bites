@@ -109,6 +109,8 @@
   "food_details_add_button" : "Adaugă {quantity} pentru {price} RON",
   "food_details_min_max": "Minim {min}, maxim {max}",
   "food_details_invalid_options": "Vă rugăm să selectați opțiunile obligatorii",
+  "food_details_show_nutrition": "Vezi informații nutriționale",
+  "food_details_hide_nutrition": "Ascunde informații nutriționale",
   "food_unavailable": "Indisponibil momentan",
 
   "cart_status" : "Comandă {count} pentru {total} RON",
@@ -264,5 +266,17 @@
 
   "delete_account_confirm_title" : "Confirmă ștergerea contului",
   "delete_account_confirm_headline" : "Confirmă identitatea pentru a șterge contul.",
-  "delete_account_confirm_button" : "Confirmă"
+  "delete_account_confirm_button" : "Confirmă",
+
+  "nutrition_allergens" : "Alergeni: {text}",
+  "nutrition_portion_size" : "Porție: {grams}g",
+  "nutrition_energy" : "Calorii: {kcal}kcal",
+  "nutrition_protein" : "Proteine: {grams}g",
+  "nutrition_carbohydrates" : "Glucide: {grams}g",
+  "nutrition_fat" : "Grăsimi: {grams}g",
+  "nutrition_fiber" : "Fibre: {grams}g",
+  "nutrition_salt" : "Sare: {grams}g",
+  "nutrition_sugar" : "Zaharuri: {grams}g",
+  "nutrition_saturated_fat": "Grăsimi saturate: {grams}g"
+
 }

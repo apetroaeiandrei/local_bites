@@ -22,6 +22,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   final _scrollController = ScrollController();
   final _analytics = Analytics();
   bool _titleVisible = false;
+  bool _nutritionVisible = false;
 
   @override
   void initState() {
@@ -166,6 +167,43 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                           ),
                         ),
                       ),
+                      Center(
+                        child: Visibility(
+                          visible: state.food.hasNutritionalInfo,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: WlColors.secondary,
+                                textStyle: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium
+                                    ?.copyWith(color: Colors.white),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(40),
+                                ),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _nutritionVisible = !_nutritionVisible;
+                                });
+                              },
+                              child: Text(
+                                _nutritionVisible
+                                    ? S.of(context).food_details_hide_nutrition
+                                    : S.of(context).food_details_show_nutrition,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      AnimatedSize(
+                        duration: Duration(milliseconds: 200),
+                        child: SizedBox(
+                          height: _nutritionVisible ? null : 0,
+                          child: _getNutrition(state),
+                        ),
+                      ),
                       ..._getOptions(state),
                       _getQuantityControls(state),
                       const SizedBox(
@@ -304,5 +342,122 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
         _headerKey.currentContext!.findRenderObject() as RenderBox;
     final position = renderBox.localToGlobal(Offset.zero);
     return position.dy - MediaQuery.of(context).padding.top - kToolbarHeight;
+  }
+
+  Widget _getNutrition(FoodDetailsState state) {
+    final food = state.food;
+    var allergens = food.allergens ?? "-";
+    if (allergens.isEmpty) {
+      allergens = "-";
+    }
+    final style = Theme.of(context).textTheme.bodySmall;
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: Dimens.defaultPadding, vertical: 4),
+        child: Text(
+          S.of(context).nutrition_portion_size(
+              food.portionSize?.toStringAsFixed(0) ?? "-"),
+          style: style,
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: Dimens.defaultPadding, vertical: 4),
+        child: Text(
+          S.of(context).nutrition_allergens(allergens),
+          style: style,
+        ),
+      ),
+      SizedBox(
+        height: 8,
+      ),
+      Row(
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Dimens.defaultPadding, vertical: 4),
+                  child: Text(
+                    S.of(context).nutrition_energy(food.calories ?? "-"),
+                    style: style,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Dimens.defaultPadding, vertical: 4),
+                  child: Text(
+                    S.of(context).nutrition_carbohydrates(food.carbs ?? "-"),
+                    style: style,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Dimens.defaultPadding, vertical: 4),
+                  child: Text(
+                    S.of(context).nutrition_fat(food.fat ?? "-"),
+                    style: style,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Dimens.defaultPadding, vertical: 4),
+                  child: Text(
+                    S
+                        .of(context)
+                        .nutrition_saturated_fat(food.saturatedFat ?? "-"),
+                    style: style,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Dimens.defaultPadding, vertical: 4),
+                  child: Text(
+                    S.of(context).nutrition_protein(food.protein ?? "-"),
+                    style: style,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Dimens.defaultPadding, vertical: 4),
+                  child: Text(
+                    S.of(context).nutrition_sugar(food.sugar ?? "-"),
+                    style: style,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Dimens.defaultPadding, vertical: 4),
+                  child: Text(
+                    S.of(context).nutrition_fiber(food.fiber ?? "-"),
+                    style: style,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Dimens.defaultPadding, vertical: 4),
+                  child: Text(
+                    S.of(context).nutrition_salt(food.salt ?? "-"),
+                    style: style,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ]);
   }
 }
