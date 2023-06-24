@@ -103,6 +103,7 @@
   "generic_error_content": "Ceva nu a mers bine. Vă rugăm să încercați din nou.",
   "generic_save": "Salvează",
   "generic_ok": "OK",
+  "generic_back": "Înapoi",
 
   "food_option_price_extra" : " + {price} RON",
   "food_details_add_button" : "Adaugă {quantity} pentru {price} RON",
