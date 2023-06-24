@@ -164,7 +164,9 @@ class RestaurantsRepo {
   }
 
   getFoodsByCategory(String id) {
-    return _foods.where((element) => element.categoryId == id).toList();
+    final foods = _foods.where((element) => element.categoryId == id).toList();
+    foods.sort((a, b) => a.name.compareTo(b.name));
+    return foods;
   }
 
   void clearSelectedRestaurantData() async {
