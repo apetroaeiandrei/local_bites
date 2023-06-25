@@ -45,7 +45,7 @@ abstract class Metric {
   static const String eventAuthLogin = "auth_login";
   static const String eventAuthPhoneLogin = "auth_login_phone";
   static const String eventAuthRegister = "auth_register";
-  static const String eventAuthLoginAnonymously = "auth_login_anonymously";
+  static const String eventAuthPasswordReset = "auth_password_reset";
   static const String eventRegisterError = "register_error";
   static const String eventRegisterSuccess = "register_success";
 
@@ -96,5 +96,16 @@ abstract class Metric {
   static const String propertyFeedbackAspects = "aspects";
 
   static const String eventPaymentCancelled = "payment_cancelled";
+
+  static const String propertyError = "error";
+  static const String eventPhoneConfirmRequest = "phone_confirm_request";
+  static const String eventPhoneConfirmSuccess = "phone_confirm_success";
+  static const String eventPhoneConfirmError = "phone_confirm_error";
+  static const String eventPhoneConfirmRetry = "phone_confirm_retry";
+
+  static const String eventPhoneLoginRequest = "phone_login_request";
+  static const String eventPhoneLoginSuccess = "phone_login_success";
+  static const String eventPhoneLoginError = "phone_login_error";
+  static const String eventPhoneLoginRetry = "phone_login_retry";
 
 }

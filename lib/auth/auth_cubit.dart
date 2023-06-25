@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:local/analytics/analytics.dart';
 import 'package:local/repos/phone_confirm_error.dart';
-import 'package:local/repos/user_repo.dart';
 
+import '../analytics/metric.dart';
 import '../repos/auth_repo.dart';
 import 'auth_status.dart';
 
@@ -11,9 +12,11 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit(
     this._authRepo,
+    this._analytics,
   ) : super(const AuthState(
             status: AuthStatus.initial, phoneConfirmError: null));
   final AuthRepo _authRepo;
+  final Analytics _analytics;
 
   login(String email, String password) async {
     emit(state.copyWith(status: AuthStatus.loadingEmail));
@@ -37,6 +40,7 @@ class AuthCubit extends Cubit<AuthState> {
         _handlePhoneAuthError(error);
       },
       onSuccess: () {
+        _analytics.logEvent(name: Metric.eventPhoneLoginSuccess);
         emit(state.copyWith(status: AuthStatus.phoneCodeConfirmed));
       },
     );
@@ -50,22 +54,24 @@ class AuthCubit extends Cubit<AuthState> {
       linkCredential: false,
       phoneNumber: phoneNumber,
       onCodeSent: (verificationId) {
-        print('on code sent - verificationId: $verificationId');
         emit(state.copyWith(status: AuthStatus.phoneCodeSent));
         this.verificationId = verificationId;
       },
       onError: (error, {verificationId}) {
         _handlePhoneAuthError(error, verificationId: verificationId);
-        print('on error');
       },
       onSuccess: () {
-        print('on success');
+        _analytics.logEvent(name: Metric.eventPhoneLoginSuccess);
         emit(state.copyWith(status: AuthStatus.phoneCodeConfirmed));
       },
     );
   }
 
   _handlePhoneAuthError(PhoneConfirmError error, {String? verificationId}) {
+    _analytics
+        .logEventWithParams(name: Metric.eventPhoneLoginError, parameters: {
+      Metric.propertyError: error.toString(),
+    });
     if (error == PhoneConfirmError.timeout &&
         state.status == AuthStatus.phoneAuthError) {
       return;
@@ -87,10 +93,12 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void retry() {
+    _analytics.logEvent(name: Metric.eventPhoneLoginRetry);
     emit(state.copyWith(status: AuthStatus.initial));
   }
 
   Future<void> resetPassword(String text) async {
+    _analytics.logEvent(name: Metric.eventAuthPasswordReset);
     final success = await _authRepo.sendPasswordReset(text);
     emit(state.copyWith(
       status: success

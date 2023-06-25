@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:local/analytics/analytics.dart';
+import 'package:local/analytics/metric.dart';
 import 'package:local/repos/phone_confirm_error.dart';
 import 'package:local/repos/auth_repo.dart';
 import 'package:local/repos/user_repo.dart';
@@ -9,7 +11,7 @@ import '../../utils.dart';
 part 'phone_confirm_state.dart';
 
 class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
-  PhoneConfirmCubit(this._authRepo, this._userRepo)
+  PhoneConfirmCubit(this._authRepo, this._userRepo, this._analytics)
       : super(const PhoneConfirmState(
           status: PhoneConfirmStatus.initial,
           phoneNumber: '',
@@ -19,6 +21,7 @@ class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
 
   final AuthRepo _authRepo;
   final UserRepo _userRepo;
+  final Analytics _analytics;
   String verificationId = '';
 
   _init() async {
@@ -35,6 +38,7 @@ class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
   }
 
   void retry() {
+    _analytics.logEvent(name: Metric.eventPhoneConfirmRetry);
     emit(state.copyWith(status: PhoneConfirmStatus.initial));
   }
 
@@ -47,6 +51,7 @@ class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
         _handleError(error, verificationId: verificationId);
       },
       onSuccess: () {
+        _analytics.logEvent(name: Metric.eventPhoneConfirmSuccess);
         emit(state.copyWith(status: PhoneConfirmStatus.codeConfirmed));
       },
     );
@@ -54,6 +59,7 @@ class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
 
   void requestCode(String phoneNumber) {
     emit(state.copyWith(status: PhoneConfirmStatus.codeRequested));
+    _analytics.logEvent(name: Metric.eventPhoneConfirmRequest);
     _authRepo.loginWithPhone(
       linkCredential: true,
       phoneNumber: phoneNumber,
@@ -67,12 +73,17 @@ class PhoneConfirmCubit extends Cubit<PhoneConfirmState> {
         _handleError(error, verificationId: verificationId);
       },
       onSuccess: () {
+        _analytics.logEvent(name: Metric.eventPhoneConfirmSuccess);
         emit(state.copyWith(status: PhoneConfirmStatus.codeConfirmed));
       },
     );
   }
 
   _handleError(PhoneConfirmError error, {String? verificationId}) {
+    _analytics
+        .logEventWithParams(name: Metric.eventPhoneConfirmError, parameters: {
+      Metric.propertyError: error.toString(),
+    });
     if (error == PhoneConfirmError.timeout &&
         state.status == PhoneConfirmStatus.failure) {
       return;
