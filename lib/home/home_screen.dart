@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_settings/app_settings.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ import 'package:local/widgets/dialog_utils.dart';
 import 'package:local/widgets/order_mini.dart';
 import 'package:models/delivery_address.dart';
 import 'package:models/restaurant_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../analytics/analytics.dart';
 import '../analytics/metric.dart';
@@ -31,12 +34,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+  static const prefKeyVouchersSeen = 'vouchersSeen';
   final _analytics = Analytics();
+  Color _vouchersIconColor = Colors.black;
+  Timer? _vouchersFlashTimer;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _flashVouchersIcon();
     _checkAppVersion();
   }
 
@@ -49,7 +56,24 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _vouchersFlashTimer?.cancel();
     super.dispose();
+  }
+
+  _flashVouchersIcon() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey(prefKeyVouchersSeen)) {
+      _vouchersFlashTimer =
+          Timer.periodic(const Duration(milliseconds: 400), (timer) {
+        setState(() {
+          if (_vouchersIconColor == Colors.black) {
+            _vouchersIconColor = Theme.of(context).colorScheme.primary;
+          } else {
+            _vouchersIconColor = Colors.black;
+          }
+        });
+      });
+    }
   }
 
   @override
@@ -99,12 +123,22 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             title: Text(S.of(context).home_welcome),
             actions: [
               IconButton(
-                icon: const Icon(Icons.local_offer_outlined),
-                onPressed: () {
+                icon: Icon(
+                  Icons.local_offer_outlined,
+                  color: _vouchersIconColor,
+                ),
+                onPressed: () async {
                   _analytics.setCurrentScreen(screenName: Routes.vouchers);
                   Navigator.of(context).pushNamed(Routes.vouchers).then(
                       (value) =>
                           _analytics.setCurrentScreen(screenName: Routes.home));
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  prefs.setBool(prefKeyVouchersSeen, true);
+                  _vouchersFlashTimer?.cancel();
+                  setState(() {
+                    _vouchersIconColor = Colors.black;
+                  });
                 },
               ),
               IconButton(
