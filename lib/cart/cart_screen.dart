@@ -12,6 +12,7 @@ import 'package:local/routes.dart';
 import 'package:local/theme/wl_colors.dart';
 import 'package:local/widgets/button_loading.dart';
 import 'package:local/widgets/dialog_utils.dart';
+import 'package:models/vouchers/voucher.dart';
 
 import '../analytics/analytics.dart';
 import '../generated/l10n.dart';
@@ -603,10 +604,6 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _getVouchersWidget(CartState state) {
-    if (state.vouchers.isEmpty || !state.acceptsVouchers) {
-      return const SizedBox.shrink();
-    }
-
     return GestureDetector(
       onTap: () {
         _showVoucherSelectionBottomSheet(state);
@@ -661,13 +658,47 @@ class _CartScreenState extends State<CartScreen> {
       builder: (context) {
         return VoucherSelectionBottomSheet(
           vouchers: state.vouchers,
-          cartTotalProducts: state.cartTotalProducts,
           onVoucherSelected: (voucher) {
             Navigator.of(context).pop();
-            parentContext.read<CartCubit>().onVoucherSelected(voucher);
+            if (_voucherCanBeAdded(voucher, state)) {
+              parentContext.read<CartCubit>().onVoucherSelected(voucher);
+            }
           },
         );
       },
+    );
+  }
+
+  bool _voucherCanBeAdded(Voucher voucher, CartState state) {
+    if (!state.acceptsVouchers) {
+      _showVoucherErrorDialog(S
+          .of(context)
+          .cart_voucher_error_dialog_message_restaurant_not_accept);
+      return false;
+    }
+    if (state.cartTotalProducts < voucher.minPurchase) {
+      _showVoucherErrorDialog(
+        S.of(context).cart_voucher_error_dialog_message_min_purchase(
+            voucher.minPurchase),
+      );
+      return false;
+    }
+    return true;
+  }
+
+  _showVoucherErrorDialog(String message) {
+    showPlatformDialog(
+      context: context,
+      title: S.of(context).cart_voucher_error_dialog_title,
+      content: message,
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(S.of(context).generic_ok),
+        ),
+      ],
     );
   }
 

@@ -5,14 +5,10 @@ import '../vouchers/cards/voucher_card.dart';
 
 class VoucherSelectionBottomSheet extends StatelessWidget {
   const VoucherSelectionBottomSheet(
-      {super.key,
-      required this.vouchers,
-      required this.onVoucherSelected,
-      required this.cartTotalProducts});
+      {super.key, required this.vouchers, required this.onVoucherSelected});
 
   final List<Voucher> vouchers;
   final Function(Voucher) onVoucherSelected;
-  final double cartTotalProducts;
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +21,6 @@ class VoucherSelectionBottomSheet extends StatelessWidget {
         final voucher = vouchers[index];
         return InkWell(
           onTap: () {
-            if (voucher.minPurchase > cartTotalProducts) {
-              return;
-            }
             onVoucherSelected(voucher);
           },
           child: VoucherCard(

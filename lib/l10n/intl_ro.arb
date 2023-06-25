@@ -260,9 +260,13 @@
   "cart_vouchers_headline_used": "Felicitări!",
   "cart_vouchers_info": "Ai vouchere disponibile. Folosește unul acum!",
   "cart_vouchers_info_used": "Am aplicat o reducere de {value} RON la comanda ta.",
+  "cart_voucher_error_dialog_title": "Nu a putut fi aplicat!",
+  "cart_voucher_error_dialog_message_min_purchase": "Acest voucher poate fi folosit doar pentru comenzi de minim {minPurchase} RON.",
+  "cart_voucher_error_dialog_message_restaurant_not_accept": "Ne pare rău, acest restaurant nu acceptă vouchere.",
   "cart_voucher_removed_min_value": "Voucherul fost eliminat! Valoarea produselor a scăzut sub minimul acestuia.",
   "cart_summary_vouchers": "Reducere Voucher",
   "cart_summary_voucher_value": "- {value} RON",
+
 
   "delete_account_confirm_title" : "Confirmă ștergerea contului",
   "delete_account_confirm_headline" : "Confirmă identitatea pentru a șterge contul.",
