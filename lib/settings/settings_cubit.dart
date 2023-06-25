@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:local/repos/auth_repo.dart';
+import 'package:local/repos/cart_repo.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:local/repos/vouchers_repo.dart';
 
@@ -11,7 +12,7 @@ import '../repos/notifications_repo.dart';
 part 'settings_state.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
-  SettingsCubit(this._authRepo, this._userRepo, this._notificationsRepo, this._vouchersRepo)
+  SettingsCubit(this._authRepo, this._userRepo, this._notificationsRepo, this._vouchersRepo, this._cartRepo)
       : super(
             SettingsState(name: _userRepo.user?.name ?? "", isLoggedIn: true)) {
     _init();
@@ -21,6 +22,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   final UserRepo _userRepo;
   final NotificationsRepo _notificationsRepo;
   final VouchersRepo _vouchersRepo;
+  final CartRepo _cartRepo;
   StreamSubscription? _userSubscription;
 
   _init() {
@@ -30,6 +32,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   Future<void> logout() async {
+    _cartRepo.clearCart();
     await _userRepo.onLogout();
     await _notificationsRepo.onLogout();
     await _vouchersRepo.onLogout();
