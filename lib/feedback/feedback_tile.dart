@@ -17,11 +17,8 @@ class FeedbackTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      customBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
       child: Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
