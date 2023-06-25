@@ -20,6 +20,8 @@ class CartRepo {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String? _selectedRestaurantId;
 
+  String _mentions = "";
+
   CartRepo._privateConstructor(this._userRepo);
 
   factory CartRepo(UserRepo userRepo) {
@@ -28,6 +30,8 @@ class CartRepo {
   }
 
   String? get selectedRestaurantId => _selectedRestaurantId;
+
+  String get mentions => _mentions;
 
   set selectedRestaurantId(String? restaurantId) {
     if (_selectedRestaurantId == null ||
@@ -163,6 +167,7 @@ class CartRepo {
   }
 
   void clearCart() {
+    _mentions = "";
     _foodOrders.clear();
   }
 
@@ -249,5 +254,9 @@ class CartRepo {
         FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
       }
     });
+  }
+
+  void updateMentions(String mentions) {
+    _mentions = mentions;
   }
 }

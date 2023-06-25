@@ -31,7 +31,7 @@ class CartCubit extends Cubit<CartState> {
           cartCount: _cartRepo.cartCount,
           cartTotalProducts: _cartRepo.cartTotalProducts,
           cartItems: _cartRepo.cartItems,
-          mentions: "",
+          mentions: _cartRepo.mentions,
           restaurantName: _restaurantsRepo.selectedRestaurant.name,
           deliveryStreet: _userRepo.address?.street ?? "",
           deliveryPropertyDetails: _userRepo.address?.propertyDetails ?? "",
@@ -173,6 +173,7 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void updateMentions(String? mentions) {
+    _cartRepo.updateMentions(mentions ?? "");
     emit(state.copyWith(mentions: mentions));
   }
 
