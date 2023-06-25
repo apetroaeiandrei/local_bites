@@ -207,27 +207,46 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   ),
                 )
               : null,
-          body: state.restaurants.isEmpty
-              ? _getEmptyRestaurants(state)
-              : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: state.restaurants.length +
-                      (state.showNotificationsPrompt ? 2 : 1),
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return _getAddressZone(context, state);
-                    } else if (index == 1) {
-                      return _getRestaurantCard(context, state, index - 1);
-                    } else if (index == 2 && state.showNotificationsPrompt) {
-                      return _getNotificationsBanner();
-                    } else {
-                      return _getRestaurantCard(context, state,
-                          index - (state.showNotificationsPrompt ? 2 : 1));
-                    }
-                  }),
+          body: _getContent(state),
         );
       },
     );
+  }
+
+  Widget _getContent(HomeState state) {
+    if (state.status == HomeStatus.loading) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(),
+            Padding(
+              padding: const EdgeInsets.only(top: 50, bottom: 100),
+              child: Text(S.of(context).home_loading_restaurants,
+                  style: Theme.of(context).textTheme.headlineMedium),
+            ),
+          ],
+        ),
+      );
+    }
+    return state.restaurants.isEmpty
+        ? _getEmptyRestaurants(state)
+        : ListView.builder(
+            shrinkWrap: true,
+            itemCount: state.restaurants.length +
+                (state.showNotificationsPrompt ? 2 : 1),
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return _getAddressZone(context, state);
+              } else if (index == 1) {
+                return _getRestaurantCard(context, state, index - 1);
+              } else if (index == 2 && state.showNotificationsPrompt) {
+                return _getNotificationsBanner();
+              } else {
+                return _getRestaurantCard(context, state,
+                    index - (state.showNotificationsPrompt ? 2 : 1));
+              }
+            });
   }
 
   void _showFeedbackScreen(HomeState state, int index, bool liked) {

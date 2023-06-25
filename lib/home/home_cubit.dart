@@ -33,7 +33,7 @@ class HomeCubit extends Cubit<HomeState> {
     this._analytics,
     this._vouchersRepo,
   ) : super(const HomeState(
-            status: HomeStatus.initial,
+            status: HomeStatus.loading,
             restaurants: [],
             currentOrders: [],
             showCurrentOrder: false,
