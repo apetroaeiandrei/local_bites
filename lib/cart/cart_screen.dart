@@ -604,9 +604,26 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _getVouchersWidget(CartState state) {
+    String vouchersHeadline = "";
+    String vouchersInfo = "";
+    if (state.vouchers.isEmpty) {
+      vouchersHeadline = S.of(context).cart_vouchers_empty_headline;
+      vouchersInfo = S.of(context).cart_vouchers_empty_info;
+    } else {
+      vouchersHeadline = state.selectedVoucher == null
+          ? S.of(context).cart_vouchers_headline
+          : S.of(context).cart_vouchers_headline_used;
+      vouchersInfo = state.selectedVoucher == null
+          ? S.of(context).cart_vouchers_info
+          : S.of(context).cart_vouchers_info_used(state.selectedVoucher!.value);
+    }
     return GestureDetector(
       onTap: () {
-        _showVoucherSelectionBottomSheet(state);
+        if (state.vouchers.isEmpty) {
+          Navigator.of(context).pushNamed(Routes.vouchers);
+        } else {
+          _showVoucherSelectionBottomSheet(state);
+        }
       },
       child: Row(
         children: [
@@ -614,17 +631,10 @@ class _CartScreenState extends State<CartScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                    state.selectedVoucher == null
-                        ? S.of(context).cart_vouchers_headline
-                        : S.of(context).cart_vouchers_headline_used,
+                Text(vouchersHeadline,
                     style: Theme.of(context).textTheme.displaySmall),
                 const SizedBox(height: 4),
-                Text(
-                    state.selectedVoucher == null
-                        ? S.of(context).cart_vouchers_info
-                        : S.of(context).cart_vouchers_info_used(
-                            state.selectedVoucher!.value),
+                Text(vouchersInfo,
                     style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),

@@ -81,6 +81,7 @@ class CartCubit extends Cubit<CartState> {
   late final String _orderId;
 
   StreamSubscription? _currentOrderSubscription;
+  StreamSubscription? _vouchersSubscription;
   int length = -1;
 
   final _delayedDuration = const Duration(milliseconds: 10);
@@ -108,7 +109,7 @@ class CartCubit extends Cubit<CartState> {
   }
 
   _listenForVouchers() {
-    _vouchersRepo.vouchersStream.listen((vouchers) {
+    _vouchersSubscription = _vouchersRepo.vouchersStream.listen((vouchers) {
       emit(state.copyWith(vouchers: vouchers));
     });
   }
@@ -197,7 +198,8 @@ class CartCubit extends Cubit<CartState> {
     if (!_restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
         state.deliverySelected) {
       final voucherValue = state.selectedVoucher?.value ?? 0;
-      amountToMinOrder = state.minOrder - (_cartRepo.cartTotalProducts - voucherValue);
+      amountToMinOrder =
+          state.minOrder - (_cartRepo.cartTotalProducts - voucherValue);
       amountToMinOrder = double.parse(amountToMinOrder.toStringAsFixed(2));
       amountToMinOrder = amountToMinOrder > 0 ? amountToMinOrder : 0;
       deliveryFee = amountToMinOrder <= 0 ? 0 : _deliveryZone.deliveryFee;
@@ -384,6 +386,7 @@ class CartCubit extends Cubit<CartState> {
   @override
   Future<void> close() {
     _currentOrderSubscription?.cancel();
+    _vouchersSubscription?.cancel();
     return super.close();
   }
 
