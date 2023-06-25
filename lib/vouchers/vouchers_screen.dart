@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:local/analytics/analytics.dart';
+import 'package:local/analytics/metric.dart';
 import 'package:local/vouchers/cards/voucher_card.dart';
 import 'package:local/vouchers/vouchers_cubit.dart';
 import 'package:lottie/lottie.dart';
@@ -17,6 +19,7 @@ class VouchersScreen extends StatefulWidget {
 }
 
 class _VouchersScreenState extends State<VouchersScreen> {
+  final _analytics = Analytics();
   final List<Widget> _listViewWidgets = [];
 
   @override
@@ -175,6 +178,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
                 const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () {
+                    _analytics.logEvent(name: Metric.eventVouchersInviteFriend);
                     Share.share(
                         S.of(context).vouchers_referral_share_message(
                             state.referralCode),

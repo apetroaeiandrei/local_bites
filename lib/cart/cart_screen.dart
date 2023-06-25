@@ -619,9 +619,12 @@ class _CartScreenState extends State<CartScreen> {
     }
     return GestureDetector(
       onTap: () {
+        _analytics.logEvent(name: Metric.eventCartSeeVouchers);
         if (state.vouchers.isEmpty) {
+          _analytics.logEvent(name: Metric.eventCartVoucherNavigate);
           Navigator.of(context).pushNamed(Routes.vouchers);
         } else {
+          _analytics.logEvent(name: Metric.eventCartVoucherBottomSheet);
           _showVoucherSelectionBottomSheet(state);
         }
       },
@@ -671,6 +674,7 @@ class _CartScreenState extends State<CartScreen> {
           onVoucherSelected: (voucher) {
             Navigator.of(context).pop();
             if (_voucherCanBeAdded(voucher, state)) {
+              _analytics.logEvent(name: Metric.eventCartAddVoucher);
               parentContext.read<CartCubit>().onVoucherSelected(voucher);
             }
           },
@@ -681,12 +685,14 @@ class _CartScreenState extends State<CartScreen> {
 
   bool _voucherCanBeAdded(Voucher voucher, CartState state) {
     if (!state.acceptsVouchers) {
+      _analytics.logEvent(name: Metric.eventCartVoucherErrorNotAccepted);
       _showVoucherErrorDialog(S
           .of(context)
           .cart_voucher_error_dialog_message_restaurant_not_accept);
       return false;
     }
     if (state.cartTotalProducts < voucher.minPurchase) {
+      _analytics.logEvent(name: Metric.eventCartVoucherErrorMinPurchase);
       _showVoucherErrorDialog(
         S.of(context).cart_voucher_error_dialog_message_min_purchase(
             voucher.minPurchase),
@@ -781,6 +787,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   _showVoucherRemovedSnackBar() {
+    _analytics.logEvent(name: Metric.eventCartVoucherRemoved);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(S.of(context).cart_voucher_removed_min_value),

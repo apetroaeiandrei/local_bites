@@ -37,7 +37,8 @@ abstract class Metric {
   static const String eventCartMinOrder = "cart_min_order";
   static const String eventCartPlaceOrder = "cart_place_order";
   static const String eventCartRestaurantClosed = "cart_restaurant_closed";
-  static const String eventCartCouriersUnavailable = "cart_couriers_unavailable";
+  static const String eventCartCouriersUnavailable =
+      "cart_couriers_unavailable";
   static const String propertyOrderPrice = "price";
   static const String propertyOrderPaymentType = "payment_type";
 
@@ -52,44 +53,62 @@ abstract class Metric {
   static const String eventOrderDetailsCall = "order_details_call";
   static const String propertyOrderCallStatus = "order_status";
 
-  static const String eventProfileNavigateBackBlock = "profile_navigate_back_block";
+  static const String eventProfileNavigateBackBlock =
+      "profile_navigate_back_block";
   static const String eventProfileSaveSuccess = "profile_save_success";
   static const String eventProfileSaveError = "profile_save_error";
   static const String eventProfileDelete = "profile_delete";
   static const String eventProfileDeleteError = "profile_delete_error";
 
-  static const String eventAddressPermissionExistedGranted = "address_permission_existed_granted";
-  static const String eventAddressPermissionRequesting = "address_permission_requesting";
-  static const String eventAddressPermissionGranted = "address_permission_granted";
-  static const String eventAddressPermissionDenied = "address_permission_denied";
+  static const String eventAddressPermissionExistedGranted =
+      "address_permission_existed_granted";
+  static const String eventAddressPermissionRequesting =
+      "address_permission_requesting";
+  static const String eventAddressPermissionGranted =
+      "address_permission_granted";
+  static const String eventAddressPermissionDenied =
+      "address_permission_denied";
   static const String eventAddressPropertyError = "address_property_error";
-  static const String eventAddressStreetSuccess = "address_property_street_success";
+  static const String eventAddressStreetSuccess =
+      "address_property_street_success";
   static const String eventAddressStreetError = "address_street_error";
-  static const String eventAddressStreetErrorBackend = "address_street_error_backend";
+  static const String eventAddressStreetErrorBackend =
+      "address_street_error_backend";
   static const String eventAddressSaveError = "address_save_error";
   static const String eventAddressSaveSuccess = "address_save_success";
-  static const String eventAddressLocationError = "address_current_location_error";
+  static const String eventAddressLocationError =
+      "address_current_location_error";
 
   static const String eventRestaurantInfoCall = "restaurant_info_call";
 
   static const String eventFCMPermissionGranted = "fcm_permission_granted";
   static const String eventFCMPermissionDenied = "fcm_permission_denied";
-  static const String eventNotificationsDialogCancel = "fcm_settings_dialog_cancel";
-  static const String eventNotificationsDialogConfirm = "fcm_settings_dialog_confirm";
+  static const String eventNotificationsDialogCancel =
+      "fcm_settings_dialog_cancel";
+  static const String eventNotificationsDialogConfirm =
+      "fcm_settings_dialog_confirm";
 
   static const String eventAppVersionDialog = "app_version_dialog";
 
-  static const String eventKnownAddressDialogCancel = "known_address_dialog_cancel";
-  static const String eventKnownAddressDialogConfirm = "known_address_dialog_confirm";
-  static const String eventUnknownAddressDialogCancel = "unknown_address_dialog_cancel";
-  static const String eventUnknownAddressDialogConfirm = "unknown_address_dialog_confirm";
-  static const String eventHomeLocationPermissionDialogCancel = "home_location_permission_dialog_cancel";
-  static const String eventHomeLocationPermissionDialogConfirm = "home_location_permission_dialog_confirm";
-  static const String eventHomeAddressLocationError = "home_address_location_error";
+  static const String eventKnownAddressDialogCancel =
+      "known_address_dialog_cancel";
+  static const String eventKnownAddressDialogConfirm =
+      "known_address_dialog_confirm";
+  static const String eventUnknownAddressDialogCancel =
+      "unknown_address_dialog_cancel";
+  static const String eventUnknownAddressDialogConfirm =
+      "unknown_address_dialog_confirm";
+  static const String eventHomeLocationPermissionDialogCancel =
+      "home_location_permission_dialog_cancel";
+  static const String eventHomeLocationPermissionDialogConfirm =
+      "home_location_permission_dialog_confirm";
+  static const String eventHomeAddressLocationError =
+      "home_address_location_error";
 
   static const String eventAddressSelected = "address_selected";
   static const String eventAddressDeleted = "address_deleted";
-  static const String eventAddressTryDeleteSelected = "address_try_delete_selected";
+  static const String eventAddressTryDeleteSelected =
+      "address_try_delete_selected";
 
   static const String eventFeedbackSend = "feedback_send";
   static const String propertyFeedbackIsPositive = "is_positive";
@@ -108,4 +127,14 @@ abstract class Metric {
   static const String eventPhoneLoginError = "phone_login_error";
   static const String eventPhoneLoginRetry = "phone_login_retry";
 
+  static const String eventVouchersInviteFriend = "voucher_invite_friend";
+  static const String eventCartSeeVouchers = "cart_see_vouchers";
+  static const String eventCartVoucherNavigate = "cart_voucher_navigate";
+  static const String eventCartVoucherBottomSheet = "cart_voucher_bottom_sheet";
+  static const String eventCartAddVoucher = "cart_use_voucher";
+  static const String eventCartVoucherRemoved = "cart_voucher_removed";
+  static const String eventCartVoucherErrorMinPurchase =
+      "cart_voucher_error_min_value";
+  static const String eventCartVoucherErrorNotAccepted =
+      "cart_voucher_error_not_accepted";
 }
