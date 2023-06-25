@@ -168,44 +168,15 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                           ),
                         ),
                       ),
-                      Center(
-                        child: Visibility(
-                          visible: state.food.hasNutritionalInfo,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: WlColors.secondary,
-                                textStyle: Theme.of(context)
-                                    .textTheme
-                                    .labelMedium
-                                    ?.copyWith(color: Colors.white),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                ),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _nutritionVisible = !_nutritionVisible;
-                                });
-                              },
-                              child: Text(
-                                _nutritionVisible
-                                    ? S.of(context).food_details_hide_nutrition
-                                    : S.of(context).food_details_show_nutrition,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      ..._getOptions(state),
+                      if (state.food.hasNutritionalInfo) _getNutritionButton(),
                       AnimatedSize(
-                        duration: Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 200),
                         child: SizedBox(
                           height: _nutritionVisible ? null : 0,
                           child: _getNutrition(state),
                         ),
                       ),
-                      ..._getOptions(state),
                       _getQuantityControls(state),
                       const SizedBox(
                         height: 70,
@@ -370,7 +341,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
           style: style,
         ),
       ),
-      SizedBox(
+      const SizedBox(
         height: 8,
       ),
       Row(
@@ -460,5 +431,42 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
         ],
       ),
     ]);
+  }
+
+  Widget _getNutritionButton() {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        setState(() {
+          _nutritionVisible = !_nutritionVisible;
+        });
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: Dimens.defaultPadding, vertical: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  _nutritionVisible
+                      ? S.of(context).food_details_hide_nutrition
+                      : S.of(context).food_details_show_nutrition,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                Icon(
+                  _nutritionVisible
+                      ? Icons.arrow_circle_up
+                      : Icons.arrow_circle_down,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
