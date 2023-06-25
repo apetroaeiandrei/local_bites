@@ -22,9 +22,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<VouchersCubit, VouchersState>(
-      listener: (context, state) {
-        print("VouchersScreen: listener: $state");
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         _buildWidgetList(state);
         return Scaffold(
@@ -47,35 +45,60 @@ class _VouchersScreenState extends State<VouchersScreen> {
   }
 
   _buildWidgetList(VouchersState state) {
-    print("Building widget list");
+    bool hasTopWigdets = false;
     _listViewWidgets.clear();
     //Verify phone number widget
     if (!state.phoneVerified) {
+      hasTopWigdets = true;
       _listViewWidgets.add(
         _getConfirmPhoneWidget(),
       );
     }
 
     if (state.referralEnabled) {
+      hasTopWigdets = true;
       _listViewWidgets.add(
         _getReferralWidget(state),
       );
     }
 
-    _listViewWidgets.add(
-      Container(
-        height: 1,
-        color: Theme.of(context).colorScheme.primary,
-      ),
-    );
+    if (hasTopWigdets) {
+      //Add separator
+      _listViewWidgets.add(
+        Container(
+          height: 1,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      );
+    }
 
-    state.vouchers
-        .map((e) => _listViewWidgets.add(VoucherCard(
-              voucher: e,
-              isCartVoucher: false,
-            )))
-        .toList();
-    print("Widget list length: ${_listViewWidgets.length}");
+    if (state.vouchers.isNotEmpty) {
+      state.vouchers
+          .map((e) => _listViewWidgets.add(VoucherCard(
+                voucher: e,
+                isCartVoucher: false,
+              )))
+          .toList();
+    } else {
+      _listViewWidgets.add(_getEmptyVouchersWidget());
+    }
+  }
+
+  Widget _getEmptyVouchersWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Image.asset(Img.emptyPlate),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+          child: Text(
+            S.of(context).vouchers_empty_screen,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+        )
+      ],
+    );
   }
 
   Widget _getConfirmPhoneWidget() {

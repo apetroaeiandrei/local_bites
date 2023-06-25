@@ -250,6 +250,7 @@
   "voucher_card_expiration_tomorrow" : "Expiră mâine",
   "voucher_card_expiration_expired" : "Expirat!",
   "voucher_card_min_purchase": "Comandă minimă: {minPurchase} RON",
+  "vouchers_empty_screen" : "Nu ai vouchere momentan",
 
   "voucher_notification_reminder_title" : "Atenție!",
   "voucher_notification_reminder_today_body" : "Ai un voucher care expiră astăzi. Nu-l irosi!",
