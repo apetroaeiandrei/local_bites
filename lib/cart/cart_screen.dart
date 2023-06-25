@@ -101,10 +101,10 @@ class _CartScreenState extends State<CartScreen> {
                       const SizedBox(height: 4),
                       _getMentionsWidget(state),
                       const SizedBox(height: Dimens.defaultPadding),
-                      _getVouchersWidget(state),
-                      const SizedBox(height: Dimens.defaultPadding),
                       _getConfiguration(state),
                       _getPaymentMethods(state),
+                      const SizedBox(height: Dimens.defaultPadding),
+                      _getVouchersWidget(state),
                       Container(
                         height: 1,
                         color: WlColors.onSurface,
