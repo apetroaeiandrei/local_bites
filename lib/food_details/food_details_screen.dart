@@ -63,7 +63,6 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
         }
       },
       builder: (context, state) {
-        print(state.food.imageUrl);
         return Scaffold(
           body: Stack(
             children: [
@@ -120,8 +119,10 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: Dimens.defaultPadding,
-                            top: Dimens.defaultPadding),
+                          left: Dimens.defaultPadding,
+                          top: Dimens.defaultPadding,
+                          right: Dimens.defaultPadding,
+                        ),
                         child: Text(
                           state.food.description,
                           style: Theme.of(context).textTheme.bodyLarge,
