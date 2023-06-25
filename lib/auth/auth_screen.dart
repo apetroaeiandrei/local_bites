@@ -163,16 +163,13 @@ class _AuthScreenState extends State<AuthScreen> {
               child: CircularProgressIndicator(),
             ),
           ),
-          Visibility(
-            visible: state.status == AuthStatus.phoneCodeInvalid,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  context.read<AuthCubit>().retry();
-                },
-                child: Text(S.of(context).generic_back),
-              ),
+          Padding(
+            padding: const EdgeInsets.only(top: 12.0),
+            child: ElevatedButton(
+              onPressed: () {
+                context.read<AuthCubit>().retry();
+              },
+              child: Text(S.of(context).generic_back),
             ),
           ),
         ],

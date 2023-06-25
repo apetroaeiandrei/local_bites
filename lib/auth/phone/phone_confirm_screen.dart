@@ -180,16 +180,13 @@ class _PhoneConfirmScreenState extends State<PhoneConfirmScreen> {
           child: CircularProgressIndicator(),
         ),
       ),
-      Visibility(
-        visible: state.status == PhoneConfirmStatus.phoneCodeInvalid,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 12.0),
-          child: ElevatedButton(
-            onPressed: () {
-              context.read<PhoneConfirmCubit>().retry();
-            },
-            child: Text(S.of(context).generic_back),
-          ),
+      Padding(
+        padding: const EdgeInsets.only(top: 12.0),
+        child: ElevatedButton(
+          onPressed: () {
+            context.read<PhoneConfirmCubit>().retry();
+          },
+          child: Text(S.of(context).generic_back),
         ),
       ),
     ];
