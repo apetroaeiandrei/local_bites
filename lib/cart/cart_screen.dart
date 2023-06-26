@@ -564,6 +564,7 @@ class _CartScreenState extends State<CartScreen> {
 
   _getMentionsWidget(CartState state) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         _analytics.setCurrentScreen(screenName: Routes.mentions);
         Navigator.of(context)
@@ -618,6 +619,7 @@ class _CartScreenState extends State<CartScreen> {
           : S.of(context).cart_vouchers_info_used(state.selectedVoucher!.value);
     }
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         _analytics.logEvent(name: Metric.eventCartSeeVouchers);
         if (state.vouchers.isEmpty) {
