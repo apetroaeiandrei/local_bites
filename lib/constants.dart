@@ -22,4 +22,6 @@ abstract class Constants {
 
   static String directionsApiKey = 'DIRECTIONS_API_KEY';
 
+  static const Duration debounceDurationMillis = Duration(milliseconds: 100);
+
 }
