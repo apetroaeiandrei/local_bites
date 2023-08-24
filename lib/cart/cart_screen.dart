@@ -144,24 +144,24 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   _handleCheckout(CartState state) {
-    if (_lastPressed.difference(DateTime.now()) <
-        Constants.debounceDurationMillis) {
-      _lastPressed = DateTime.now();
-      if (state.status == CartStatus.computingDelivery ||
-          state.status == CartStatus.stripeLoading ||
-          state.status == CartStatus.stripeReady ||
-          state.status == CartStatus.orderPending) {
-        return;
-      }
-      _analytics
-          .logEventWithParams(name: Metric.eventCartPlaceOrder, parameters: {
-        Metric.propertyOrderPrice: _getTotalWithDelivery(state),
-        Metric.propertyRestaurantsName: state.restaurantName,
-        Metric.propertyOrderPaymentType: state.paymentType.toString(),
-      });
-      context.read<CartCubit>().checkout();
+    final diff = DateTime.now().difference(_lastPressed);
+    if (diff < Constants.debounceDurationMillis) {
+      return;
     }
-    return;
+    _lastPressed = DateTime.now();
+    if (state.status == CartStatus.computingDelivery ||
+        state.status == CartStatus.stripeLoading ||
+        state.status == CartStatus.stripeReady ||
+        state.status == CartStatus.orderPending) {
+      return;
+    }
+    _analytics
+        .logEventWithParams(name: Metric.eventCartPlaceOrder, parameters: {
+      Metric.propertyOrderPrice: _getTotalWithDelivery(state),
+      Metric.propertyRestaurantsName: state.restaurantName,
+      Metric.propertyOrderPaymentType: state.paymentType.toString(),
+    });
+    context.read<CartCubit>().checkout();
   }
 
   bool _isCheckoutButtonDisabled(CartState state) {
