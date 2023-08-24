@@ -36,7 +36,7 @@ class _CartScreenState extends State<CartScreen> {
   final _analytics = Analytics();
   final _deliveryKey = GlobalKey();
   final _pickupKey = GlobalKey();
-  bool _isButtonDisabled = false;
+  var _lastPressed = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -143,12 +143,10 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  void _handleCheckout(CartState state) {
-    if (!_isButtonDisabled) {
-      setState(() {
-        _isButtonDisabled = true;
-      });
-
+  _handleCheckout(CartState state) {
+    if (_lastPressed.difference(DateTime.now()) <
+        Constants.debounceDurationMillis) {
+      _lastPressed = DateTime.now();
       if (state.status == CartStatus.computingDelivery ||
           state.status == CartStatus.stripeLoading ||
           state.status == CartStatus.stripeReady ||
@@ -162,13 +160,8 @@ class _CartScreenState extends State<CartScreen> {
         Metric.propertyOrderPaymentType: state.paymentType.toString(),
       });
       context.read<CartCubit>().checkout();
-
-      Timer(Constants.debounceDurationMillis, () {
-        setState(() {
-          _isButtonDisabled = false;
-        });
-      });
     }
+    return;
   }
 
   bool _isCheckoutButtonDisabled(CartState state) {
