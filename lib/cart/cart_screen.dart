@@ -36,7 +36,7 @@ class _CartScreenState extends State<CartScreen> {
   final _analytics = Analytics();
   final _deliveryKey = GlobalKey();
   final _pickupKey = GlobalKey();
-  final _lastPressed = DateTime.now();
+  bool _isButtonDisabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -128,38 +128,12 @@ class _CartScreenState extends State<CartScreen> {
                 left: Dimens.defaultPadding,
                 right: Dimens.defaultPadding,
                 child: ElevatedButton(
-                onPressed:
-                (){
-                  print("Confirmed button pressed");
-                  if(_lastPressed.difference(DateTime.now()) < Constants.debounceDurationMillis){
-                    print("last Pressed");
-                  _isCheckoutButtonDisabled(state)
+                  onPressed: _isCheckoutButtonDisabled(state)
                       ? null
                       : () {
-                    if (state.status == CartStatus.computingDelivery ||
-                        state.status == CartStatus.stripeLoading ||
-                        state.status == CartStatus.stripeReady ||
-                        state.status == CartStatus.orderPending) {
-                      return;
-                    }
-                    _analytics.logEventWithParams(
-                        name: Metric.eventCartPlaceOrder,
-                        parameters: {
-                          Metric.propertyOrderPrice:
-                          _getTotalWithDelivery(state),
-                          Metric.propertyRestaurantsName:
-                          state.restaurantName,
-                          Metric.propertyOrderPaymentType:
-                          state.paymentType.toString(),
-                        });
-                    context.read<CartCubit>().checkout();
-                  };
-                } else {
-                    return print("Exit");
-                  }
-        },
-                child: _getCheckoutButtonWidget(state),
-
+                          _handleCheckout(state);
+                        },
+                  child: _getCheckoutButtonWidget(state),
                 ),
               ),
             ],
@@ -169,10 +143,35 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
+  void _handleCheckout(CartState state) {
+    if (!_isButtonDisabled) {
+      setState(() {
+        _isButtonDisabled = true;
+      });
 
+      if (state.status == CartStatus.computingDelivery ||
+          state.status == CartStatus.stripeLoading ||
+          state.status == CartStatus.stripeReady ||
+          state.status == CartStatus.orderPending) {
+        return;
+      }
+      _analytics
+          .logEventWithParams(name: Metric.eventCartPlaceOrder, parameters: {
+        Metric.propertyOrderPrice: _getTotalWithDelivery(state),
+        Metric.propertyRestaurantsName: state.restaurantName,
+        Metric.propertyOrderPaymentType: state.paymentType.toString(),
+      });
+      context.read<CartCubit>().checkout();
+
+      Timer(Constants.debounceDurationMillis, () {
+        setState(() {
+          _isButtonDisabled = false;
+        });
+      });
+    }
+  }
 
   bool _isCheckoutButtonDisabled(CartState state) {
-    print('CheckoutButton');
     return state.status == CartStatus.minimumOrderError &&
         state.deliverySelected;
   }
