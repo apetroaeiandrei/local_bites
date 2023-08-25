@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +17,7 @@ import 'package:local/widgets/dialog_utils.dart';
 import 'package:models/vouchers/voucher.dart';
 
 import '../analytics/analytics.dart';
+import '../constants.dart';
 import '../generated/l10n.dart';
 import '../img.dart';
 import '../theme/dimens.dart';
@@ -33,6 +36,7 @@ class _CartScreenState extends State<CartScreen> {
   final _analytics = Analytics();
   final _deliveryKey = GlobalKey();
   final _pickupKey = GlobalKey();
+  var _lastPressed = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -127,23 +131,7 @@ class _CartScreenState extends State<CartScreen> {
                   onPressed: _isCheckoutButtonDisabled(state)
                       ? null
                       : () {
-                          if (state.status == CartStatus.computingDelivery ||
-                              state.status == CartStatus.stripeLoading ||
-                              state.status == CartStatus.stripeReady ||
-                              state.status == CartStatus.orderPending) {
-                            return;
-                          }
-                          _analytics.logEventWithParams(
-                              name: Metric.eventCartPlaceOrder,
-                              parameters: {
-                                Metric.propertyOrderPrice:
-                                    _getTotalWithDelivery(state),
-                                Metric.propertyRestaurantsName:
-                                    state.restaurantName,
-                                Metric.propertyOrderPaymentType:
-                                    state.paymentType.toString(),
-                              });
-                          context.read<CartCubit>().checkout();
+                          _handleCheckout(state);
                         },
                   child: _getCheckoutButtonWidget(state),
                 ),
@@ -153,6 +141,27 @@ class _CartScreenState extends State<CartScreen> {
         );
       },
     );
+  }
+
+  _handleCheckout(CartState state) {
+    final diff = DateTime.now().difference(_lastPressed);
+    if (diff < Constants.debounceDurationMillis) {
+      return;
+    }
+    _lastPressed = DateTime.now();
+    if (state.status == CartStatus.computingDelivery ||
+        state.status == CartStatus.stripeLoading ||
+        state.status == CartStatus.stripeReady ||
+        state.status == CartStatus.orderPending) {
+      return;
+    }
+    _analytics
+        .logEventWithParams(name: Metric.eventCartPlaceOrder, parameters: {
+      Metric.propertyOrderPrice: _getTotalWithDelivery(state),
+      Metric.propertyRestaurantsName: state.restaurantName,
+      Metric.propertyOrderPaymentType: state.paymentType.toString(),
+    });
+    context.read<CartCubit>().checkout();
   }
 
   bool _isCheckoutButtonDisabled(CartState state) {
