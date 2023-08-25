@@ -34,6 +34,9 @@ class _AddressScreenState extends State<AddressScreen> {
   Completer<GoogleMapController> _controller = Completer();
   String? _addressError;
   String? _propertyDetailsError;
+  String? _textFieldValue = '';
+  late final CustomTextFieldController _customController =
+      CustomTextFieldController(initialValue: _textFieldValue);
 
   @override
   void initState() {
@@ -139,7 +142,7 @@ class _AddressScreenState extends State<AddressScreen> {
                             errorMaxLines: 2),
                       ),
                       TextField(
-                        controller: _propertyController,
+                        controller: _customController,
                         decoration: InputDecoration(
                             labelText: S.of(context).address_property_label,
                             errorText: _propertyDetailsError,
@@ -227,8 +230,11 @@ class _AddressScreenState extends State<AddressScreen> {
     if (_validate()) {
       context.read<AddressCubit>().onSave(
             street: _addressController.text,
-            propertyDetails: _propertyController.text,
+            propertyDetails: _customController.text,
           );
+      setState(() {
+        _textFieldValue = '';
+      });
     } else {
       setState(() {});
     }
@@ -245,7 +251,7 @@ class _AddressScreenState extends State<AddressScreen> {
     } else {
       _addressError = null;
     }
-    if (_propertyController.text.isEmpty) {
+    if (_customController.text.isEmpty) {
       _propertyDetailsError = S.of(context).address_property_error;
       valid = false;
       _analytics.logEvent(
@@ -310,5 +316,13 @@ class _AddressScreenState extends State<AddressScreen> {
 
   _getCurrentLocation() {
     context.read<AddressCubit>().getCurrentLocation();
+  }
+}
+
+class CustomTextFieldController extends TextEditingController {
+  final String? initialValue;
+
+  CustomTextFieldController({required this.initialValue}) {
+    text = initialValue!;
   }
 }
