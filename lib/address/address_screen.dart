@@ -195,7 +195,6 @@ class _AddressScreenState extends State<AddressScreen> {
         break;
       case AddressStatus.loaded:
         _addressController.text = state.street;
-        _propertyController.text = state.propertyDetails;
         break;
       case AddressStatus.streetSuccess:
         _analytics.logEvent(name: Metric.eventAddressStreetSuccess);
