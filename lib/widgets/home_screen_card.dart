@@ -45,6 +45,7 @@ class HomeScreenCard extends StatelessWidget {
                   Center(
                     child: Text(
                       restaurant.name,
+                      textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.displayLarge!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                         shadows: [
