@@ -19,6 +19,7 @@ abstract class Constants {
   static int deliveryPriceErrorDefault = 10;
   static int deliveryPriceStart = 3;
   static int deliveryPricePerKm = 2;
+  static const String fallbackZipCode = "725100";
 
   static String directionsApiKey = 'DIRECTIONS_API_KEY';
 

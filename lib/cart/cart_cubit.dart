@@ -7,6 +7,7 @@ import 'package:google_directions_api/google_directions_api.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/vouchers_repo.dart';
+import 'package:models/delivery_prices.dart';
 import 'package:models/payment_type.dart';
 import 'package:local/cart/stripe_pay_data.dart';
 import 'package:local/constants.dart';
@@ -21,9 +22,13 @@ import 'package:models/vouchers/voucher.dart';
 part 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
-  CartCubit(this._cartRepo, this._restaurantsRepo, this._userRepo,
-      this._ordersRepo, this._vouchersRepo)
-      : super(CartState(
+  CartCubit(
+    this._cartRepo,
+    this._restaurantsRepo,
+    this._userRepo,
+    this._ordersRepo,
+    this._vouchersRepo,
+  ) : super(CartState(
           status: _restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
                   _restaurantsRepo.selectedRestaurant.couriersAvailable
               ? CartStatus.computingDelivery
@@ -43,6 +48,9 @@ class CartCubit extends Cubit<CartState> {
               _restaurantsRepo.selectedRestaurant.location.longitude,
           restaurantAddress: _restaurantsRepo.selectedRestaurant.address,
           minOrder: _restaurantsRepo.selectedRestaurant.minimumOrder,
+          badWeatherTax: _userRepo.deliveryPrices.deliveryBadWeatherEnabled
+              ? _userRepo.deliveryPrices.deliveryBadWeatherTax
+              : 0,
           deliveryFee: _restaurantsRepo.selectedRestaurant.hasExternalDelivery
               ? Constants.deliveryPriceErrorDefault
               : _restaurantsRepo.selectedRestaurant.deliveryFee,
@@ -156,10 +164,16 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> _placeOrder() async {
     emit(state.copyWith(status: CartStatus.orderPending));
+    num deliveryFee = state.deliverySelected ? state.deliveryFee : 0;
+    if (state.hasExternalDelivery &&
+        state.deliverySelected &&
+        _userRepo.deliveryPrices.deliveryBadWeatherEnabled) {
+      deliveryFee += _userRepo.deliveryPrices.deliveryBadWeatherTax;
+    }
     final success = await _cartRepo.placeOrder(
       mentions: state.mentions,
       isDelivery: state.deliverySelected && state.hasDelivery,
-      deliveryFee: state.deliveryFee,
+      deliveryFee: deliveryFee,
       deliveryEta: state.deliveryEta.toInt(),
       paymentType: state.paymentType,
       isExternalDelivery: state.hasExternalDelivery,
@@ -314,7 +328,7 @@ class CartCubit extends Cubit<CartState> {
           distance += element.distance!.value!;
           etaSeconds += element.duration!.value!;
         }
-        int deliveryFee = _computeDeliveryPrice(distance.toInt());
+        double deliveryFee = _computeDeliveryPrice(distance.toInt());
         int etaMinutes = (etaSeconds / 60).ceil();
         emit(state.copyWith(
           deliveryFee: deliveryFee,
@@ -331,10 +345,11 @@ class CartCubit extends Cubit<CartState> {
     });
   }
 
-  int _computeDeliveryPrice(int routeDistanceMeters) {
+  double _computeDeliveryPrice(int routeDistanceMeters) {
     int adjustedKm = (routeDistanceMeters / 1000).ceil();
-    return Constants.deliveryPriceStart +
-        (adjustedKm * Constants.deliveryPricePerKm);
+    final DeliveryPrices deliveryPrices = _userRepo.deliveryPrices;
+    return deliveryPrices.deliveryStartPrice +
+        (adjustedKm * deliveryPrices.deliveryPricePerKm);
   }
 
   void toggleDeliverySelected() {
@@ -342,11 +357,17 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void _initStripePayment() {
+    num deliveryFee = state.deliverySelected ? state.deliveryFee : 0;
+    if (state.hasExternalDelivery &&
+        state.deliverySelected &&
+        _userRepo.deliveryPrices.deliveryBadWeatherEnabled) {
+      deliveryFee += _userRepo.deliveryPrices.deliveryBadWeatherTax;
+    }
     emit(state.copyWith(status: CartStatus.stripeLoading));
     _cartRepo.initStripeCheckout(
       mentions: state.mentions,
       isDelivery: state.deliverySelected && state.hasDelivery,
-      deliveryFee: state.deliverySelected ? state.deliveryFee : 0,
+      deliveryFee: deliveryFee,
       isExternalDelivery: state.hasExternalDelivery,
       deliveryEta: state.deliveryEta.toInt(),
       paymentType: state.paymentType,
@@ -355,7 +376,7 @@ class CartCubit extends Cubit<CartState> {
       restaurantStripeAccountId:
           _restaurantsRepo.selectedRestaurant.stripeAccountId,
       applicationFee: state.hasExternalDelivery && state.deliverySelected
-          ? state.deliveryFee
+          ? deliveryFee
           : 0,
       voucherDiscount:
           state.selectedVoucher != null ? state.selectedVoucher!.value : 0,

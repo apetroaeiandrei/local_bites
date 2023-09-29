@@ -51,11 +51,19 @@ class _CartScreenState extends State<CartScreen> {
           Navigator.of(context).popUntil((route) => route.isFirst);
         } else if (state.status == CartStatus.restaurantClosed) {
           _analytics.logEvent(name: Metric.eventCartRestaurantClosed);
-          _showRestaurantClosedDialog(context);
+          _showDialog(
+            context,
+            S.of(context).cart_restaurant_closed_title,
+            S.of(context).cart_restaurant_closed_content,
+          );
         } else if (state.status == CartStatus.minimumOrderError) {
           _analytics.logEvent(name: Metric.eventCartMinOrder);
         } else if (state.status == CartStatus.couriersUnavailable) {
-          _showCouriersUnavailableDialog(context);
+          _showDialog(
+            context,
+            S.of(context).cart_couriers_unavailable_title,
+            S.of(context).cart_couriers_unavailable_content,
+          );
           _analytics.logEvent(name: Metric.eventCartCouriersUnavailable);
         } else if (state.status == CartStatus.stripeReady) {
           initPaymentSheet(state, context.read<CartCubit>());
@@ -192,26 +200,15 @@ class _CartScreenState extends State<CartScreen> {
     double total = state.hasDelivery && state.deliverySelected
         ? state.cartTotalProducts + state.deliveryFee
         : state.cartTotalProducts;
+
+    if (_showBadWeather(state)) {
+      total += state.badWeatherTax;
+    }
+
     if (state.selectedVoucher != null) {
       total -= state.selectedVoucher!.value;
     }
     return total;
-  }
-
-  void _showRestaurantClosedDialog(BuildContext context) {
-    showPlatformDialog(
-      context: context,
-      title: S.of(context).cart_restaurant_closed_title,
-      content: S.of(context).cart_restaurant_closed_content,
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text(S.of(context).cart_restaurant_closed_ok),
-        ),
-      ],
-    );
   }
 
   Widget _getConfiguration(CartState state) {
@@ -489,22 +486,6 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  void _showCouriersUnavailableDialog(BuildContext context) {
-    showPlatformDialog(
-      context: context,
-      title: S.of(context).cart_couriers_unavailable_title,
-      content: S.of(context).cart_couriers_unavailable_content,
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text(S.of(context).cart_restaurant_closed_ok),
-        ),
-      ],
-    );
-  }
-
   Future<void> initPaymentSheet(CartState state, CartCubit cubit) async {
     try {
       cubit.onPaymentPending();
@@ -697,36 +678,25 @@ class _CartScreenState extends State<CartScreen> {
   bool _voucherCanBeAdded(Voucher voucher, CartState state) {
     if (!state.acceptsVouchers) {
       _analytics.logEvent(name: Metric.eventCartVoucherErrorNotAccepted);
-      _showVoucherErrorDialog(S
-          .of(context)
-          .cart_voucher_error_dialog_message_restaurant_not_accept);
+      _showDialog(
+          context,
+          S.of(context).cart_voucher_error_dialog_title,
+          S
+              .of(context)
+              .cart_voucher_error_dialog_message_restaurant_not_accept);
       return false;
     }
     if (state.cartTotalProducts < voucher.minPurchase) {
       _analytics.logEvent(name: Metric.eventCartVoucherErrorMinPurchase);
-      _showVoucherErrorDialog(
+      _showDialog(
+        context,
+        S.of(context).cart_voucher_error_dialog_title,
         S.of(context).cart_voucher_error_dialog_message_min_purchase(
             voucher.minPurchase),
       );
       return false;
     }
     return true;
-  }
-
-  _showVoucherErrorDialog(String message) {
-    showPlatformDialog(
-      context: context,
-      title: S.of(context).cart_voucher_error_dialog_title,
-      content: message,
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text(S.of(context).generic_ok),
-        ),
-      ],
-    );
   }
 
   Widget _getSummary(CartState state) {
@@ -760,6 +730,31 @@ class _CartScreenState extends State<CartScreen> {
                       ? S.of(context).cart_delivery_fee_currency(
                           state.deliveryFee.toStringAsFixed(1))
                       : S.of(context).cart_delivery_fee_free,
+                  style: Theme.of(context).textTheme.titleMedium),
+            ],
+          ),
+        ),
+        SizedBox(height: _showBadWeather(state) ? 2 : 0),
+        Visibility(
+          visible: _showBadWeather(state),
+          child: Row(
+            children: [
+              Text(S.of(context).cart_bad_weather_tax,
+                  style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(width: 4),
+              GestureDetector(
+                onTap: () {
+                  _showDialog(
+                      context,
+                      S.of(context).cart_bad_weather_rationale_title,
+                      S.of(context).cart_bad_weather_rationale);
+                },
+                child: const Icon(Icons.info_outline, size: 16),
+              ),
+              const Spacer(),
+              Text(
+                  S.of(context).cart_delivery_fee_currency(
+                      state.badWeatherTax.toStringAsFixed(1)),
                   style: Theme.of(context).textTheme.titleMedium),
             ],
           ),
@@ -804,5 +799,28 @@ class _CartScreenState extends State<CartScreen> {
         content: Text(S.of(context).cart_voucher_removed_min_value),
       ),
     );
+  }
+
+  _showDialog(BuildContext context, String title, String content) {
+    showPlatformDialog(
+      context: context,
+      title: title,
+      content: content,
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(S.of(context).generic_ok),
+        ),
+      ],
+    );
+  }
+
+  bool _showBadWeather(CartState state) {
+    return state.hasDelivery &&
+        state.deliverySelected &&
+        state.hasExternalDelivery &&
+        state.badWeatherTax > 0;
   }
 }

@@ -28,6 +28,7 @@ class CartState extends Equatable {
   final double restaurantLongitude;
   final String restaurantAddress;
   final num minOrder;
+  final num badWeatherTax;
   final num deliveryFee;
   final num deliveryEta;
   final num amountToMinOrder;
@@ -66,6 +67,7 @@ class CartState extends Equatable {
         restaurantLongitude,
         restaurantAddress,
         minOrder,
+        badWeatherTax,
         deliveryFee,
         deliveryEta,
         amountToMinOrder,
@@ -101,6 +103,7 @@ class CartState extends Equatable {
     required this.restaurantLongitude,
     required this.restaurantAddress,
     required this.minOrder,
+    required this.badWeatherTax,
     required this.deliveryFee,
     required this.deliveryEta,
     required this.amountToMinOrder,
@@ -136,6 +139,7 @@ class CartState extends Equatable {
     double? restaurantLongitude,
     String? restaurantAddress,
     num? minOrder,
+    num? badWeatherTax,
     num? deliveryFee,
     num? deliveryEta,
     num? amountToMinOrder,
@@ -172,6 +176,7 @@ class CartState extends Equatable {
       restaurantLongitude: restaurantLongitude ?? this.restaurantLongitude,
       restaurantAddress: restaurantAddress ?? this.restaurantAddress,
       minOrder: minOrder ?? this.minOrder,
+      badWeatherTax: badWeatherTax ?? this.badWeatherTax,
       deliveryFee: deliveryFee ?? this.deliveryFee,
       deliveryEta: deliveryEta ?? this.deliveryEta,
       amountToMinOrder: amountToMinOrder ?? this.amountToMinOrder,

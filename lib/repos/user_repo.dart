@@ -8,10 +8,13 @@ import 'package:local/analytics/analytics.dart';
 import 'package:local/repos/orders_repo.dart';
 import 'package:local/repos/restaurants_repo.dart';
 import 'package:models/delivery_address.dart';
+import 'package:models/delivery_prices.dart';
 import 'package:models/feedback_model.dart';
 import 'package:models/local_user.dart';
 import 'package:collection/collection.dart';
 import 'package:models/user_order.dart';
+
+import '../constants.dart';
 
 class UserRepo {
   static UserRepo? instance;
@@ -19,6 +22,7 @@ class UserRepo {
   static const _collectionAddresses = "addresses";
   static const _collectionRestaurants = "restaurants";
   static const _collectionFeedback = "feedback";
+  static const _collectionCouriers = "couriers";
 
   UserRepo._privateConstructor(
     this._restaurantsRepo,
@@ -30,15 +34,20 @@ class UserRepo {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   LocalUser? _user;
+  String _currentZipCode = "";
+  DeliveryPrices _deliveryPrices = DefaultDeliveryPrices();
   DeliveryAddress? _currentAddress;
   StreamSubscription? _addressesSubscription;
   StreamSubscription? _userSubscription;
+  StreamSubscription? _deliveryPricesSubscription;
   final List<DeliveryAddress> _addresses = [];
 
   final StreamController<List<DeliveryAddress>> _addressesController =
       StreamController<List<DeliveryAddress>>.broadcast();
   final StreamController<LocalUser> _userController =
       StreamController<LocalUser>.broadcast();
+  final StreamController<DeliveryPrices> _deliveryPricesController =
+      StreamController<DeliveryPrices>.broadcast();
 
   factory UserRepo(
     RestaurantsRepo restaurantsRepo,
@@ -55,12 +64,17 @@ class UserRepo {
 
   DeliveryAddress? get address => _currentAddress;
 
+  DeliveryPrices get deliveryPrices => _deliveryPrices;
+
   List<DeliveryAddress> get addresses => _addresses;
 
   Stream<List<DeliveryAddress>> get addressesStream =>
       _addressesController.stream;
 
   Stream<LocalUser> get userStream => _userController.stream;
+
+  Stream<DeliveryPrices> get deliveryPricesStream =>
+      _deliveryPricesController.stream;
 
   getUser() async {
     final userSnap = await _firestore
@@ -93,6 +107,7 @@ class UserRepo {
     _setUserReferralCodeIfNeeded();
     _tryToParseAddress(doc);
     _userController.add(_user!);
+    _listenForDeliveryPrices(_user!.zipCode ?? Constants.fallbackZipCode);
   }
 
   _setUserReferralCodeIfNeeded() async {
@@ -219,6 +234,7 @@ class UserRepo {
   _stopSubscriptions() async {
     await _userSubscription?.cancel();
     await _addressesSubscription?.cancel();
+    await _deliveryPricesSubscription?.cancel();
     _addressesSubscription = null;
     await _restaurantsRepo.cancelAllRestaurantsSubscriptions();
     await _ordersRepo.stopListeningForOrderInProgress();
@@ -352,5 +368,31 @@ class UserRepo {
       FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
       return false;
     }
+  }
+
+  Future<void> setUserZipCode(String s) async {
+    await _firestore
+        .collection(_collectionUsers)
+        .doc(_auth.currentUser?.uid)
+        .update({"zipCode": s});
+  }
+
+  _listenForDeliveryPrices(String zipCode) async {
+    if (_currentZipCode == zipCode) {
+      return;
+    }
+    _currentZipCode = zipCode;
+    await _deliveryPricesSubscription?.cancel();
+    _deliveryPricesSubscription = _firestore
+        .collection(_collectionCouriers)
+        .doc(zipCode)
+        .snapshots()
+        .listen((event) {
+      if (event.exists) {
+        final prices = DeliveryPrices.fromMap(event.data()!);
+        _deliveryPricesController.add(prices);
+        _deliveryPrices = prices;
+      }
+    });
   }
 }
