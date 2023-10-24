@@ -229,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         ),
       );
     }
-    return state.restaurants.isEmpty
+    return state.restaurants.isEmpty || state.isNoGoZone
         ? _getEmptyRestaurants(state)
         : ListView.builder(
             shrinkWrap: true,

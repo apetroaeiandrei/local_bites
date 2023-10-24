@@ -32,12 +32,14 @@ class HomeCubit extends Cubit<HomeState> {
     this._notificationsRepo,
     this._analytics,
     this._vouchersRepo,
-  ) : super(const HomeState(
-            status: HomeStatus.loading,
-            restaurants: [],
-            currentOrders: [],
-            showCurrentOrder: false,
-            showNotificationsPrompt: false)) {
+  ) : super(HomeState(
+          status: HomeStatus.loading,
+          restaurants: const [],
+          currentOrders: const [],
+          showCurrentOrder: false,
+          isNoGoZone: _userRepo.isInNoGoZone,
+          showNotificationsPrompt: false,
+        )) {
     init();
   }
 
@@ -52,11 +54,13 @@ class HomeCubit extends Cubit<HomeState> {
   StreamSubscription? _currentOrderSubscription;
   StreamSubscription? _restaurantsSubscription;
   StreamSubscription? _locationSubscription;
+  StreamSubscription? _isInNoGoZoneSubscription;
   DateTime? _lastLocationCheckTime;
   String? _userZipCode;
 
   init() async {
     _analytics.setCurrentScreen(screenName: Routes.home);
+    await _listenForNoGoZones();
     await _userRepo.getUser();
     if (!_userRepo.isProfileCompleted()) {
       _analytics.setCurrentScreen(screenName: Routes.profile);
@@ -288,6 +292,14 @@ class HomeCubit extends Cubit<HomeState> {
       return null;
     }
     return addresses[index];
+  }
+
+  Future<void> _listenForNoGoZones() async {
+    await _isInNoGoZoneSubscription?.cancel();
+    _isInNoGoZoneSubscription =
+        _userRepo.isInNoGoZoneStream.listen((isInNoGoZone) {
+      emit(state.copyWith(isNoGoZone: isInNoGoZone));
+    });
   }
 
   Future<void> setDeliveryAddress(deliveryAddress) async {
