@@ -351,8 +351,13 @@ class CartCubit extends Cubit<CartState> {
     if (adjustedKm > Constants.deliveryMaxPriceKm) {
       return deliveryPrices.deliveryMaximalPrice;
     }
-    return deliveryPrices.deliveryStartPrice +
+
+    final price = deliveryPrices.deliveryStartPrice +
         (adjustedKm * deliveryPrices.deliveryPricePerKm);
+    if (price < _restaurantsRepo.selectedRestaurant.minExternalDelivery) {
+      return _restaurantsRepo.selectedRestaurant.minExternalDelivery;
+    }
+    return price;
   }
 
   void toggleDeliverySelected() {
