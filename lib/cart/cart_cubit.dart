@@ -348,6 +348,9 @@ class CartCubit extends Cubit<CartState> {
   double _computeDeliveryPrice(int routeDistanceMeters) {
     int adjustedKm = (routeDistanceMeters / 1000).ceil();
     final DeliveryPrices deliveryPrices = _userRepo.deliveryPrices;
+    if (adjustedKm > Constants.deliveryMaxPriceKm) {
+      return deliveryPrices.deliveryMaximalPrice;
+    }
     return deliveryPrices.deliveryStartPrice +
         (adjustedKm * deliveryPrices.deliveryPricePerKm);
   }
@@ -375,9 +378,8 @@ class CartCubit extends Cubit<CartState> {
       user: _userRepo.user!,
       restaurantStripeAccountId:
           _restaurantsRepo.selectedRestaurant.stripeAccountId,
-      applicationFee: state.hasExternalDelivery && state.deliverySelected
-          ? deliveryFee
-          : 0,
+      applicationFee:
+          state.hasExternalDelivery && state.deliverySelected ? deliveryFee : 0,
       voucherDiscount:
           state.selectedVoucher != null ? state.selectedVoucher!.value : 0,
       voucherId: state.selectedVoucher?.id ?? "",
