@@ -229,24 +229,60 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         ),
       );
     }
+    final listWidgets = _buildHomeScreenWidgetList(state);
     return state.restaurants.isEmpty || state.isNoGoZone
         ? _getEmptyRestaurants(state)
         : ListView.builder(
             shrinkWrap: true,
-            itemCount: state.restaurants.length +
-                (state.showNotificationsPrompt ? 2 : 1),
+            itemCount: listWidgets.length,
             itemBuilder: (context, index) {
-              if (index == 0) {
-                return _getAddressZone(context, state);
-              } else if (index == 1) {
-                return _getRestaurantCard(context, state, index - 1);
-              } else if (index == 2 && state.showNotificationsPrompt) {
-                return _getNotificationsBanner();
-              } else {
-                return _getRestaurantCard(context, state,
-                    index - (state.showNotificationsPrompt ? 2 : 1));
-              }
+              return listWidgets[index];
             });
+  }
+
+  List<Widget> _buildHomeScreenWidgetList(HomeState state) {
+    final List<Widget> widgets = [];
+    bool hasGroceryZone = false;
+    widgets.add(_getAddressZone(context, state));
+    for (int i = 0; i < state.restaurants.length; i++) {
+      final restaurant = state.restaurants[i];
+      // Assume grocery restaurants are sorted at the end of the list
+      if (restaurant.isGrocery) {
+        if (!hasGroceryZone) {
+          hasGroceryZone = true;
+          widgets.add(_getGroceryZone());
+        }
+      }
+      widgets.add(_getRestaurantCard(context, restaurant));
+    }
+    if (state.showNotificationsPrompt) {
+      widgets.insert(2, _getNotificationsBanner());
+    }
+    return widgets;
+  }
+
+  Widget _getGroceryZone() {
+    final theme = Theme.of(context);
+    return Container(
+      margin: const EdgeInsets.fromLTRB(
+           16, 40, 16, 10),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.secondary.withOpacity(0.2),
+        border: Border.all(
+          color: theme.colorScheme.secondary,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Center(
+        child: Text(
+          S.of(context).home_grocery_headline,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.headlineMedium,
+        ),
+      ),
+    );
   }
 
   void _showFeedbackScreen(HomeState state, int index, bool liked) {
@@ -337,8 +373,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
-  Widget _getRestaurantCard(BuildContext context, HomeState state, int i) {
-    final restaurant = state.restaurants[i];
+  Widget _getRestaurantCard(
+    BuildContext context,
+    RestaurantModel restaurant,
+  ) {
     return GestureDetector(
       onTap: () {
         if (context

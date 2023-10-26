@@ -63,6 +63,7 @@
   "home_known_address_dialog_ok" : "Schimbă",
   "home_unknown_address_dialog_ok" : "OK",
   "home_loading_restaurants" : "Se încarcă restaurantele",
+  "home_grocery_headline": "Cumpărături",
 
   "home_location_permission_dialog_title" : "Permisiune locație",
   "home_location_permission_dialog_content" : "Observăm că ai mai multe adrese salvate. Pentru a facilita alegerea automată a adresei protrivite, trebuie să activezi permisiunea de accesare a locației în timpul utilizării din setările telefonului.",
