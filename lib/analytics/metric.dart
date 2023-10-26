@@ -137,4 +137,6 @@ abstract class Metric {
       "cart_voucher_error_min_value";
   static const String eventCartVoucherErrorNotAccepted =
       "cart_voucher_error_not_accepted";
+
+  static const String eventUserZipCodeChanged = "user_zip_code_changed";
 }

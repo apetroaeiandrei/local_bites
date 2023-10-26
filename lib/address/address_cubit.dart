@@ -38,8 +38,12 @@ class AddressCubit extends Cubit<AddressState> {
       List<Placemark> placemarks = await placemarkFromCoordinates(
           coordinates.latitude, coordinates.longitude);
       if (isClosed) return;
-
       if (placemarks.isNotEmpty) {
+        final street = placemarks[0].street;
+        if (street == null || street.isEmpty) {
+          _emitStreetError(coordinates);
+          return;
+        }
         emit(state.copyWith(
           latitude: coordinates.latitude,
           longitude: coordinates.longitude,
@@ -47,11 +51,19 @@ class AddressCubit extends Cubit<AddressState> {
           status: AddressStatus.streetSuccess,
         ));
       } else {
-        emit(state.copyWith(street: '', status: AddressStatus.streetError));
+        _emitStreetError(coordinates);
       }
     } catch (e) {
-      emit(state.copyWith(street: '', status: AddressStatus.streetError));
+      _emitStreetError(coordinates);
     }
+  }
+
+  _emitStreetError(LatLng coordinates) {
+    emit(state.copyWith(
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
+        street: '',
+        status: AddressStatus.streetError));
   }
 
   Future<void> onSave(

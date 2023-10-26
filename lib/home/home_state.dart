@@ -21,11 +21,13 @@ class HomeState extends Equatable {
   final List<UserOrder> currentOrders;
   final bool showCurrentOrder;
   final bool showNotificationsPrompt;
+  final bool isNoGoZone;
   final DeliveryAddress? nearestDeliveryAddress;
 
   @override
   List<Object?> get props => [
         status,
+        isNoGoZone,
         restaurants,
         address,
         currentOrders,
@@ -41,6 +43,7 @@ class HomeState extends Equatable {
     required this.currentOrders,
     required this.showCurrentOrder,
     required this.showNotificationsPrompt,
+    required this.isNoGoZone,
     this.nearestDeliveryAddress,
   });
 
@@ -51,6 +54,7 @@ class HomeState extends Equatable {
     List<UserOrder>? currentOrders,
     bool? showCurrentOrder,
     bool? showNotificationsPrompt,
+    bool? isNoGoZone,
     DeliveryAddress? nearestDeliveryAddress,
   }) {
     return HomeState(
@@ -61,6 +65,7 @@ class HomeState extends Equatable {
       showCurrentOrder: showCurrentOrder ?? this.showCurrentOrder,
       showNotificationsPrompt:
           showNotificationsPrompt ?? this.showNotificationsPrompt,
+      isNoGoZone: isNoGoZone ?? this.isNoGoZone,
       nearestDeliveryAddress:
           nearestDeliveryAddress ?? this.nearestDeliveryAddress,
     );
