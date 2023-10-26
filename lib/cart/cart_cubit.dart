@@ -75,6 +75,8 @@ class CartCubit extends Cubit<CartState> {
               ? PaymentType.app
               : PaymentType.cash,
           acceptsVouchers: _restaurantsRepo.selectedRestaurant.acceptsVouchers,
+          isOverweight: false,
+          maxWeightKg: _userRepo.deliveryPrices.groceryMaxWeight / 1000,
         )) {
     init();
   }
@@ -230,6 +232,7 @@ class CartCubit extends Cubit<CartState> {
         amountToMinOrder: amountToMinOrder,
         status: status,
         clearVoucher: false,
+        isOverweight: _isOverweight(),
         paymentType:
             _userChangedPaymentType ? null : _getDefaultPaymentType()));
   }
@@ -352,12 +355,28 @@ class CartCubit extends Cubit<CartState> {
       return deliveryPrices.deliveryMaximalPrice;
     }
 
-    final price = deliveryPrices.deliveryStartPrice +
+    double price = deliveryPrices.deliveryStartPrice +
         (adjustedKm * deliveryPrices.deliveryPricePerKm);
+    if (_restaurantsRepo.selectedRestaurant.isGrocery) {
+      price = price + deliveryPrices.groceryAdditionalPrice;
+    }
+
     if (price < _restaurantsRepo.selectedRestaurant.minExternalDelivery) {
       return _restaurantsRepo.selectedRestaurant.minExternalDelivery;
     }
     return price;
+  }
+
+  bool _isOverweight() {
+    if (!_restaurantsRepo.selectedRestaurant.isGrocery) {
+      return false;
+    }
+    double totalWeight = 0;
+    for (var element in _cartRepo.cartItems) {
+      final weight = (element.food.portionSize ?? 0) * element.quantity;
+      totalWeight += weight;
+    }
+    return totalWeight > _userRepo.deliveryPrices.groceryMaxWeight;
   }
 
   void toggleDeliverySelected() {

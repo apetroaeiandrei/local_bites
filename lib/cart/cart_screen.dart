@@ -68,6 +68,9 @@ class _CartScreenState extends State<CartScreen> {
         } else if (state.status == CartStatus.stripeReady) {
           initPaymentSheet(state, context.read<CartCubit>());
         }
+        if (state.isOverweight) {
+          _analytics.logEvent(name: Metric.eventCartOverweight);
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -94,6 +97,22 @@ class _CartScreenState extends State<CartScreen> {
                           S.of(context).cart_order_summary(
                               state.cartCount, state.restaurantName),
                           style: Theme.of(context).textTheme.bodyMedium),
+                      Visibility(
+                        visible: state.isOverweight &&
+                            state.deliverySelected &&
+                            state.hasDelivery,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            S.of(context).cart_overweight(
+                                state.maxWeightKg.toStringAsFixed(0)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium
+                                ?.copyWith(color: WlColors.error),
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 32),
                       ...state.cartItems.map((item) {
                         return CartItem(
@@ -173,7 +192,8 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   bool _isCheckoutButtonDisabled(CartState state) {
-    return state.status == CartStatus.minimumOrderError &&
+    return (state.status == CartStatus.minimumOrderError ||
+            state.isOverweight) &&
         state.deliverySelected;
   }
 

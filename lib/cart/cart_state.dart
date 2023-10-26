@@ -47,6 +47,8 @@ class CartState extends Equatable {
   final PaymentType paymentType;
   final StripePayData? stripePayData;
   final bool acceptsVouchers;
+  final bool isOverweight;
+  final double maxWeightKg;
 
   /// When generating copyWith take care of the extra clearPayData and clearVoucher flags
   /// Used to be able to set stripePayData and selectedVoucher to null if payment method is later changed
@@ -86,6 +88,8 @@ class CartState extends Equatable {
         paymentType,
         stripePayData,
         acceptsVouchers,
+        isOverweight,
+        maxWeightKg,
       ];
 
   const CartState({
@@ -120,6 +124,8 @@ class CartState extends Equatable {
     required this.vouchers,
     required this.paymentType,
     required this.acceptsVouchers,
+    required this.isOverweight,
+    required this.maxWeightKg,
     this.selectedVoucher,
     this.stripePayData,
   });
@@ -159,6 +165,8 @@ class CartState extends Equatable {
     bool clearPayData = false,
     bool? clearVoucher,
     bool? acceptsVouchers,
+    bool? isOverweight,
+    double? maxWeightKg,
   }) {
     return CartState(
       status: status ?? this.status,
@@ -197,6 +205,8 @@ class CartState extends Equatable {
           : selectedVoucher ?? this.selectedVoucher,
       clearVoucher: clearVoucher ?? this.clearVoucher,
       acceptsVouchers: acceptsVouchers ?? this.acceptsVouchers,
+      isOverweight: isOverweight ?? this.isOverweight,
+      maxWeightKg: maxWeightKg ?? this.maxWeightKg,
     );
   }
 }

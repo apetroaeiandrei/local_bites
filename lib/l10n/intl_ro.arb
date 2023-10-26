@@ -129,8 +129,8 @@
   "cart_button_min_order" : "Comanda minimă {min} RON",
   "cart_mentions": "Mențiuni speciale",
   "cart_mentions_headline": "Adaugă mențiunile tale",
-  "cart_mentions_placeholder": "Anunță restaurantul de ce ar trebui să țină cont.",
-  "cart_mentions_hint": "Anunță restaurantul dacă ai alergii sau alte preferințe.",
+  "cart_mentions_placeholder": "Anunță comerciantul de ce ar trebui să țină cont.",
+  "cart_mentions_hint": "Anunță comerciantul dacă ai alergii sau alte preferințe.",
   "cart_bad_weather_tax": "Taxă vreme rea",
   "cart_bad_weather_rationale_title": "Taxă vreme rea",
   "cart_bad_weather_rationale": "Curierii care livrează în condiții meteo dificile primesc integral această taxă suplimentară.",
@@ -145,6 +145,7 @@
   "cart_pickup_headline" : "Ridicare personală",
   "cart_couriers_unavailable_title" : "Livratori indisponibili",
   "cart_couriers_unavailable_content" : "Ne pare rău, dar nu avem niciun livrator disponibil în acest moment. Doar comenzile pentru ridicare personală sunt acceptate.",
+  "cart_overweight" : "Putem transporta maxim {maxWeight} kg. Vă rugăm să reduceți cantitățile pentru a vă încadra în limită.",
 
   "cart_pay_method": "Metoda de plată",
   "cart_pay_delivery_cash_and_card" : "Plătești la livrare cu numerar sau card",
