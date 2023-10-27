@@ -7,6 +7,7 @@ import 'package:models/feedback_model.dart';
 
 import '../generated/l10n.dart';
 import '../theme/decorations.dart';
+import '../theme/wl_colors.dart';
 import '../widgets/button_loading.dart';
 import 'feedback_tile.dart';
 
@@ -18,11 +19,13 @@ class FeedbackScreen extends StatefulWidget {
 }
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
-  final TextEditingController _textController = TextEditingController();
+  final TextEditingController _restaurantController = TextEditingController();
+  final TextEditingController _courierController = TextEditingController();
 
   @override
   void dispose() {
-    _textController.dispose();
+    _restaurantController.dispose();
+    _courierController.dispose();
     super.dispose();
   }
 
@@ -54,42 +57,69 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    state.isPositive
-                        ? S.of(context).feedback_headline_positive
-                        : S.of(context).feedback_headline_negative,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: Dimens.defaultPadding),
-                  Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: FeedbackSuggestions.values
-                          .map((e) => FeedbackTile(
-                                suggestion: e,
-                                isSelected:
-                                    state.selectedSuggestions.contains(e),
-                                onTap: () {
-                                  context
-                                      .read<FeedbackCubit>()
-                                      .toggleSuggestion(e);
-                                },
-                              ))
-                          .toList()),
-                  const SizedBox(height: Dimens.defaultPadding),
-                  TextField(
-                    controller: _textController,
-                    decoration: textFieldDecoration(
-                        label: S.of(context).feedback_comments_label),
-                    maxLines: 5,
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Text(
+                            S.of(context).feedback_restaurant_question(
+                                state.userOrder.restaurantName),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          _getFeedbackButtons(
+                              liked: state.restaurantFeedback,
+                              onFeedback: (liked) {
+                                context
+                                    .read<FeedbackCubit>()
+                                    .onRestaurantLiked(liked);
+                              }),
+                          TextField(
+                            controller: _restaurantController,
+                            decoration: InputDecoration(
+                              border: outlineInputBorder(),
+                              hintText:
+                                  _getRestaurantHint(state.restaurantFeedback),
+                              hintStyle: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            maxLines: 4,
+                          ),
+                          const SizedBox(height: 40),
+                          Text(
+                            S.of(context).feedback_courier_question,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          _getFeedbackButtons(
+                              liked: state.courierFeedback,
+                              onFeedback: (liked) {
+                                context
+                                    .read<FeedbackCubit>()
+                                    .onCourierLiked(liked);
+                              }),
+                          TextField(
+                            controller: _courierController,
+                            decoration: InputDecoration(
+                              border: outlineInputBorder(),
+                              hintText: _getCourierHint(state.courierFeedback,
+                                  state.userOrder.courierName),
+                              hintStyle: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            maxLines: 4,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 10),
-                  const Spacer(),
                   ElevatedButton(
                     onPressed: () {
-                      context
-                          .read<FeedbackCubit>()
-                          .sendFeedback(_textController.text);
+                      context.read<FeedbackCubit>().sendFeedback(
+                          _restaurantController.text, _courierController.text);
                     },
                     child: state.status == FeedbackStatus.sending
                         ? const ButtonLoading()
@@ -102,6 +132,52 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         );
       },
     );
+  }
+
+  Widget _getFeedbackButtons(
+      {required Function(bool) onFeedback, bool? liked}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        IconButton(
+          onPressed: () {
+            onFeedback(false);
+          },
+          icon: Icon(
+            false == liked ? Icons.thumb_down : Icons.thumb_down_alt_outlined,
+            color: WlColors.error,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            onFeedback(true);
+          },
+          icon: Icon(
+            true == liked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+            color: WlColors.notificationGreen,
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _getRestaurantHint(bool? liked) {
+    if (liked == null) {
+      return S.of(context).feedback_comments_label;
+    }
+    return liked
+        ? S.of(context).feedback_restaurant_hint_positive
+        : S.of(context).feedback_restaurant_hint_negative;
+  }
+
+  String _getCourierHint(bool? liked, String courierName) {
+    if (liked == null) {
+      return S.of(context).feedback_comments_label;
+    }
+    final firstName = courierName.split(' ').first;
+    return liked
+        ? S.of(context).feedback_courier_hint_positive(firstName)
+        : S.of(context).feedback_courier_hint_negative;
   }
 
   void _showErrorDialog() {

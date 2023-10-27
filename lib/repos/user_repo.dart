@@ -20,6 +20,7 @@ import '../constants.dart';
 class UserRepo {
   static UserRepo? instance;
   static const _collectionUsers = "users";
+  static const _collectionAdminUsers = "admin_users";
   static const _collectionAddresses = "addresses";
   static const _collectionRestaurants = "restaurants";
   static const _collectionFeedback = "feedback";
@@ -350,7 +351,7 @@ class UserRepo {
 
   //endregion
 
-  Future<bool> sendFeedback(UserOrder userOrder, String feedback,
+  Future<bool> sendRestaurantFeedback(UserOrder userOrder, String feedback,
       bool isPositive, List<FeedbackSuggestions> suggestions) async {
     final restaurantDoc = _firestore
         .collection(_collectionRestaurants)
@@ -365,6 +366,41 @@ class UserRepo {
       });
     }
     final doc = restaurantDoc.collection(_collectionFeedback).doc();
+    final FeedbackModel feedbackModel = FeedbackModel(
+      id: doc.id,
+      comment: feedback,
+      isPositive: isPositive,
+      orderId: userOrder.orderId,
+      userName: _user!.name,
+      userPhone: _user!.phoneNumber,
+      orderDate: userOrder.date,
+      seen: false,
+      suggestions: suggestions,
+    );
+    try {
+      await doc.set(feedbackModel.toMap());
+      return true;
+    } catch (e) {
+      FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
+      return false;
+    }
+  }
+
+  Future<bool> sendCourierFeedback(UserOrder userOrder, String feedback,
+      bool isPositive, List<FeedbackSuggestions> suggestions) async {
+    final courierDoc =
+        _firestore.collection(_collectionAdminUsers).doc(userOrder.courierId);
+
+    if (isPositive) {
+      courierDoc.update({
+        "feedbackPositive": FieldValue.increment(1),
+      });
+    } else {
+      courierDoc.update({
+        "feedbackNegative": FieldValue.increment(1),
+      });
+    }
+    final doc = courierDoc.collection(_collectionFeedback).doc();
     final FeedbackModel feedbackModel = FeedbackModel(
       id: doc.id,
       comment: feedback,

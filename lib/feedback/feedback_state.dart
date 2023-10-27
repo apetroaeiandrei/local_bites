@@ -8,28 +8,32 @@ enum FeedbackStatus {
 }
 
 class FeedbackState extends Equatable {
-  final bool isPositive;
+  final bool? restaurantFeedback;
+  final bool? courierFeedback;
   final FeedbackStatus status;
-  final Set<FeedbackSuggestions> selectedSuggestions;
+  final UserOrder userOrder;
 
   @override
-  List<Object> get props => [isPositive, status, selectedSuggestions];
+  List<Object?> get props => [restaurantFeedback, courierFeedback, status];
 
   const FeedbackState({
-    required this.isPositive,
+    this.restaurantFeedback,
+    this.courierFeedback,
     required this.status,
-    required this.selectedSuggestions,
+    required this.userOrder,
   });
 
   FeedbackState copyWith({
-    bool? isPositive,
+    bool? restaurantFeedback,
+    bool? courierFeedback,
     FeedbackStatus? status,
-    Set<FeedbackSuggestions>? selectedSuggestions,
+    UserOrder? userOrder,
   }) {
     return FeedbackState(
-      isPositive: isPositive ?? this.isPositive,
+      restaurantFeedback: restaurantFeedback ?? this.restaurantFeedback,
+      courierFeedback: courierFeedback ?? this.courierFeedback,
       status: status ?? this.status,
-      selectedSuggestions: selectedSuggestions ?? this.selectedSuggestions,
+      userOrder: userOrder ?? this.userOrder,
     );
   }
 }

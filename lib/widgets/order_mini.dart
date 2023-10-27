@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:local/theme/dimens.dart';
 import 'package:local/theme/wl_colors.dart';
 import 'package:local/utils.dart';
 import 'package:local/widgets/button_loading.dart';
@@ -18,7 +19,7 @@ class OrderMini extends StatefulWidget {
       required this.onOrderCancelled})
       : super(key: key);
   final UserOrder order;
-  final Function(bool? liked) onFeedback;
+  final Function(bool liked) onFeedback;
   final Function(UserOrder order) onOrderCancelled;
 
   @override
@@ -107,28 +108,14 @@ class _OrderMiniState extends State<OrderMini> {
           Visibility(
             visible: widget.order.status == OrderStatus.completed ||
                 widget.order.status == OrderStatus.cancelled,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    widget.onFeedback(false);
-                  },
-                  icon: const Icon(
-                    Icons.thumb_down_alt_outlined,
-                    color: WlColors.error,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    widget.onFeedback(true);
-                  },
-                  icon: const Icon(
-                    Icons.thumb_up_alt_outlined,
-                    color: WlColors.notificationGreen,
-                  ),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 18, 18, 0),
+              child: ElevatedButton(
+                onPressed: () {
+                  widget.onFeedback(true);
+                },
+                child: Text(S.of(context).order_mini_show_feedback_button),
+              ),
             ),
           ),
           Visibility(

@@ -13,28 +13,35 @@ class FeedbackCubit extends Cubit<FeedbackState> {
     this.analytics,
     this.userRepo,
     this.userOrder,
-    this.isPositive,
   ) : super(FeedbackState(
           status: FeedbackStatus.initial,
-          isPositive: isPositive,
-          selectedSuggestions: const {},
+          userOrder: userOrder,
         ));
 
   final Analytics analytics;
   final UserRepo userRepo;
   final UserOrder userOrder;
-  final bool isPositive;
 
-  Future<void> sendFeedback(String feedback) async {
+  Future<void> sendFeedback(String restaurantText, String courierText) async {
     emit(state.copyWith(status: FeedbackStatus.sending));
-    final success = await userRepo.sendFeedback(
-        userOrder, feedback, isPositive, List.from(state.selectedSuggestions));
-    analytics.logEventWithParams(name: Metric.eventFeedbackSend, parameters: {
-      Metric.propertyFeedbackIsPositive: isPositive.toString(),
-      Metric.propertyFeedbackAspects:
-          state.selectedSuggestions.map((e) => e.toString()).join(','),
-    });
-    if (success) {
+
+    bool restaurantSuccess = true;
+    bool courierSuccess = true;
+    if (state.restaurantFeedback != null) {
+      restaurantSuccess = await userRepo.sendRestaurantFeedback(
+          userOrder, restaurantText, state.restaurantFeedback!, []);
+      analytics.logEventWithParams(name: Metric.eventFeedbackSend, parameters: {
+        Metric.propertyFeedbackIsPositive: state.restaurantFeedback!.toString(),
+      });
+    }
+    if (state.courierFeedback != null) {
+      courierSuccess = await userRepo.sendCourierFeedback(
+          userOrder, courierText, state.courierFeedback!, []);
+      analytics.logEventWithParams(name: Metric.eventFeedbackSend, parameters: {
+        Metric.propertyFeedbackIsPositive: state.courierFeedback!.toString(),
+      });
+    }
+    if (courierSuccess && restaurantSuccess) {
       emit(state.copyWith(status: FeedbackStatus.sent));
     } else {
       emit(state.copyWith(status: FeedbackStatus.error));
@@ -44,13 +51,11 @@ class FeedbackCubit extends Cubit<FeedbackState> {
     }
   }
 
-  void toggleSuggestion(FeedbackSuggestions e) {
-    final current = Set<FeedbackSuggestions>.from(state.selectedSuggestions);
-    if (current.contains(e)) {
-      current.remove(e);
-    } else {
-      current.add(e);
-    }
-    emit(state.copyWith(selectedSuggestions: current));
+  void onRestaurantLiked(bool liked) {
+    emit(state.copyWith(restaurantFeedback: liked));
+  }
+
+  void onCourierLiked(bool liked) {
+    emit(state.copyWith(courierFeedback: liked));
   }
 }

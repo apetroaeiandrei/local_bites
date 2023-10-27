@@ -285,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
   }
 
-  void _showFeedbackScreen(HomeState state, int index, bool liked) {
+  void _showFeedbackScreen(HomeState state, int index) {
     _analytics.setCurrentScreen(screenName: Routes.feedback);
     Navigator.of(context)
         .push(
@@ -296,7 +296,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             RepositoryProvider.of<Analytics>(context),
             RepositoryProvider.of<UserRepo>(context),
             state.currentOrders[index],
-            liked,
           ),
           child: const FeedbackScreen(),
         ),
@@ -637,13 +636,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     },
                     child: OrderMini(
                       order: state.currentOrders[index],
-                      onFeedback: (liked) {
-                        if (liked != null) {
-                          _showFeedbackScreen(state, index, liked);
+                      onFeedback: (showFeedback) {
+                        if (showFeedback) {
+                          _showFeedbackScreen(state, index);
                         }
                         parentContext
                             .read<HomeCubit>()
-                            .rateOrder(state.currentOrders[index], liked);
+                            .rateOrder(state.currentOrders[index]);
                       },
                       onOrderCancelled: (order) {
                         parentContext.read<HomeCubit>().cancelOrder(order);

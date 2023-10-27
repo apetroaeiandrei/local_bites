@@ -176,11 +176,7 @@ class HomeCubit extends Cubit<HomeState> {
     return super.close();
   }
 
-  void rateOrder(UserOrder currentOrder, bool? liked) {
-    _analytics.logEventWithParams(name: Metric.eventOrderRate, parameters: {
-      Metric.propertyOrderLiked:
-          liked?.toString() ?? Metric.propertyValueOrderClosed,
-    });
+  void rateOrder(UserOrder currentOrder) {
     _ordersRepo.markOrderSettled(currentOrder);
   }
 

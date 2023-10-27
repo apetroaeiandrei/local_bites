@@ -169,6 +169,7 @@
   "order_mini_pickup_eta": "Estimare ridicare: {time}",
   "order_mini_refund_info": "Veți primi banii înapoi în cel mai scurt timp.",
   "order_mini_cancel_button" : "Anulează comanda",
+  "order_mini_show_feedback_button" : "Lasă-ne feedback",
 
   "order_details_title" : "Comanda ta",
   "order_details_restaurant_see_menu" : "Vezi meniul",
@@ -207,9 +208,13 @@
   "app_version_dialog_title" : "Versiune nouă",
 
   "feedback_title" : "Feedback",
-  "feedback_headline_positive" : "Feedback-ul tău e important pentru noi. Spune-ne ce ți-a plăcut cel mai mult.",
-  "feedback_headline_negative" : "Dorim să îmbunătățim constant experiența ta. Spune-ne ce nu ți-a plăcut.",
-  "feedback_comments_label" : "Comentarii (opțional)",
+  "feedback_restaurant_question" : "Cum au fost produsele de la {restaurant}?",
+  "feedback_restaurant_hint_positive" : "Mulțumim!\n\nNe bucurăm că ți-a plăcut. Ne poți lăsa gândurile tale bune aici dacă vrei. Le vom citi!",
+  "feedback_restaurant_hint_negative" : "Ne pare rău!\n\nSpune-ne ce nu ți-a plăcut. Vom încerca să ne îmbunătățim data viitoare.",
+  "feedback_courier_question" : "Cum a fost livrarea?",
+  "feedback_courier_hint_positive" : "Mulțumim!\n\n{courier} va aprecia mesajul tău.",
+  "feedback_courier_hint_negative" : "Ne pare rău!\n\nSpune-ne ce putem schimba și vom ține cont.",
+  "feedback_comments_label": "Comentarii (opțional)",
   "feedback_send" : "Trimite",
 
   "feedback_suggestion_food" : "mâncarea",
