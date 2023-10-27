@@ -75,6 +75,8 @@ class CartCubit extends Cubit<CartState> {
               ? PaymentType.app
               : PaymentType.cash,
           acceptsVouchers: _restaurantsRepo.selectedRestaurant.acceptsVouchers,
+          isOverweight: false,
+          maxWeightKg: _userRepo.deliveryPrices.groceryMaxWeight / 1000,
         )) {
     init();
   }
@@ -94,6 +96,7 @@ class CartCubit extends Cubit<CartState> {
 
   final _delayedDuration = const Duration(milliseconds: 10);
   bool _userChangedPaymentType = false;
+  double companyDeliveryFee = 0;
 
   static bool _getInitialDeliverySelected(RestaurantModel restaurantModel) {
     if (restaurantModel.hasExternalDelivery &&
@@ -180,6 +183,7 @@ class CartCubit extends Cubit<CartState> {
       orderId: _orderId,
       voucherId: state.selectedVoucher?.id ?? "",
       voucherValue: state.selectedVoucher?.value ?? 0.0,
+      companyDeliveryFee: companyDeliveryFee,
     );
     if (!success) {
       emit(state.copyWith(status: CartStatus.orderError));
@@ -230,6 +234,7 @@ class CartCubit extends Cubit<CartState> {
         amountToMinOrder: amountToMinOrder,
         status: status,
         clearVoucher: false,
+        isOverweight: _isOverweight(),
         paymentType:
             _userChangedPaymentType ? null : _getDefaultPaymentType()));
   }
@@ -349,15 +354,33 @@ class CartCubit extends Cubit<CartState> {
     int adjustedKm = (routeDistanceMeters / 1000).ceil();
     final DeliveryPrices deliveryPrices = _userRepo.deliveryPrices;
     if (adjustedKm > Constants.deliveryMaxPriceKm) {
+      companyDeliveryFee = deliveryPrices.deliveryMaximalPrice / 2;
       return deliveryPrices.deliveryMaximalPrice;
     }
 
-    final price = deliveryPrices.deliveryStartPrice +
+    double price = deliveryPrices.deliveryStartPrice +
         (adjustedKm * deliveryPrices.deliveryPricePerKm);
+    if (_restaurantsRepo.selectedRestaurant.isGrocery) {
+      companyDeliveryFee = deliveryPrices.groceryAdditionalPrice;
+      price = price + deliveryPrices.groceryAdditionalPrice;
+    }
+
     if (price < _restaurantsRepo.selectedRestaurant.minExternalDelivery) {
       return _restaurantsRepo.selectedRestaurant.minExternalDelivery;
     }
     return price;
+  }
+
+  bool _isOverweight() {
+    if (!_restaurantsRepo.selectedRestaurant.isGrocery) {
+      return false;
+    }
+    double totalWeight = 0;
+    for (var element in _cartRepo.cartItems) {
+      final weight = (element.food.portionSize ?? 0) * element.quantity;
+      totalWeight += weight;
+    }
+    return totalWeight > _userRepo.deliveryPrices.groceryMaxWeight;
   }
 
   void toggleDeliverySelected() {
@@ -385,6 +408,7 @@ class CartCubit extends Cubit<CartState> {
           _restaurantsRepo.selectedRestaurant.stripeAccountId,
       applicationFee:
           state.hasExternalDelivery && state.deliverySelected ? deliveryFee : 0,
+      companyDeliveryFee: companyDeliveryFee,
       voucherDiscount:
           state.selectedVoucher != null ? state.selectedVoucher!.value : 0,
       voucherId: state.selectedVoucher?.id ?? "",

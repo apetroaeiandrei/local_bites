@@ -110,30 +110,52 @@ class HomeCubit extends Cubit<HomeState> {
     _ordersRepo.listenForOrderInProgress();
   }
 
-  Future<void> _handleRestaurantsLoaded(DeliveryAddress address) async {
-    List<RestaurantModel> restaurants =
-        _restaurantsRepo.restaurants.where((element) => element.open).toList();
-    restaurants
+  List<RestaurantModel> _sortRestaurants(List<RestaurantModel> allRestaurants) {
+    final List<RestaurantModel> result = [];
+    final groceries =
+        allRestaurants.where((element) => element.isGrocery).toList();
+    final openGroceries = groceries.where((element) => element.open).toList();
+    openGroceries
         .sort((a, b) => b.feedbackPositive.compareTo(a.feedbackPositive));
-    restaurants.sort((a, b) => b.maxPromo.compareTo(a.maxPromo));
-    restaurants
-        .addAll(_restaurantsRepo.restaurants.where((element) => !element.open));
+    final closedGroceries =
+        groceries.where((element) => !element.open).toList();
 
-    if (restaurants.isNotEmpty && _userZipCode != restaurants[0].zipCode) {
+    final restaurants =
+        allRestaurants.where((element) => !element.isGrocery).toList();
+    List<RestaurantModel> openRestaurants =
+        restaurants.where((element) => element.open).toList();
+    openRestaurants
+        .sort((a, b) => b.feedbackPositive.compareTo(a.feedbackPositive));
+    openRestaurants.sort((a, b) => b.maxPromo.compareTo(a.maxPromo));
+    final closedRestaurants =
+        restaurants.where((element) => !element.open).toList();
+
+    result.addAll(openRestaurants);
+    result.addAll(closedRestaurants);
+    result.addAll(openGroceries);
+    result.addAll(closedGroceries);
+    return result;
+  }
+
+  Future<void> _handleRestaurantsLoaded(DeliveryAddress address) async {
+    final List<RestaurantModel> result =
+        _sortRestaurants(_restaurantsRepo.restaurants);
+
+    if (result.isNotEmpty && _userZipCode != result[0].zipCode) {
       _analytics.logEvent(name: Metric.eventUserZipCodeChanged);
-      _userZipCode = restaurants[0].zipCode;
+      _userZipCode = result[0].zipCode;
       await _userRepo.setUserZipCode(_userZipCode!);
     }
     _analytics.logEventWithParams(
       name: Metric.eventRestaurantsLoaded,
       parameters: {
-        Metric.propertyRestaurantsCount: restaurants.length,
+        Metric.propertyRestaurantsCount: result.length,
       },
     );
 
     emit(state.copyWith(
       status: HomeStatus.loaded,
-      restaurants: restaurants,
+      restaurants: result,
       address: address,
     ));
     _checkNotificationsPermissions();

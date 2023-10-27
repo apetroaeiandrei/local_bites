@@ -1,5 +1,6 @@
 {
   "@@locale": "ro",
+  "app_name": "Local Bites",
   "auth_title": "Bun venit!",
   "auth_subtitle": "Folosește numărul de telefon pentru a primi vouchere.",
   "auth_anonymous": "Continuă ca anonim",
@@ -63,6 +64,7 @@
   "home_known_address_dialog_ok" : "Schimbă",
   "home_unknown_address_dialog_ok" : "OK",
   "home_loading_restaurants" : "Se încarcă restaurantele",
+  "home_grocery_headline": "Cumpărături",
 
   "home_location_permission_dialog_title" : "Permisiune locație",
   "home_location_permission_dialog_content" : "Observăm că ai mai multe adrese salvate. Pentru a facilita alegerea automată a adresei protrivite, trebuie să activezi permisiunea de accesare a locației în timpul utilizării din setările telefonului.",
@@ -128,8 +130,8 @@
   "cart_button_min_order" : "Comanda minimă {min} RON",
   "cart_mentions": "Mențiuni speciale",
   "cart_mentions_headline": "Adaugă mențiunile tale",
-  "cart_mentions_placeholder": "Anunță restaurantul de ce ar trebui să țină cont.",
-  "cart_mentions_hint": "Anunță restaurantul dacă ai alergii sau alte preferințe.",
+  "cart_mentions_placeholder": "Anunță comerciantul de ce ar trebui să țină cont.",
+  "cart_mentions_hint": "Anunță comerciantul dacă ai alergii sau alte preferințe.",
   "cart_bad_weather_tax": "Taxă vreme rea",
   "cart_bad_weather_rationale_title": "Taxă vreme rea",
   "cart_bad_weather_rationale": "Curierii care livrează în condiții meteo dificile primesc integral această taxă suplimentară.",
@@ -144,6 +146,7 @@
   "cart_pickup_headline" : "Ridicare personală",
   "cart_couriers_unavailable_title" : "Livratori indisponibili",
   "cart_couriers_unavailable_content" : "Ne pare rău, dar nu avem niciun livrator disponibil în acest moment. Doar comenzile pentru ridicare personală sunt acceptate.",
+  "cart_overweight" : "Putem transporta maxim {maxWeight} kg. Vă rugăm să reduceți cantitățile pentru a vă încadra în limită.",
 
   "cart_pay_method": "Metoda de plată",
   "cart_pay_delivery_cash_and_card" : "Plătești la livrare cu numerar sau card",

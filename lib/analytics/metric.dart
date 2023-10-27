@@ -39,6 +39,7 @@ abstract class Metric {
   static const String eventCartRestaurantClosed = "cart_restaurant_closed";
   static const String eventCartCouriersUnavailable =
       "cart_couriers_unavailable";
+  static const String eventCartOverweight = "cart_overweight";
   static const String propertyOrderPrice = "price";
   static const String propertyOrderPaymentType = "payment_type";
 
