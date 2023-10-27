@@ -1,5 +1,6 @@
 {
   "@@locale": "ro",
+  "app_name": "Local Bites",
   "auth_title": "Bun venit!",
   "auth_subtitle": "Folosește numărul de telefon pentru a primi vouchere.",
   "auth_anonymous": "Continuă ca anonim",

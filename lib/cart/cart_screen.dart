@@ -514,7 +514,7 @@ class _CartScreenState extends State<CartScreen> {
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           customFlow: false,
-          merchantDisplayName: state.restaurantName,
+          merchantDisplayName: S.of(context).app_name,
           paymentIntentClientSecret: data.paymentIntentClientSecret,
           customerEphemeralKeySecret: data.ephemeralKeySecret,
           customerId: data.customer,
