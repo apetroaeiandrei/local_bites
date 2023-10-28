@@ -89,28 +89,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             maxLines: 4,
                           ),
                           const SizedBox(height: 40),
-                          Text(
-                            S.of(context).feedback_courier_question,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                          _getFeedbackButtons(
-                              liked: state.courierFeedback,
-                              onFeedback: (liked) {
-                                context
-                                    .read<FeedbackCubit>()
-                                    .onCourierLiked(liked);
-                              }),
-                          TextField(
-                            controller: _courierController,
-                            decoration: InputDecoration(
-                              border: outlineInputBorder(),
-                              hintText: _getCourierHint(state.courierFeedback,
-                                  state.userOrder.courierName),
-                              hintStyle: Theme.of(context).textTheme.bodySmall,
-                            ),
-                            maxLines: 4,
-                          ),
+                          ..._getCourierWidgets(state),
                         ],
                       ),
                     ),
@@ -132,6 +111,35 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         );
       },
     );
+  }
+
+  List<Widget> _getCourierWidgets(FeedbackState state) {
+    if (state.userOrder.courierName.isEmpty) {
+      return [];
+    }
+
+    return [
+      Text(
+        S.of(context).feedback_courier_question,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.headlineMedium,
+      ),
+      _getFeedbackButtons(
+          liked: state.courierFeedback,
+          onFeedback: (liked) {
+            context.read<FeedbackCubit>().onCourierLiked(liked);
+          }),
+      TextField(
+        controller: _courierController,
+        decoration: InputDecoration(
+          border: outlineInputBorder(),
+          hintText: _getCourierHint(
+              state.courierFeedback, state.userOrder.courierName),
+          hintStyle: Theme.of(context).textTheme.bodySmall,
+        ),
+        maxLines: 4,
+      ),
+    ];
   }
 
   Widget _getFeedbackButtons(
