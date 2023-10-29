@@ -36,7 +36,6 @@ class AppConfig {
 
   static _initAppCheck() async {
     await FirebaseAppCheck.instance.activate(
-      webRecaptchaSiteKey: 'recaptcha-v3-site-key',
       androidProvider:
           isProd ? AndroidProvider.playIntegrity : AndroidProvider.debug,
     );

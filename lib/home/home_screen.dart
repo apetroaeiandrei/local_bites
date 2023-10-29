@@ -264,8 +264,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   Widget _getGroceryZone() {
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.fromLTRB(
-           16, 40, 16, 10),
+      margin: const EdgeInsets.fromLTRB(16, 40, 16, 10),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: theme.colorScheme.secondary.withOpacity(0.2),
@@ -490,7 +489,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         onPressed: () {
           Navigator.of(context).pop();
           _analytics.logEvent(name: Metric.eventNotificationsDialogConfirm);
-          AppSettings.openNotificationSettings();
+          AppSettings.openAppSettings(type: AppSettingsType.notification);
         },
         child: Text(S.of(context).home_notifications_dialog_ok),
       ),
@@ -580,7 +579,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           Navigator.of(context).pop();
           _analytics.logEvent(
               name: Metric.eventHomeLocationPermissionDialogConfirm);
-          AppSettings.openLocationSettings();
+          AppSettings.openAppSettings(type: AppSettingsType.location);
         },
         child: Text(S.of(context).home_location_permission_dialog_ok),
       ),

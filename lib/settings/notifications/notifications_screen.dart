@@ -117,7 +117,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
         onPressed: () {
           Navigator.of(context).pop();
           analytics.logEvent(name: Metric.eventNotificationsDialogConfirm);
-          AppSettings.openNotificationSettings();
+          AppSettings.openAppSettings(type: AppSettingsType.notification);
         },
         child: Text(S.of(context).home_notifications_dialog_ok),
       ),
