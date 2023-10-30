@@ -42,7 +42,6 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> deleteUser() async {
     final success = await _authRepo.deleteUser();
-    print("Delete cubit success: $success");
     if (success) {
       _onLogout();
     }

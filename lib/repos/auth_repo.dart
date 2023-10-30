@@ -8,6 +8,7 @@ class AuthRepo {
   static AuthRepo? instance;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseCrashlytics _crashlytics = FirebaseCrashlytics.instance;
   final UserRepo _userRepo;
 
   AuthRepo._privateConstructor(this._userRepo);
@@ -71,7 +72,6 @@ class AuthRepo {
       phoneNumber: phoneNumber,
       forceResendingToken: 1,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        print("verificationCompleted $credential");
         if (reauthenticate) {
           _reauthenticateWithCredential(credential, onError, onSuccess);
         } else if (linkCredential) {
@@ -81,27 +81,22 @@ class AuthRepo {
         }
       },
       verificationFailed: (FirebaseAuthException e) {
+        _crashlytics.recordError(e, StackTrace.current);
         if (e.code == 'invalid-phone-number') {
           onError(PhoneConfirmError.invalidPhoneNumber);
-          print('The provided phone number is not valid.');
         }
         if (e.code == 'too-many-requests') {
           onError(PhoneConfirmError.tooManyRequests);
-          FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
-          print('Too many requests. Please try later.');
         } else {
           onError(PhoneConfirmError.unknown);
-          FirebaseCrashlytics.instance.recordError(e, StackTrace.current);
-          print('Something went wrong. Please try later, $e');
+          _crashlytics.recordError(e, StackTrace.current);
         }
       },
       codeSent: (String verificationId, int? resendToken) {
         // Update the UI - wait for the user to enter the SMS code
-        print("code SENT $verificationId");
         onCodeSent(verificationId);
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        print("codeAutoRetrievalTimeout $verificationId");
         onError(PhoneConfirmError.timeout, verificationId: verificationId);
       },
     );
@@ -116,7 +111,6 @@ class AuthRepo {
     // Create a PhoneAuthCredential with the code
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId, smsCode: smsCode);
-    print("credential confirmed $credential");
     _linkWithCredential(credential, onError, onSuccess);
   }
 
@@ -130,7 +124,6 @@ class AuthRepo {
     // Create a PhoneAuthCredential with the code
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId, smsCode: smsCode);
-    print("credential confirmed, signing in $credential");
     if (reauthenticate) {
       _reauthenticateWithCredential(credential, onError, onSuccess);
     } else {
@@ -149,25 +142,22 @@ class AuthRepo {
           user.user!.uid, user.user!.phoneNumber!);
       onSuccess();
     } on FirebaseAuthException catch (e) {
+      _crashlytics.recordError(e, StackTrace.current);
       switch (e.code) {
         case "invalid-credential":
           onError(PhoneConfirmError.invalidCode);
-          print("The provider's credential is not valid.");
+
           break;
         case "invalid-verification-code":
           onError(PhoneConfirmError.invalidCode);
-          print(
-              "The verification code used to create the phone auth credential "
-              "is invalid.");
           break;
         // See the API reference for the full list of error codes.
         default:
           onError(PhoneConfirmError.unknown);
-          print("Unknown firebase error. $e");
       }
     } on Exception catch (e) {
       onError(PhoneConfirmError.unknown);
-      print("Unknown exception. $e");
+      _crashlytics.recordError(e, StackTrace.current);
     }
   }
 
@@ -182,34 +172,26 @@ class AuthRepo {
           phoneVerified: true, phoneNumber: _auth.currentUser!.phoneNumber!);
       onSuccess();
     } on FirebaseAuthException catch (e) {
+      _crashlytics.recordError(e, StackTrace.current);
       switch (e.code) {
         case "provider-already-linked":
           onError(PhoneConfirmError.alreadyLinked);
-          print("The provider has already been linked to the user.");
           break;
         case "invalid-credential":
           onError(PhoneConfirmError.invalidCode);
-          print("The provider's credential is not valid.");
           break;
         case "credential-already-in-use":
           onError(PhoneConfirmError.alreadyInUse);
-          print("The account corresponding to the credential already exists, "
-              "or is already linked to a Firebase User.");
           break;
         case "invalid-verification-code":
           onError(PhoneConfirmError.invalidCode);
-          print(
-              "The verification code used to create the phone auth credential "
-              "is invalid.");
           break;
-        // See the API reference for the full list of error codes.
         default:
           onError(PhoneConfirmError.unknown);
-          print("Unknown firebase error. $e");
       }
     } on Exception catch (e) {
       onError(PhoneConfirmError.unknown);
-      print("Unknown exception. $e");
+      _crashlytics.recordError(e, StackTrace.current);
     }
   }
 

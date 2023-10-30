@@ -1,4 +1,4 @@
-class StripePayData{
+class StripePayData {
   final String paymentIntentId;
   final String customer;
   final String ephemeralKeySecret;
@@ -31,11 +31,11 @@ class StripePayData{
 
   @override
   String toString() {
-    return 'StripePayData{' +
-        ' paymentIntentId: $paymentIntentId,' +
-        ' customer: $customer,' +
-        ' ephemeralKeySecret: $ephemeralKeySecret,' +
-        ' paymentIntentClientSecret: $paymentIntentClientSecret,' +
+    return 'StripePayData{'
+        ' paymentIntentId: $paymentIntentId,'
+        ' customer: $customer,'
+        ' ephemeralKeySecret: $ephemeralKeySecret,'
+        ' paymentIntentClientSecret: $paymentIntentClientSecret,'
         '}';
   }
 

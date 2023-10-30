@@ -39,7 +39,6 @@ class DeleteAccountConfirmCubit extends Cubit<DeleteAccountConfirmState> {
         hasEmailCredential = true;
         email = element.email!;
       }
-      print(element);
     });
     Future.delayed(const Duration(milliseconds: 10), () {
       emit(state.copyWith(
@@ -81,23 +80,19 @@ class DeleteAccountConfirmCubit extends Cubit<DeleteAccountConfirmState> {
   }
 
   void loginWithPhone(String phoneNumber) {
-    print("loginWithPhone - phoneNumber: $phoneNumber");
     emit(state.copyWith(status: AuthStatus.phoneCodeRequested));
     _authRepo.loginWithPhone(
       reauthenticate: true,
       linkCredential: false,
       phoneNumber: phoneNumber,
       onCodeSent: (verificationId) {
-        print('on code sent - verificationId: $verificationId');
         emit(state.copyWith(status: AuthStatus.phoneCodeSent));
         this.verificationId = verificationId;
       },
       onError: (error, {verificationId}) {
         _handlePhoneAuthError(error, verificationId: verificationId);
-        print('on error');
       },
       onSuccess: () {
-        print('on success');
         emit(state.copyWith(status: AuthStatus.phoneCodeConfirmed));
       },
     );
