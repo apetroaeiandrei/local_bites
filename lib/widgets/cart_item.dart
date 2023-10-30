@@ -6,12 +6,11 @@ import '../generated/l10n.dart';
 
 class CartItem extends StatelessWidget {
   const CartItem(
-      {Key? key,
+      {super.key,
       required this.item,
       this.showAddRemoveButtons = false,
       this.onAdd,
-      this.onRemove})
-      : super(key: key);
+      this.onRemove});
   final FoodOrder item;
   final bool showAddRemoveButtons;
   final Function()? onAdd;

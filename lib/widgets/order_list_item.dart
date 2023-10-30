@@ -6,7 +6,7 @@ import 'package:models/user_order.dart';
 import '../generated/l10n.dart';
 
 class OrderListItem extends StatelessWidget {
-  const OrderListItem({Key? key, required this.order}) : super(key: key);
+  const OrderListItem({super.key, required this.order});
   final UserOrder order;
 
   @override

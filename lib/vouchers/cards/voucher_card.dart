@@ -7,8 +7,7 @@ import '../../theme/dimens.dart';
 
 class VoucherCard extends StatelessWidget {
   const VoucherCard(
-      {Key? key, required this.voucher, required this.isCartVoucher})
-      : super(key: key);
+      {super.key, required this.voucher, required this.isCartVoucher});
   final Voucher voucher;
   final bool isCartVoucher;
   final double voucherHeight = 130;

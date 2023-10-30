@@ -4,7 +4,7 @@ import '../generated/l10n.dart';
 import '../theme/dimens.dart';
 
 class MentionsScreen extends StatefulWidget {
-  const MentionsScreen({Key? key}) : super(key: key);
+  const MentionsScreen({super.key});
 
   @override
   State<MentionsScreen> createState() => _MentionsScreenState();

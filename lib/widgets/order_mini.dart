@@ -11,11 +11,10 @@ import '../generated/l10n.dart';
 
 class OrderMini extends StatefulWidget {
   const OrderMini(
-      {Key? key,
+      {super.key,
       required this.order,
       required this.onFeedback,
-      required this.onOrderCancelled})
-      : super(key: key);
+      required this.onOrderCancelled});
   final UserOrder order;
   final Function(bool liked) onFeedback;
   final Function(UserOrder order) onOrderCancelled;

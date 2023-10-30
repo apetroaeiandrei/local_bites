@@ -14,7 +14,7 @@ import '../../utils.dart';
 import '../../widgets/button_loading.dart';
 
 class PhoneConfirmScreen extends StatefulWidget {
-  const PhoneConfirmScreen({Key? key}) : super(key: key);
+  const PhoneConfirmScreen({super.key});
 
   @override
   State<PhoneConfirmScreen> createState() => _PhoneConfirmScreenState();

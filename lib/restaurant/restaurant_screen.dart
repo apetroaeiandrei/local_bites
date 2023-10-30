@@ -11,7 +11,7 @@ import '../widgets/food_card.dart';
 import 'category_content.dart';
 
 class RestaurantScreen extends StatefulWidget {
-  const RestaurantScreen({Key? key}) : super(key: key);
+  const RestaurantScreen({super.key});
 
   @override
   State<RestaurantScreen> createState() => _RestaurantScreenState();

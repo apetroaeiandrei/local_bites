@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CircularIconButton extends StatelessWidget {
-  const CircularIconButton({Key? key, required this.icon, required this.onTap}) : super(key: key);
+  const CircularIconButton({super.key, required this.icon, required this.onTap});
   final IconData icon;
   final Function()? onTap;
 

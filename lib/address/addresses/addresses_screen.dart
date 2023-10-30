@@ -12,7 +12,7 @@ import '../../generated/l10n.dart';
 import '../../routes.dart';
 
 class AddressesScreen extends StatefulWidget {
-  const AddressesScreen({Key? key}) : super(key: key);
+  const AddressesScreen({super.key});
 
   @override
   State<AddressesScreen> createState() => _AddressesScreenState();

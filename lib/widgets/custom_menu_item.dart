@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 
 class CustomMenuItem extends StatelessWidget {
   const CustomMenuItem(
-      {Key? key,
+      {super.key,
       required this.name,
       required this.onTap,
-      this.showArrow = true})
-      : super(key: key);
+      this.showArrow = true});
   final String name;
   final bool showArrow;
   final Function() onTap;

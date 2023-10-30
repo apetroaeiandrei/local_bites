@@ -12,7 +12,7 @@ import '../img.dart';
 import '../routes.dart';
 
 class VouchersScreen extends StatefulWidget {
-  const VouchersScreen({Key? key}) : super(key: key);
+  const VouchersScreen({super.key});
 
   @override
   State<VouchersScreen> createState() => _VouchersScreenState();

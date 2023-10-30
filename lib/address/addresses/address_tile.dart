@@ -3,8 +3,7 @@ import 'package:local/address/address_type_extension.dart';
 import 'package:models/delivery_address.dart';
 
 class AddressTile extends StatelessWidget {
-  const AddressTile({Key? key, required this.address, required this.selected})
-      : super(key: key);
+  const AddressTile({super.key, required this.address, required this.selected});
   final DeliveryAddress address;
   final bool selected;
 

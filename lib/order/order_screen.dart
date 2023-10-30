@@ -17,7 +17,7 @@ import '../theme/wl_colors.dart';
 import '../widgets/cart_item.dart';
 
 class OrderScreen extends StatefulWidget {
-  const OrderScreen({Key? key}) : super(key: key);
+  const OrderScreen({super.key});
 
   @override
   State<OrderScreen> createState() => _OrderScreenState();

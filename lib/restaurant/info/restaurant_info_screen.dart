@@ -10,7 +10,7 @@ import '../../theme/dimens.dart';
 import '../../utils.dart';
 
 class RestaurantInfoScreen extends StatefulWidget {
-  const RestaurantInfoScreen({Key? key}) : super(key: key);
+  const RestaurantInfoScreen({super.key});
 
   @override
   State<RestaurantInfoScreen> createState() => _RestaurantInfoScreenState();

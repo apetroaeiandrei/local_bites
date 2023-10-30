@@ -8,9 +8,9 @@ import '../utils.dart';
 
 class FoodCard extends StatelessWidget {
   const FoodCard({
-    Key? key,
+    super.key,
     required this.foodModel,
-  }) : super(key: key);
+  });
   final FoodModel foodModel;
   static const _nameMaxLines = 2;
 

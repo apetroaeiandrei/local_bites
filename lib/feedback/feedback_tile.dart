@@ -5,11 +5,10 @@ import '../generated/l10n.dart';
 
 class FeedbackTile extends StatelessWidget {
   const FeedbackTile(
-      {Key? key,
+      {super.key,
       required this.suggestion,
       required this.isSelected,
-      required this.onTap})
-      : super(key: key);
+      required this.onTap});
   final FeedbackSuggestions suggestion;
   final bool isSelected;
   final Function() onTap;

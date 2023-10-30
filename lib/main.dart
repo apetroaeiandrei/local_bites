@@ -123,7 +123,7 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
+  const MyApp({super.key, required this.isLoggedIn});
   final bool isLoggedIn;
 
   // This widget is the root of your application.

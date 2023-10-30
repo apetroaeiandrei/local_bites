@@ -3,7 +3,7 @@ import 'package:local/address/address_type_extension.dart';
 import 'package:models/delivery_address.dart';
 
 class HomeAddressTile extends StatelessWidget {
-  const HomeAddressTile({Key? key, required this.address}) : super(key: key);
+  const HomeAddressTile({super.key, required this.address});
   final DeliveryAddress address;
 
   @override

@@ -6,7 +6,7 @@ import '../generated/l10n.dart';
 import 'help_cubit.dart';
 
 class HelpScreen extends StatelessWidget {
-  const HelpScreen({Key? key}) : super(key: key);
+  const HelpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

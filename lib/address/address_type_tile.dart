@@ -4,8 +4,7 @@ import 'package:models/delivery_address.dart';
 import 'address_type_extension.dart';
 
 class AddressTypeTile extends StatelessWidget {
-  const AddressTypeTile({Key? key, required this.type, required this.selected})
-      : super(key: key);
+  const AddressTypeTile({super.key, required this.type, required this.selected});
   final AddressType type;
   final bool selected;
 

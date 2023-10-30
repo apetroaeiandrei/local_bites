@@ -12,7 +12,7 @@ import '../generated/l10n.dart';
 import '../theme/dimens.dart';
 
 class SettingsScreen extends StatelessWidget {
-  SettingsScreen({Key? key}) : super(key: key);
+  SettingsScreen({super.key});
   final _analytics = Analytics();
 
   @override

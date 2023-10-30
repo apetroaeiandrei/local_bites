@@ -8,9 +8,9 @@ import '../utils.dart';
 
 class HomeScreenCard extends StatelessWidget {
   const HomeScreenCard({
-    Key? key,
+    super.key,
     required this.restaurant,
-  }) : super(key: key);
+  });
 
   static const int _feedbackCountThreshold = 23;
   static const double _iconsOpacity = 0.7;
