@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:local/analytics/analytics.dart';
 import 'package:local/analytics/metric.dart';
 import 'package:local/repos/user_repo.dart';
-import 'package:models/feedback_model.dart';
 import 'package:models/user_order.dart';
 
 part 'feedback_state.dart';

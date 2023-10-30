@@ -3,13 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/feedback/feedback_cubit.dart';
 import 'package:local/theme/dimens.dart';
 import 'package:local/widgets/dialog_utils.dart';
-import 'package:models/feedback_model.dart';
 
 import '../generated/l10n.dart';
 import '../theme/decorations.dart';
 import '../theme/wl_colors.dart';
 import '../widgets/button_loading.dart';
-import 'feedback_tile.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({Key? key}) : super(key: key);

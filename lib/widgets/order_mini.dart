@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:local/theme/dimens.dart';
-import 'package:local/theme/wl_colors.dart';
 import 'package:local/utils.dart';
 import 'package:local/widgets/button_loading.dart';
 import 'package:lottie/lottie.dart';
