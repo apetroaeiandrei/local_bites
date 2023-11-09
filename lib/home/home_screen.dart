@@ -242,6 +242,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   List<Widget> _buildHomeScreenWidgetList(HomeState state) {
     final List<Widget> widgets = [];
+    if (state.restaurants.isEmpty) {
+      return widgets;
+    }
     bool hasGroceryZone = false;
     widgets.add(_getAddressZone(context, state));
     for (int i = 0; i < state.restaurants.length; i++) {
