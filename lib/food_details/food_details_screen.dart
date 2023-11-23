@@ -221,6 +221,16 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
               e.name,
               style: Theme.of(context).textTheme.displayMedium,
             ),
+            Visibility(
+              visible: state.invalidOptions.contains(e),
+              child: Text(
+                S.of(context).food_details_min_max_error,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: WlColors.error,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+            ),
             const SizedBox(
               height: 4,
             ),
@@ -228,10 +238,10 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
               S
                   .of(context)
                   .food_details_min_max(e.minSelection, e.maxSelection),
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: state.invalidOptions.contains(e)
-                      ? WlColors.error
-                      : WlColors.secondary),
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall
+                  ?.copyWith(color: WlColors.secondary),
             ),
             ...e.options.map((option) => _buildOption(option, state)),
           ],
@@ -301,6 +311,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
     _analytics.logEvent(name: Metric.eventFoodInvalidOptions);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        duration: const Duration(seconds: 2),
         content: Text(S.of(context).food_details_invalid_options),
       ),
     );

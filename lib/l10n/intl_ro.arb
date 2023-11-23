@@ -113,6 +113,7 @@
   "food_option_price_extra" : " + {price} RON",
   "food_details_add_button" : "Adaugă {quantity} pentru {price} RON",
   "food_details_min_max": "Minim {min}, maxim {max}",
+  "food_details_min_max_error": "Corectează selecția",
   "food_details_invalid_options": "Vă rugăm să selectați opțiunile obligatorii",
   "food_details_show_nutrition": "Vezi informații nutriționale",
   "food_details_hide_nutrition": "Ascunde informații nutriționale",
