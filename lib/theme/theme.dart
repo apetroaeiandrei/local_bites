@@ -37,7 +37,7 @@ class AppThemeData {
       iconTheme: const IconThemeData(
         color: WlColors.primary,
       ),
-      fontFamily: "SanFrancisco",
+      fontFamily: "Poppins",
       textTheme: TextTheme(
         displayLarge: const TextStyle(
           fontSize: 32,
@@ -59,21 +59,42 @@ class AppThemeData {
           letterSpacing: letterSpacing,
           height: 1,
         ),
+        headlineLarge: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: textColor,
+          letterSpacing: letterSpacing,
+          height: 1,
+        ),
         headlineMedium: const TextStyle(
           fontSize: 16,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
           color: textColor,
           letterSpacing: letterSpacing,
           height: 1,
         ),
         headlineSmall: const TextStyle(
           fontSize: 14,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
           color: textColor,
           letterSpacing: letterSpacing,
           height: 1,
         ),
         titleLarge: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          color: textColor.withOpacity(0.8),
+          letterSpacing: letterSpacing,
+          height: 1,
+        ),
+        titleMedium: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
+          color: textColor.withOpacity(0.8),
+          letterSpacing: letterSpacing,
+          height: 1,
+        ),
+        titleSmall: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w700,
           color: textColor.withOpacity(0.8),
@@ -93,10 +114,31 @@ class AppThemeData {
           letterSpacing: letterSpacing,
           height: 1,
         ),
-        labelLarge: const TextStyle(
+        bodySmall: TextStyle(
           fontSize: 12,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.35,
+          color: textColor.withOpacity(0.8),
+          fontWeight: FontWeight.w400,
+          letterSpacing: letterSpacing,
+          height: 1,
+        ),
+        labelLarge: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w300,
+          letterSpacing: letterSpacing,
+          height: 1,
+        ),
+        labelMedium: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w300,
+          color: textColor.withOpacity(0.8),
+          letterSpacing: letterSpacing,
+          height: 1,
+        ),
+        labelSmall: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w300,
+          color: textColor.withOpacity(0.8),
+          letterSpacing: letterSpacing,
           height: 1,
         ),
       ),
@@ -111,15 +153,23 @@ class AppThemeData {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
           ),
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
           backgroundColor: WlColors.secondaryButtonColor,
           foregroundColor: WlColors.textColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
