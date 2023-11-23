@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local/restaurant/restaurant_cubit.dart';
 import 'package:local/routes.dart';
+import 'package:local/theme/wl_colors.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../analytics/analytics.dart';
@@ -148,6 +149,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       itemScrollController: categoriesItemScrollController,
       padding: const EdgeInsets.symmetric(horizontal: Dimens.defaultPadding),
       itemBuilder: (context, index) {
+        bool selected = _selectedCategoryIndex == index;
         return InkWell(
           onTap: () {
             _scrollFoodsToIndex(index);
@@ -156,22 +158,23 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
             margin: const EdgeInsets.only(right: 10),
             padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
-              color: _selectedCategoryIndex == index
-                  ? Theme.of(context).colorScheme.secondary
+              color: selected
+                  ? Theme.of(context).colorScheme.primary
                   : Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(50),
-              border: Border.all(
-                color: Theme.of(context).colorScheme.secondary,
-              ),
             ),
             child: Center(
-                child: Text(
-              state.categories[index].category.name,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelMedium!
-                  .copyWith(fontWeight: FontWeight.bold, fontSize: 12),
-            )),
+              child: Text(
+                state.categories[index].category.name,
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      color: selected
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : WlColors.placeholderTextColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+              ),
+            ),
           ),
         );
       },
