@@ -254,6 +254,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (state.showNotificationsPrompt) {
       widgets.insert(2, _getNotificationsBanner());
     }
+    widgets.add(const SizedBox(height: 100));
     return widgets;
   }
 
@@ -261,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 40, 16, 10),
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: theme.colorScheme.secondary.withOpacity(0.2),
         border: Border.all(
@@ -274,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         child: Text(
           S.of(context).home_grocery_headline,
           textAlign: TextAlign.center,
-          style: theme.textTheme.headlineMedium,
+          style: theme.textTheme.displaySmall,
         ),
       ),
     );

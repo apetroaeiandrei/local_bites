@@ -4,6 +4,7 @@ import 'package:models/delivery_address.dart';
 
 class HomeAddressTile extends StatelessWidget {
   const HomeAddressTile({super.key, required this.address});
+
   final DeliveryAddress address;
 
   @override
@@ -32,12 +33,11 @@ class HomeAddressTile extends StatelessWidget {
               children: [
                 Text(
                   address.addressType.getName(context),
-                  style: theme.textTheme.headlineSmall,
+                  style: theme.textTheme.titleSmall,
                 ),
-                const SizedBox(height: 4),
                 Text(
                   address.street,
-                  style: theme.textTheme.bodyMedium,
+                  style: theme.textTheme.labelMedium?.copyWith(height: 1),
                 ),
               ],
             ),
