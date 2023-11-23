@@ -196,6 +196,10 @@
   "restaurant_info_website": "Website",
   "restaurant_info_email": "Email",
   "restaurant_info_services": "Servicii",
+  "restaurant_info_accepts_vouchers": "Acceptă vouchere Local Bites",
+  "restaurant_info_accepts_in_app_payments": "Acceptă plăți prin aplicație",
+  "restaurant_info_external_delivery": "Livrează prin curieri Local Bites",
+  "restaurant_info_delivery": "Livrează prin curieri proprii",
   "restaurant_banner_free_delivery_min_order": "Acest restaurant acceptă comenzi de minim {min} RON",
   "restaurant_banner_paid_delivery_under_min_order": "Taxă livrare: {delivery_fee} RON. Livrare gratuită pentru comenzi de minim {min} RON",
 
