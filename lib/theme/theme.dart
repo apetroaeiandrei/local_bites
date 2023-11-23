@@ -5,7 +5,6 @@ class AppThemeData {
   ThemeData get appThemeData {
     const textColor = WlColors.textColor;
 
-    const letterSpacing = -0.0;
     return ThemeData(
       appBarTheme: const AppBarTheme(
         color: WlColors.surface,
@@ -49,57 +48,41 @@ class AppThemeData {
           fontSize: 24,
           fontWeight: FontWeight.w700,
           color: textColor,
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         displaySmall: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w700,
           color: textColor,
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         headlineLarge: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: textColor,
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         headlineMedium: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           color: textColor,
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         headlineSmall: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w600,
           color: textColor,
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         titleLarge: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w700,
           color: textColor.withOpacity(0.8),
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         titleMedium: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w700,
           color: textColor.withOpacity(0.8),
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         titleSmall: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w700,
           color: textColor.withOpacity(0.8),
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         bodyLarge: TextStyle(
           fontSize: 16,
@@ -111,35 +94,25 @@ class AppThemeData {
           fontSize: 14,
           color: textColor.withOpacity(0.8),
           fontWeight: FontWeight.w400,
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         bodySmall: TextStyle(
           fontSize: 12,
           color: textColor.withOpacity(0.8),
           fontWeight: FontWeight.w400,
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         labelLarge: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w300,
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         labelMedium: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w300,
           color: textColor.withOpacity(0.8),
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
         labelSmall: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.w300,
           color: textColor.withOpacity(0.8),
-          letterSpacing: letterSpacing,
-          height: 1,
         ),
       ),
       dialogTheme: const DialogTheme(
