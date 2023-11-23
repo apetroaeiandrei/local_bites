@@ -114,7 +114,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                             top: Dimens.defaultPadding),
                         child: Text(
                           state.food.name,
-                          style: Theme.of(context).textTheme.displayMedium,
+                          style: Theme.of(context).textTheme.displayLarge,
                         ),
                       ),
                       Padding(
@@ -125,14 +125,17 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                         ),
                         child: Text(
                           state.food.description,
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(height: 1),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: Dimens.defaultPadding,
-                            top: Dimens.defaultPadding,
-                            bottom: 4),
+                          left: Dimens.defaultPadding,
+                          top: Dimens.defaultPadding,
+                        ),
                         child: Text(
                           S.of(context).price_currency_ron(
                               state.food.discountedPrice > 0
@@ -163,6 +166,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                                 .textTheme
                                 .headlineMedium!
                                 .copyWith(
+                                    height: 1,
                                     color: Theme.of(context).disabledColor,
                                     decoration: TextDecoration.lineThrough),
                           ),
@@ -213,13 +217,14 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   Iterable<Widget> _getOptions(FoodDetailsState state) {
     return state.options.map(
       (e) => Padding(
-        padding: const EdgeInsets.all(Dimens.defaultPadding),
+        padding: const EdgeInsets.fromLTRB(Dimens.defaultPadding,
+            Dimens.defaultPadding, Dimens.defaultPadding, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               e.name,
-              style: Theme.of(context).textTheme.displayMedium,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             Visibility(
               visible: state.invalidOptions.contains(e),
@@ -240,7 +245,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                   .food_details_min_max(e.minSelection, e.maxSelection),
               style: Theme.of(context)
                   .textTheme
-                  .headlineSmall
+                  .bodySmall
                   ?.copyWith(color: WlColors.secondary),
             ),
             ...e.options.map((option) => _buildOption(option, state)),
@@ -253,19 +258,23 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   Widget _buildOption(FoodOption option, FoodDetailsState state) {
     final bool selected = state.selectedOptions.contains(option.id);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           child: Text(
             option.name,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
         const SizedBox(
           width: 4,
         ),
         Text(S.of(context).food_option_price_extra(option.price),
-            style: Theme.of(context).textTheme.titleSmall),
+            style: Theme.of(context).textTheme.bodyMedium),
         IconButton(
+          visualDensity: VisualDensity.compact,
+          splashColor: Theme.of(context).colorScheme.primary,
+          splashRadius: 20,
           icon: Icon(selected ? Icons.check_circle : Icons.add),
           onPressed: () {
             if (selected) {
@@ -337,7 +346,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: Dimens.defaultPadding, vertical: 4),
+          horizontal: Dimens.defaultPadding,
+        ),
         child: Text(
           S.of(context).nutrition_portion_size(
               food.portionSize?.toStringAsFixed(0) ?? "-"),
@@ -346,7 +356,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
       ),
       Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: Dimens.defaultPadding, vertical: 4),
+          horizontal: Dimens.defaultPadding,
+        ),
         child: Text(
           S.of(context).nutrition_allergens(allergens),
           style: style,
@@ -364,7 +375,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Dimens.defaultPadding, vertical: 4),
+                    horizontal: Dimens.defaultPadding,
+                  ),
                   child: Text(
                     S.of(context).nutrition_energy(food.calories ?? "-"),
                     style: style,
@@ -372,7 +384,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Dimens.defaultPadding, vertical: 4),
+                    horizontal: Dimens.defaultPadding,
+                  ),
                   child: Text(
                     S.of(context).nutrition_carbohydrates(food.carbs ?? "-"),
                     style: style,
@@ -380,7 +393,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Dimens.defaultPadding, vertical: 4),
+                    horizontal: Dimens.defaultPadding,
+                  ),
                   child: Text(
                     S.of(context).nutrition_fat(food.fat ?? "-"),
                     style: style,
@@ -388,7 +402,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Dimens.defaultPadding, vertical: 4),
+                    horizontal: Dimens.defaultPadding,
+                  ),
                   child: Text(
                     S
                         .of(context)
@@ -406,7 +421,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Dimens.defaultPadding, vertical: 4),
+                    horizontal: Dimens.defaultPadding,
+                  ),
                   child: Text(
                     S.of(context).nutrition_protein(food.protein ?? "-"),
                     style: style,
@@ -414,7 +430,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Dimens.defaultPadding, vertical: 4),
+                    horizontal: Dimens.defaultPadding,
+                  ),
                   child: Text(
                     S.of(context).nutrition_sugar(food.sugar ?? "-"),
                     style: style,
@@ -422,7 +439,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Dimens.defaultPadding, vertical: 4),
+                    horizontal: Dimens.defaultPadding,
+                  ),
                   child: Text(
                     S.of(context).nutrition_fiber(food.fiber ?? "-"),
                     style: style,
@@ -430,7 +448,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Dimens.defaultPadding, vertical: 4),
+                    horizontal: Dimens.defaultPadding,
+                  ),
                   child: Text(
                     S.of(context).nutrition_salt(food.salt ?? "-"),
                     style: style,
@@ -457,7 +476,9 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: Dimens.defaultPadding, vertical: 4),
+              horizontal: Dimens.defaultPadding,
+              vertical: Dimens.defaultPadding,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -467,11 +488,14 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                       : S.of(context).food_details_show_nutrition,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                Icon(
-                  _nutritionVisible
-                      ? Icons.arrow_circle_up
-                      : Icons.arrow_circle_down,
-                  color: Theme.of(context).colorScheme.onSurface,
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Icon(
+                    _nutritionVisible
+                        ? Icons.arrow_circle_up
+                        : Icons.arrow_circle_down,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
               ],
             ),
