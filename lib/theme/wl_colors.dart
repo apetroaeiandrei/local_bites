@@ -5,7 +5,7 @@ abstract class WlColors {
   static const placeholderTextColor = Color(0x77000000);
 
   //App bar color, separators, Fab icon
-  static const primary = Color(0xFFc05746);
+  static const primary = Color(0xFFEC2225);
 
   //Loading Indicator
   static const primaryVariant = Color(0xFF2E6665);
@@ -20,7 +20,7 @@ abstract class WlColors {
   static const onSurface = primary;
 
   // Used for selection checkmarks of food and tab indicator
-  static const secondary = Color(0xFFadc698);
+  static const secondary = Color(0xFF2ead28);
 
   //Error flushbar
   static const error = Color(0xFFD73A44);
