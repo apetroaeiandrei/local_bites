@@ -125,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             actions: [
               IconButton(
                 icon: Icon(
-                  Icons.local_offer_outlined,
+                  Icons.discount_outlined,
                   color: _vouchersIconColor,
                 ),
                 onPressed: () async {
@@ -140,14 +140,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   setState(() {
                     _vouchersIconColor = Colors.black;
                   });
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.help_outline),
-                onPressed: () {
-                  _analytics.setCurrentScreen(screenName: Routes.help);
-                  Navigator.of(context).pushNamed(Routes.help).then((value) =>
-                      _analytics.setCurrentScreen(screenName: Routes.home));
                 },
               ),
               IconButton(
