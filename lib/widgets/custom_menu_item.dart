@@ -39,7 +39,7 @@ class CustomMenuItem extends StatelessWidget {
           ),
           Container(
             height: 1,
-            color: Theme.of(context).colorScheme.onSurface,
+            color: Theme.of(context).colorScheme.onBackground,
           ),
         ],
       ),
