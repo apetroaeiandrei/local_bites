@@ -93,6 +93,12 @@ class AppThemeData {
             letterSpacing: letterSpacing,
             height: 1,
           ),
+          labelLarge: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.35,
+            height: 1,
+          ),
         ),
         dialogTheme: const DialogTheme(
           backgroundColor: WlColors.surface,
@@ -102,6 +108,16 @@ class AppThemeData {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40),
+          ),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          padding: const EdgeInsets.all(15),
+          backgroundColor: WlColors.secondaryButtonColor,
+          foregroundColor: WlColors.textColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(40),
           ),

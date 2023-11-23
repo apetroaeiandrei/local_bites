@@ -353,17 +353,13 @@ class _CartScreenState extends State<CartScreen> {
   Widget _getSwitchConfigurationButton(String buttonText) {
     return Padding(
       padding: const EdgeInsets.only(top: 4),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: WlColors.secondary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
-          ),
-        ),
+      child: FilledButton(
         onPressed: () {
           context.read<CartCubit>().toggleDeliverySelected();
         },
-        child: Text(buttonText),
+        child: Text(
+          buttonText,
+        ),
       ),
     );
   }
