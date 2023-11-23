@@ -17,6 +17,7 @@ import 'package:models/delivery_address.dart';
 import 'package:models/restaurant_model.dart';
 import 'package:models/user_order.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../analytics/metric.dart';
 import '../routes.dart';
@@ -44,6 +45,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   static const _showAlertMaxDistance = 100;
+  static const _prefsNotificationsPromptDate = 'notificationsPromptDateDelay';
   final UserRepo _userRepo;
   final RestaurantsRepo _restaurantsRepo;
   final OrdersRepo _ordersRepo;
@@ -215,10 +217,21 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> _checkNotificationsPermissions() async {
     final permissionGranted =
         await _notificationsRepo.areNotificationsEnabled();
+    bool showNotificationsPrompt = false;
     if (permissionGranted) {
       onWantNotificationsClick();
+    } else {
+      final prefs = await SharedPreferences.getInstance();
+      final lastPromptDate = prefs.getInt(_prefsNotificationsPromptDate);
+      if (lastPromptDate == null) {
+        showNotificationsPrompt = true;
+      } else {
+        final lastPrompt = DateTime.fromMillisecondsSinceEpoch(lastPromptDate);
+        showNotificationsPrompt =
+            DateTime.now().difference(lastPrompt).inDays > 5;
+      }
     }
-    emit(state.copyWith(showNotificationsPrompt: !permissionGranted));
+    emit(state.copyWith(showNotificationsPrompt: showNotificationsPrompt));
   }
 
   void onWantNotificationsClick() async {
@@ -237,6 +250,14 @@ class HomeCubit extends Cubit<HomeState> {
       });
       return;
     }
+  }
+
+  Future<void> onNotificationsLaterClick() async {
+    _analytics.logEvent(name: Metric.eventFCMPermissionNotNow);
+    emit(state.copyWith(showNotificationsPrompt: false));
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt(
+        _prefsNotificationsPromptDate, DateTime.now().millisecondsSinceEpoch);
   }
 
 //endregion

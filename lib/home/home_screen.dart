@@ -9,6 +9,7 @@ import 'package:local/feedback/feedback_cubit.dart';
 import 'package:local/home/home_address_tile.dart';
 import 'package:local/home/home_cubit.dart';
 import 'package:local/repos/user_repo.dart';
+import 'package:local/theme/wl_colors.dart';
 import 'package:local/utils.dart';
 import 'package:local/widgets/dialog_utils.dart';
 import 'package:local/widgets/order_mini.dart';
@@ -453,28 +454,94 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Widget _getNotificationsBanner() {
-    return InkWell(
-      onTap: () {
-        context.read<HomeCubit>().onWantNotificationsClick();
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-          horizontal: 14,
-        ),
-        padding: const EdgeInsets.all(30.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimens.cardCornerRadius),
-          color: Theme.of(context).colorScheme.secondary,
-        ),
-        child: Center(
-          child: Text(
-            S.of(context).home_notifications_banner,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimary,
+    final contentColor = WlColors.textColor.withOpacity(0.9);
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      margin: const EdgeInsets.symmetric(
+        horizontal: 14,
+      ),
+      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.notifications_active,
+                  color: WlColors.secondary,
                 ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 26.0),
+                    child: Text(
+                      S.of(context).home_notifications_banner,
+                      textAlign: TextAlign.center,
+                      style:
+                          Theme.of(context).textTheme.headlineMedium!.copyWith(
+                                color: contentColor,
+                              ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+          Container(
+            height: 1,
+            color: contentColor.withOpacity(0.2),
+          ),
+          SizedBox(
+            height: 40,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: InkWell(
+                    splashColor: WlColors.error.withOpacity(0.2),
+                    onTap: () {
+                      context.read<HomeCubit>().onNotificationsLaterClick();
+                    },
+                    child: Center(
+                      child: Text(
+                        S.of(context).home_notifications_banner_button_negative,
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  color: contentColor,
+                                ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  color: contentColor.withOpacity(0.2),
+                ),
+                Expanded(
+                  child: InkWell(
+                    splashColor: WlColors.secondary.withOpacity(0.2),
+                    onTap: () {
+                      context.read<HomeCubit>().onWantNotificationsClick();
+                    },
+                    child: Center(
+                      child: Text(
+                        S.of(context).home_notifications_banner_button_positive,
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  color: contentColor,
+                                ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
