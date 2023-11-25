@@ -65,8 +65,7 @@ class HomeScreenCard extends StatelessWidget {
                             Visibility(
                               visible: restaurant.stripeConfigured,
                               child: Container(
-                                margin:
-                                    const EdgeInsets.only(bottom: 2, right: 2),
+                                margin: const EdgeInsets.only(right: 4),
                                 padding: const EdgeInsets.all(5),
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
@@ -84,7 +83,6 @@ class HomeScreenCard extends StatelessWidget {
                             Visibility(
                               visible: restaurant.acceptsVouchers,
                               child: Container(
-                                margin: const EdgeInsets.only(bottom: 2),
                                 padding: const EdgeInsets.all(5),
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
@@ -104,6 +102,7 @@ class HomeScreenCard extends StatelessWidget {
                         Visibility(
                           visible: _showRating,
                           child: Container(
+                            margin: const EdgeInsets.only(top: 4),
                             padding: const EdgeInsets.symmetric(
                               vertical: _labelPaddingVertical,
                               horizontal: _labelPaddingHorizontal,
@@ -249,19 +248,21 @@ class HomeScreenCard extends StatelessWidget {
 
   Widget _getDeliveryLabel(BuildContext context) {
     String labelText;
-    Color labelColor;
     if (restaurant.hasExternalDelivery && restaurant.couriersAvailable) {
       labelText = S.of(context).home_restaurant_external_delivery;
-      labelColor = Theme.of(context).colorScheme.secondary;
     } else if (!restaurant.hasDelivery) {
       labelText = S.of(context).home_restaurant_pickup;
-      labelColor = Theme.of(context).colorScheme.primary;
     } else {
       labelText = S.of(context).home_restaurant_delivery;
-      labelColor = Theme.of(context).colorScheme.secondary;
     }
-
-    return _getOverlayLabel(context, labelText, labelColor);
+    return Text(
+      labelText,
+      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            fontSize: 11,
+            letterSpacing: -0.1,
+            color: WlColors.textColor.withOpacity(0.7),
+          ),
+    );
   }
 
   Widget _getPromoLabel(BuildContext context) {
