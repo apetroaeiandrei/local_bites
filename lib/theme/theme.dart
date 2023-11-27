@@ -6,6 +6,7 @@ class AppThemeData {
     const textColor = WlColors.textColor;
 
     return ThemeData(
+      useMaterial3: false,
       appBarTheme: const AppBarTheme(
         color: WlColors.surface,
         iconTheme: IconThemeData(
