@@ -120,6 +120,19 @@ class AppThemeData {
         titleTextStyle: TextStyle(
             fontSize: 20, fontWeight: FontWeight.w700, color: textColor),
       ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.all(15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 14,
+            color: WlColors.primary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(15),
