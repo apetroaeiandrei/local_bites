@@ -171,7 +171,15 @@ class AppThemeData {
       dialogTheme: const DialogTheme(
         backgroundColor: WlColors.surface,
         titleTextStyle: TextStyle(
-            fontSize: 20, fontWeight: FontWeight.w700, color: textColor),
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: textColor,
+        ),
+        contentTextStyle: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: textColor,
+        ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
