@@ -15,6 +15,7 @@ class OrderMini extends StatefulWidget {
       required this.order,
       required this.onFeedback,
       required this.onOrderCancelled});
+
   final UserOrder order;
   final Function(bool liked) onFeedback;
   final Function(UserOrder order) onOrderCancelled;
@@ -72,7 +73,10 @@ class _OrderMiniState extends State<OrderMini> {
                       visible: _isEtaVisible(),
                       child: Text(
                         _getEta(context, widget.order),
-                        style: Theme.of(context).textTheme.headlineSmall,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(height: 1),
                       ),
                     ),
                     const SizedBox(
