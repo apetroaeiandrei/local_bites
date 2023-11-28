@@ -160,7 +160,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           },
           icon: Icon(
             true == liked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
-            color: WlColors.secondary,
+            color: WlColors.notificationGreen,
           ),
         ),
       ],
