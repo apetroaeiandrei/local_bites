@@ -55,6 +55,7 @@ class _AddressScreenState extends State<AddressScreen> {
               title: Text(S.of(context).address_title),
             ),
             body: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
                   child: Stack(
@@ -99,13 +100,11 @@ class _AddressScreenState extends State<AddressScreen> {
                       right: Dimens.defaultPadding),
                   child: Text(
                     S.of(context).address_location_info,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
+                  padding: const EdgeInsets.only(top: 8, left: 20, right: 20),
                   child: Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -124,8 +123,8 @@ class _AddressScreenState extends State<AddressScreen> {
                 ),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.30,
-                  padding: const EdgeInsets.fromLTRB(Dimens.defaultPadding, 0,
-                      Dimens.defaultPadding, Dimens.defaultPadding),
+                  padding: const EdgeInsets.fromLTRB(
+                      Dimens.defaultPadding, 0, Dimens.defaultPadding, 12),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,

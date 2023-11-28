@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 abstract class WlColors {
   static const textColor = Color(0xff000000);
   static const placeholderTextColor = Color(0x77000000);
+  static const inputLabelTextColor = Color(0xAA000000);
   static const secondaryButtonColor = Color(0xFFE0E0E0);
   static const gray1 = Color(0xFFC0C0C0);
 

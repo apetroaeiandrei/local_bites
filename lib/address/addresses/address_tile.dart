@@ -4,6 +4,7 @@ import 'package:models/delivery_address.dart';
 
 class AddressTile extends StatelessWidget {
   const AddressTile({super.key, required this.address, required this.selected});
+
   final DeliveryAddress address;
   final bool selected;
 
@@ -35,14 +36,16 @@ class AddressTile extends StatelessWidget {
               children: [
                 Text(
                   address.addressType.getName(context),
-                  style: theme.textTheme.headlineMedium,
+                  style: theme.textTheme.titleLarge,
                 ),
-                const SizedBox(height: 4),
                 Text(
                   address.street,
                   style: theme.textTheme.headlineSmall,
                 ),
-                Text(address.propertyDetails),
+                Text(
+                  address.propertyDetails,
+                  style: theme.textTheme.bodySmall?.copyWith(height: 1),
+                ),
               ],
             ),
           ),

@@ -116,6 +116,58 @@ class AppThemeData {
           color: textColor.withOpacity(0.8),
         ),
       ),
+      inputDecorationTheme: const InputDecorationTheme(
+        labelStyle: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w300,
+            color: WlColors.inputLabelTextColor,
+            height: 1),
+        hintStyle: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: WlColors.inputLabelTextColor,
+        ),
+        errorStyle: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w400,
+          height: 1.1,
+          color: WlColors.error,
+        ),
+        helperStyle: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w800,
+          color: textColor,
+        ),
+        floatingLabelStyle: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: WlColors.inputLabelTextColor,
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: WlColors.primary,
+            width: 2,
+          ),
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: WlColors.inputLabelTextColor,
+            width: 1,
+          ),
+        ),
+        errorBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: WlColors.error,
+            width: 1,
+          ),
+        ),
+        focusedErrorBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: WlColors.error,
+            width: 2,
+          ),
+        ),
+      ),
       dialogTheme: const DialogTheme(
         backgroundColor: WlColors.surface,
         titleTextStyle: TextStyle(
