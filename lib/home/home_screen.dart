@@ -677,6 +677,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             builder: (context, state, child) {
               return CarouselSlider.builder(
                 options: CarouselOptions(
+                  height: Dimens.orderMiniHeight,
                   viewportFraction: 1,
                   enableInfiniteScroll: state.currentOrders.length > 1,
                   autoPlay: state.currentOrders.length > 1,

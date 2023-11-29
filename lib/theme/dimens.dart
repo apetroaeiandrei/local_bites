@@ -9,6 +9,7 @@ abstract class Dimens {
   static const foodCardPhotoSize = 70.0;
   static const orderCommentsHeight = 100.0;
   static const homeCardHeight = 150.0;
+  static const orderMiniHeight = 210.0;
 
   static const buttonCornerRadius = 4.0;
   static const actionButtonsHeight = 48.0;
