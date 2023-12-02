@@ -54,7 +54,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
     if (!state.phoneVerified) {
       hasTopWigdets = true;
       _listViewWidgets.add(
-        _getConfirmPhoneWidget(),
+        _getConfirmPhoneWidget(state.phoneConfirmValue),
       );
     }
 
@@ -104,7 +104,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
     );
   }
 
-  Widget _getConfirmPhoneWidget() {
+  Widget _getConfirmPhoneWidget(num value) {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -125,7 +125,9 @@ class _VouchersScreenState extends State<VouchersScreen> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  S.of(context).vouchers_phone_number_bonus,
+                  S
+                      .of(context)
+                      .vouchers_phone_number_bonus(value.toStringAsFixed(0)),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 10),

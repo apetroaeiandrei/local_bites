@@ -6,6 +6,7 @@ class VouchersState extends Equatable {
   final bool referralEnabled;
   final num referralValue;
   final String referralCode;
+  final num phoneConfirmValue;
 
   @override
   List<Object> get props => [
@@ -14,6 +15,7 @@ class VouchersState extends Equatable {
         referralEnabled,
         referralValue,
         referralCode,
+        phoneConfirmValue,
       ];
 
   const VouchersState({
@@ -22,6 +24,7 @@ class VouchersState extends Equatable {
     required this.referralEnabled,
     required this.referralValue,
     required this.referralCode,
+    required this.phoneConfirmValue,
   });
 
   VouchersState copyWith({
@@ -30,6 +33,7 @@ class VouchersState extends Equatable {
     bool? referralEnabled,
     num? referralValue,
     String? referralCode,
+    num? phoneConfirmValue,
   }) {
     return VouchersState(
       phoneVerified: phoneVerified ?? this.phoneVerified,
@@ -37,6 +41,7 @@ class VouchersState extends Equatable {
       referralEnabled: referralEnabled ?? this.referralEnabled,
       referralValue: referralValue ?? this.referralValue,
       referralCode: referralCode ?? this.referralCode,
+      phoneConfirmValue: phoneConfirmValue ?? this.phoneConfirmValue,
     );
   }
 }

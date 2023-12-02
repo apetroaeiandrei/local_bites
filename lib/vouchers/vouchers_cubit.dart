@@ -17,6 +17,7 @@ class VouchersCubit extends Cubit<VouchersState> {
           referralEnabled: false,
           referralValue: 0,
           referralCode: _userRepo.user!.referralCode,
+          phoneConfirmValue: 11,
         )) {
     _init();
   }
@@ -38,16 +39,25 @@ class VouchersCubit extends Cubit<VouchersState> {
   }
 
   _checkReferralEnabled() {
+    bool referralEnabled = false;
+    num referralValue = 0;
+    num phoneConfirmValue = 0;
     for (var element in _vouchersRepo.vouchersConfig) {
       if (element.type == VoucherType.referral) {
-        Future.delayed(Duration.zero, () {
-          emit(state.copyWith(
-            referralEnabled: element.enabled && state.phoneVerified,
-            referralValue: element.value,
-          ));
-        });
+        referralEnabled = element.enabled && state.phoneVerified;
+        referralValue = element.value;
+      }
+      if (element.type == VoucherType.phoneConfirmation) {
+        phoneConfirmValue = element.value;
       }
     }
+    Future.delayed(Duration.zero, () {
+      emit(state.copyWith(
+        referralEnabled: referralEnabled,
+        referralValue: referralValue,
+        phoneConfirmValue: phoneConfirmValue,
+      ));
+    });
   }
 
   @override

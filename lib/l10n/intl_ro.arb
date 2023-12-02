@@ -255,7 +255,7 @@
 
   "vouchers_title" : "Vouchere",
   "vouchers_phone_number_rationale" : "Confirmă numărul tău de telefon pentru a activa ofertele.",
-  "vouchers_phone_number_bonus" : "Bonus: primești 10 lei cadou!",
+  "vouchers_phone_number_bonus" : "Bonus: primești {value} lei cadou!",
   "vouchers_phone_number_button" : "Confirmă",
   "vouchers_referral_rationale" : "Invită un prieten!",
   "vouchers_referral_code" : "Codul de invitație: {code}",
