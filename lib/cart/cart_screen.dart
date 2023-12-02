@@ -79,7 +79,7 @@ class _CartScreenState extends State<CartScreen> {
             bottom: state.amountToMinOrder == 0 || !state.deliverySelected
                 ? null
                 : PreferredSize(
-                    preferredSize: const Size.fromHeight(48),
+                    preferredSize: const Size.fromHeight(20),
                     child: _getDeliveryAndMinOrderInfo(state),
                   ),
           ),
@@ -353,17 +353,13 @@ class _CartScreenState extends State<CartScreen> {
   Widget _getSwitchConfigurationButton(String buttonText) {
     return Padding(
       padding: const EdgeInsets.only(top: 4),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: WlColors.secondary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
-          ),
-        ),
+      child: FilledButton(
         onPressed: () {
           context.read<CartCubit>().toggleDeliverySelected();
         },
-        child: Text(buttonText),
+        child: Text(
+          buttonText,
+        ),
       ),
     );
   }
@@ -486,7 +482,7 @@ class _CartScreenState extends State<CartScreen> {
           .cart_banner_paid_delivery_under_min_order(state.amountToMinOrder);
     }
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -496,10 +492,7 @@ class _CartScreenState extends State<CartScreen> {
             width: 8,
           ),
           Expanded(
-            child: Text(
-              infoText,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
+            child: Text(infoText, style: Theme.of(context).textTheme.bodySmall),
           ),
         ],
       ),
@@ -730,11 +723,11 @@ class _CartScreenState extends State<CartScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(S.of(context).cart_products,
-                style: Theme.of(context).textTheme.titleMedium),
+                style: Theme.of(context).textTheme.bodyMedium),
             Text(
                 S.of(context).price_currency_ron(
                     state.cartTotalProducts.toStringAsFixed(2)),
-                style: Theme.of(context).textTheme.titleMedium),
+                style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
         const SizedBox(height: 2),
@@ -744,13 +737,13 @@ class _CartScreenState extends State<CartScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(S.of(context).cart_delivery_fee,
-                  style: Theme.of(context).textTheme.titleMedium),
+                  style: Theme.of(context).textTheme.bodyMedium),
               Text(
                   state.deliveryFee > 0
                       ? S.of(context).cart_delivery_fee_currency(
                           state.deliveryFee.toStringAsFixed(1))
                       : S.of(context).cart_delivery_fee_free,
-                  style: Theme.of(context).textTheme.titleMedium),
+                  style: Theme.of(context).textTheme.bodyMedium),
             ],
           ),
         ),
@@ -760,7 +753,7 @@ class _CartScreenState extends State<CartScreen> {
           child: Row(
             children: [
               Text(S.of(context).cart_bad_weather_tax,
-                  style: Theme.of(context).textTheme.titleMedium),
+                  style: Theme.of(context).textTheme.bodyMedium),
               const SizedBox(width: 4),
               GestureDetector(
                 onTap: () {
@@ -775,7 +768,7 @@ class _CartScreenState extends State<CartScreen> {
               Text(
                   S.of(context).cart_delivery_fee_currency(
                       state.badWeatherTax.toStringAsFixed(1)),
-                  style: Theme.of(context).textTheme.titleMedium),
+                  style: Theme.of(context).textTheme.bodyMedium),
             ],
           ),
         ),
@@ -785,12 +778,12 @@ class _CartScreenState extends State<CartScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(S.of(context).cart_summary_vouchers,
-                  style: Theme.of(context).textTheme.titleMedium),
+                  style: Theme.of(context).textTheme.bodyMedium),
               Text(
                   S.of(context).cart_summary_voucher_value(
                         (state.selectedVoucher!.value).toStringAsFixed(2),
                       ),
-                  style: Theme.of(context).textTheme.titleMedium),
+                  style: Theme.of(context).textTheme.bodyMedium),
             ],
           ),
         Visibility(

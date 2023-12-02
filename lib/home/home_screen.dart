@@ -9,6 +9,7 @@ import 'package:local/feedback/feedback_cubit.dart';
 import 'package:local/home/home_address_tile.dart';
 import 'package:local/home/home_cubit.dart';
 import 'package:local/repos/user_repo.dart';
+import 'package:local/theme/wl_colors.dart';
 import 'package:local/utils.dart';
 import 'package:local/widgets/dialog_utils.dart';
 import 'package:local/widgets/order_mini.dart';
@@ -124,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             actions: [
               IconButton(
                 icon: Icon(
-                  Icons.local_offer_outlined,
+                  Icons.discount_outlined,
                   color: _vouchersIconColor,
                 ),
                 onPressed: () async {
@@ -139,14 +140,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   setState(() {
                     _vouchersIconColor = Colors.black;
                   });
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.help_outline),
-                onPressed: () {
-                  _analytics.setCurrentScreen(screenName: Routes.help);
-                  Navigator.of(context).pushNamed(Routes.help).then((value) =>
-                      _analytics.setCurrentScreen(screenName: Routes.home));
                 },
               ),
               IconButton(
@@ -261,6 +254,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (state.showNotificationsPrompt) {
       widgets.insert(2, _getNotificationsBanner());
     }
+    widgets.add(const SizedBox(height: 100));
     return widgets;
   }
 
@@ -268,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 40, 16, 10),
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
         color: theme.colorScheme.secondary.withOpacity(0.2),
         border: Border.all(
@@ -281,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         child: Text(
           S.of(context).home_grocery_headline,
           textAlign: TextAlign.center,
-          style: theme.textTheme.headlineMedium,
+          style: theme.textTheme.displaySmall,
         ),
       ),
     );
@@ -453,28 +447,94 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Widget _getNotificationsBanner() {
-    return InkWell(
-      onTap: () {
-        context.read<HomeCubit>().onWantNotificationsClick();
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-          horizontal: 14,
-        ),
-        padding: const EdgeInsets.all(30.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Dimens.cardCornerRadius),
-          color: Theme.of(context).colorScheme.secondary,
-        ),
-        child: Center(
-          child: Text(
-            S.of(context).home_notifications_banner,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimary,
+    final contentColor = WlColors.textColor.withOpacity(0.9);
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      margin: const EdgeInsets.symmetric(
+        horizontal: 14,
+      ),
+      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.notifications_active,
+                  color: WlColors.secondary,
                 ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 26.0),
+                    child: Text(
+                      S.of(context).home_notifications_banner,
+                      textAlign: TextAlign.center,
+                      style:
+                          Theme.of(context).textTheme.headlineMedium!.copyWith(
+                                color: contentColor,
+                              ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
+          Container(
+            height: 1,
+            color: contentColor.withOpacity(0.2),
+          ),
+          SizedBox(
+            height: 40,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: InkWell(
+                    splashColor: WlColors.error.withOpacity(0.2),
+                    onTap: () {
+                      context.read<HomeCubit>().onNotificationsLaterClick();
+                    },
+                    child: Center(
+                      child: Text(
+                        S.of(context).home_notifications_banner_button_negative,
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  color: contentColor,
+                                ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  color: contentColor.withOpacity(0.2),
+                ),
+                Expanded(
+                  child: InkWell(
+                    splashColor: WlColors.secondary.withOpacity(0.2),
+                    onTap: () {
+                      context.read<HomeCubit>().onWantNotificationsClick();
+                    },
+                    child: Center(
+                      child: Text(
+                        S.of(context).home_notifications_banner_button_positive,
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  color: contentColor,
+                                ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -617,6 +677,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             builder: (context, state, child) {
               return CarouselSlider.builder(
                 options: CarouselOptions(
+                  height: Dimens.orderMiniHeight,
                   viewportFraction: 1,
                   enableInfiniteScroll: state.currentOrders.length > 1,
                   autoPlay: state.currentOrders.length > 1,

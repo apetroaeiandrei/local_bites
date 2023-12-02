@@ -95,18 +95,15 @@ extension OrderStatusExtension on OrderStatus {
   Color toTextColor() {
     switch (this) {
       case OrderStatus.pending:
-        return Colors.orange;
-      case OrderStatus.cooking:
-        return WlColors.primary;
-      case OrderStatus.readyToPickup:
-      case OrderStatus.readyForDelivery:
         return Colors.orangeAccent;
+      case OrderStatus.cooking:
+      case OrderStatus.readyForDelivery:
+      case OrderStatus.readyToPickup:
       case OrderStatus.inDelivery:
-        return WlColors.notificationGreen;
       case OrderStatus.completed:
-        return Colors.green;
+        return WlColors.secondary;
       case OrderStatus.cancelled:
-        return Colors.red;
+        return WlColors.error;
     }
   }
 }

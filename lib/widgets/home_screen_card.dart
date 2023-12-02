@@ -14,16 +14,20 @@ class HomeScreenCard extends StatelessWidget {
 
   static const int _feedbackCountThreshold = 23;
   static const double _iconsOpacity = 0.7;
-  static const double _iconsSize = 16;
+  static const double _iconsSize = 12;
+  static const double _labelCornerRadius = 6;
+  static const double _labelPaddingHorizontal = 6;
+  static const double _labelPaddingVertical = 2;
   final RestaurantModel restaurant;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+          padding: const EdgeInsets.fromLTRB(16, 5, 16, 0),
           height: Dimens.homeCardHeight,
           child: Card(
             clipBehavior: Clip.hardEdge,
@@ -42,48 +46,76 @@ class HomeScreenCard extends StatelessWidget {
                       return defaultRestaurantImage();
                     },
                   ),
-                  Center(
-                    child: Text(
-                      restaurant.name,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.displayLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        shadows: [
-                          Shadow(
-                              // bottomLeft
-                              offset: const Offset(-1.5, -1.5),
-                              color: Theme.of(context).colorScheme.primary),
-                          Shadow(
-                              // bottomRight
-                              offset: const Offset(1.5, -1.5),
-                              color: Theme.of(context).colorScheme.primary),
-                          Shadow(
-                              // topRight
-                              offset: const Offset(1.5, 1.5),
-                              color: Theme.of(context).colorScheme.primary),
-                          Shadow(
-                              // topLeft
-                              offset: const Offset(-1.5, 1.5),
-                              color: Theme.of(context).colorScheme.primary),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Visibility(
-                    visible: restaurant.open,
-                    child: Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: _getDeliveryLabel(context),
-                    ),
-                  ),
                   Visibility(
                     visible: restaurant.open && restaurant.maxPromo > 0,
                     child: Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
+                      top: 12,
+                      left: 10,
                       child: _getPromoLabel(context),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 12,
+                    right: 10,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Row(
+                          children: [
+                            Visibility(
+                              visible: restaurant.stripeConfigured,
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 4),
+                                padding: const EdgeInsets.all(5),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                ),
+                                child: Icon(
+                                  Icons.credit_card,
+                                  size: _iconsSize,
+                                  color:
+                                      Colors.black.withOpacity(_iconsOpacity),
+                                ),
+                              ),
+                            ),
+                            Visibility(
+                              visible: restaurant.acceptsVouchers,
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                ),
+                                child: Icon(
+                                  Icons.discount_outlined,
+                                  size: _iconsSize,
+                                  color:
+                                      Colors.black.withOpacity(_iconsOpacity),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Visibility(
+                          visible: _showRating,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 4),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: _labelPaddingVertical,
+                              horizontal: _labelPaddingHorizontal,
+                            ),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(_labelCornerRadius)),
+                            ),
+                            child: _getRestaurantRating(context),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Visibility(
@@ -121,8 +153,28 @@ class HomeScreenCard extends StatelessWidget {
             ),
           ),
         ),
-        if (_showRating) _getRestaurantRating(context),
-        SizedBox(height: _showRating ? 6 : 12)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(restaurant.name,
+                        style: Theme.of(context).textTheme.titleLarge),
+                    _getTimer(context),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: _getDeliveryLabel(context),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -130,6 +182,32 @@ class HomeScreenCard extends StatelessWidget {
   bool get _showRating =>
       restaurant.feedbackPositive + restaurant.feedbackNegative >
       _feedbackCountThreshold;
+
+  Widget _getTimer(BuildContext context) {
+    if (!restaurant.open) {
+      return const SizedBox.shrink();
+    }
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.timer_outlined,
+          size: _iconsSize,
+          color: Colors.black.withOpacity(_iconsOpacity),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 2),
+          child: Text(
+            "${restaurant.defaultEta} min",
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall!
+                .copyWith(letterSpacing: -0.2),
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _getRestaurantRating(BuildContext context) {
     if (restaurant.feedbackPositive + restaurant.feedbackNegative <
@@ -141,67 +219,49 @@ class HomeScreenCard extends StatelessWidget {
     final int rating =
         (restaurant.feedbackPositive / totalRatings * 100).round();
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(Dimens.defaultPadding, 0, 20, 0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.timer_outlined,
-            size: _iconsSize,
-            color: Colors.black.withOpacity(_iconsOpacity),
+    final TextStyle ratingStyle =
+        Theme.of(context).textTheme.labelSmall!.copyWith(letterSpacing: -0.2);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.thumb_up_alt_outlined,
+          size: _iconsSize,
+          color: Colors.black.withOpacity(_iconsOpacity),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 3),
+          child: Text(
+            "$rating%",
+            style: ratingStyle,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 2, top: 3.0, right: 16),
-            child: Text("${restaurant.defaultEta} min"),
-          ),
-          Icon(
-            Icons.thumb_up_alt_outlined,
-            size: _iconsSize,
-            color: Colors.black.withOpacity(_iconsOpacity),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 3, top: 3.0),
-            child: Text("$rating%"),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 3),
-            child: Text("($totalRatings)",
-                style: Theme.of(context)
-                    .textTheme
-                    .labelMedium
-                    ?.copyWith(color: WlColors.textColor.withOpacity(0.5))),
-          ),
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 3),
+          child: Text("($totalRatings)",
+              style: ratingStyle.copyWith(
+                  color: WlColors.textColor.withOpacity(0.5))),
+        ),
+      ],
     );
   }
 
   Widget _getDeliveryLabel(BuildContext context) {
     String labelText;
-    Color labelColor;
     if (restaurant.hasExternalDelivery && restaurant.couriersAvailable) {
       labelText = S.of(context).home_restaurant_external_delivery;
-      labelColor = Theme.of(context).colorScheme.secondary;
     } else if (!restaurant.hasDelivery) {
       labelText = S.of(context).home_restaurant_pickup;
-      labelColor = Theme.of(context).colorScheme.primary;
     } else {
       labelText = S.of(context).home_restaurant_delivery;
-      labelColor = Theme.of(context).colorScheme.secondary;
     }
-
-    return Container(
-      padding: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        color: labelColor,
-      ),
-      child: Text(
-        labelText,
-        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-      ),
+    return Text(
+      labelText,
+      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            fontSize: 11,
+            letterSpacing: -0.1,
+            color: WlColors.textColor.withOpacity(0.7),
+          ),
     );
   }
 
@@ -211,15 +271,30 @@ class HomeScreenCard extends StatelessWidget {
     if (restaurant.hasMenuPromo) {
       labelText = S.of(context).home_restaurant_menu_promo(restaurant.maxPromo);
     }
+    return _getOverlayLabel(
+        context, labelText, Theme.of(context).colorScheme.primary);
+  }
+
+  Widget _getOverlayLabel(
+    BuildContext context,
+    String text,
+    Color backgroundColor,
+  ) {
     return Container(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(
+        vertical: _labelPaddingVertical,
+        horizontal: _labelPaddingHorizontal,
+      ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+        color: backgroundColor,
+        borderRadius:
+            const BorderRadius.all(Radius.circular(_labelCornerRadius)),
       ),
       child: Center(
         child: Text(
-          labelText,
-          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+          text,
+          style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                fontSize: 10,
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
         ),

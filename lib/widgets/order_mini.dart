@@ -15,6 +15,7 @@ class OrderMini extends StatefulWidget {
       required this.order,
       required this.onFeedback,
       required this.onOrderCancelled});
+
   final UserOrder order;
   final Function(bool liked) onFeedback;
   final Function(UserOrder order) onOrderCancelled;
@@ -25,7 +26,6 @@ class OrderMini extends StatefulWidget {
 
 class _OrderMiniState extends State<OrderMini> {
   static const _cancelOrderButtonTimeSeconds = 60;
-  static const _orderMiniHeight = 210.0;
 
   @override
   void initState() {
@@ -39,68 +39,79 @@ class _OrderMiniState extends State<OrderMini> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
-      height: _orderMiniHeight,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Lottie.asset(
-                widget.order.status.toLottieResource(),
-                width: 100,
-                height: 100,
-              ),
-              const SizedBox(
-                width: 12,
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.order.restaurantName,
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                    const SizedBox(
-                      height: 2,
-                    ),
-                    Visibility(
-                      visible: _isEtaVisible(),
-                      child: Text(
-                        _getEta(context, widget.order),
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Text(
-                      widget.order.status.toUserString(context),
-                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                            color: widget.order.status.toTextColor(),
-                          ),
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Visibility(
-                      visible: widget.order.status == OrderStatus.cancelled &&
-                          widget.order.paymentType == PaymentType.app,
-                      child: Text(S.of(context).order_mini_refund_info),
-                    ),
-                    Text(
-                      S.of(context).price_currency_ron(
-                          widget.order.total.toStringAsFixed(2)),
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ],
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Lottie.asset(
+                  widget.order.status.toLottieResource(),
+                  width: 100,
+                  height: 100,
                 ),
-              ),
-            ],
+                const SizedBox(
+                  width: 12,
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.order.restaurantName,
+                        style: Theme.of(context).textTheme.displaySmall,
+                      ),
+                      const SizedBox(
+                        height: 2,
+                      ),
+                      Visibility(
+                        visible: _isEtaVisible(),
+                        child: Text(
+                          _getEta(context, widget.order),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(height: 1),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        widget.order.status.toUserString(context),
+                        style:
+                            Theme.of(context).textTheme.displaySmall?.copyWith(
+                                  color: widget.order.status.toTextColor(),
+                                ),
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Visibility(
+                        visible: widget.order.status == OrderStatus.cancelled &&
+                            widget.order.paymentType == PaymentType.app,
+                        child: Text(
+                          S.of(context).order_mini_refund_info,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(height: 1),
+                        ),
+                      ),
+                      Text(
+                        S.of(context).price_currency_ron(
+                            widget.order.total.toStringAsFixed(2)),
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           Visibility(
             visible: widget.order.status == OrderStatus.completed ||

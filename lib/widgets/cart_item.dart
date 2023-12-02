@@ -11,6 +11,7 @@ class CartItem extends StatelessWidget {
       this.showAddRemoveButtons = false,
       this.onAdd,
       this.onRemove});
+
   final FoodOrder item;
   final bool showAddRemoveButtons;
   final Function()? onAdd;
@@ -26,19 +27,19 @@ class CartItem extends StatelessWidget {
           children: [
             Text(
               "${item.quantity} x",
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(width: 4),
             Expanded(
               child: Text(
                 item.food.name.toString(),
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
             Text(
               S.of(context).price_currency_ron(
                   double.parse(item.price.toStringAsFixed(2))),
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
           ],
         ),
@@ -49,11 +50,16 @@ class CartItem extends StatelessWidget {
               "${item.quantity} x",
               style: Theme.of(context)
                   .textTheme
-                  .headlineMedium!
+                  .headlineSmall!
                   .copyWith(color: Colors.transparent),
             ),
             const SizedBox(width: 4),
-            Expanded(child: Text(_getOptions(item))),
+            Expanded(
+              child: Text(
+                _getOptions(item),
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 4),

@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 abstract class WlColors {
   static const textColor = Color(0xff000000);
   static const placeholderTextColor = Color(0x77000000);
+  static const inputLabelTextColor = Color(0xAA000000);
+  static const secondaryButtonColor = Color(0xFFE0E0E0);
+  static const gray1 = Color(0xFFC0C0C0);
 
   //App bar color, separators, Fab icon
-  static const primary = Color(0xFFc05746);
+  static const primary = Color(0xFFEC2225);
 
   //Loading Indicator
   static const primaryVariant = Color(0xFF2E6665);
@@ -20,7 +23,7 @@ abstract class WlColors {
   static const onSurface = primary;
 
   // Used for selection checkmarks of food and tab indicator
-  static const secondary = Color(0xFFadc698);
+  static const secondary = Color(0xFF2ead28);
 
   //Error flushbar
   static const error = Color(0xFFD73A44);

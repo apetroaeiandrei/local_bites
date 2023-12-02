@@ -17,6 +17,7 @@ class RestaurantInfoScreen extends StatefulWidget {
 }
 
 class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
+  static const double _spacing = 6;
   final _headerKey = GlobalKey();
   final _scrollController = ScrollController();
   final _analytics = Analytics();
@@ -98,7 +99,7 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                         children: [
                           Text(
                             state.restaurant.name,
-                            style: Theme.of(context).textTheme.displayMedium,
+                            style: Theme.of(context).textTheme.displayLarge,
                           ),
                           const SizedBox(height: 5),
                           Text(
@@ -115,13 +116,76 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            S.of(context).restaurant_info_address,
+                            S.of(context).restaurant_info_services,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            state.restaurant.address,
-                            style: Theme.of(context).textTheme.bodyMedium,
+                          Visibility(
+                            visible: state.restaurant.acceptsVouchers,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: _spacing),
+                              child: Text(
+                                S.of(context).restaurant_info_accepts_vouchers,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: state.restaurant.stripeConfigured,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: _spacing),
+                              child: Text(
+                                S
+                                    .of(context)
+                                    .restaurant_info_accepts_in_app_payments,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: state.restaurant.hasExternalDelivery,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: _spacing),
+                              child: Text(
+                                S.of(context).restaurant_info_external_delivery,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: state.restaurant.hasDelivery,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: _spacing),
+                                Text(
+                                  S.of(context).restaurant_info_delivery,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                ),
+                                Text(_getDeliveryPaymentInfo(state),
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall),
+                              ],
+                            ),
+                          ),
+                          Visibility(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: _spacing),
+                                Text(
+                                  S.of(context).cart_pickup_headline,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                ),
+                                Text(_getPickupPaymentInfo(state),
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -154,24 +218,6 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                               Utils.launchCall(state.restaurant.phone);
                             },
                             icon: const Icon(Icons.phone),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Divider(),
-                    Container(
-                      padding: const EdgeInsets.all(Dimens.defaultPadding),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            S.of(context).restaurant_info_email,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            state.restaurant.email,
-                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
                       ),
@@ -227,42 +273,38 @@ class _RestaurantInfoScreenState extends State<RestaurantInfoScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            S.of(context).restaurant_info_services,
-                            style: Theme.of(context).textTheme.headlineSmall,
+                            S.of(context).restaurant_info_email,
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          Visibility(
-                            visible: state.restaurant.hasDelivery,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 5),
-                                Text(
-                                  S.of(context).cart_delivery_headline,
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                Text(_getDeliveryPaymentInfo(state),
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium),
-                              ],
-                            ),
-                          ),
-                          Visibility(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 8),
-                                Text(
-                                  S.of(context).cart_pickup_headline,
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                Text(_getPickupPaymentInfo(state),
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium),
-                              ],
-                            ),
+                          const SizedBox(height: 5),
+                          Text(
+                            state.restaurant.email,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
                       ),
+                    ),
+                    const Divider(),
+                    Container(
+                      padding: const EdgeInsets.all(Dimens.defaultPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            S.of(context).restaurant_info_address,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            state.restaurant.address,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).padding.bottom +
+                          kToolbarHeight,
                     ),
                   ],
                 ),
