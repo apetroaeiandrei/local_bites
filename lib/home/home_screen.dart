@@ -421,90 +421,77 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return Card(
       clipBehavior: Clip.hardEdge,
       margin: const EdgeInsets.symmetric(
-        horizontal: 14,
+        horizontal: 20,
+        vertical: 10,
       ),
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.notifications_active,
-                  color: WlColors.secondary,
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 26.0),
-                    child: Text(
-                      S.of(context).home_notifications_banner,
-                      textAlign: TextAlign.center,
-                      style:
-                          Theme.of(context).textTheme.headlineMedium!.copyWith(
+      child: SizedBox(
+        height: 160,
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.notifications_active,
+                      color: WlColors.primary,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 26.0),
+                        child: Text(
+                          S.of(context).home_notifications_banner,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
                                 color: contentColor,
                               ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-          Container(
-            height: 1,
-            color: contentColor.withOpacity(0.2),
-          ),
-          SizedBox(
-            height: 40,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Container(
+              height: 1,
+              color: contentColor.withOpacity(0.1),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: InkWell(
-                    splashColor: WlColors.error.withOpacity(0.2),
-                    onTap: () {
+                  child: TextButton(
+                    onPressed: () {
                       context.read<HomeCubit>().onNotificationsLaterClick();
                     },
-                    child: Center(
-                      child: Text(
-                        S.of(context).home_notifications_banner_button_negative,
-                        style:
-                            Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                  color: contentColor,
-                                ),
-                      ),
+                    child: Text(
+                      S.of(context).home_notifications_banner_button_negative,
                     ),
                   ),
                 ),
-                Container(
-                  width: 1,
-                  color: contentColor.withOpacity(0.2),
-                ),
                 Expanded(
-                  child: InkWell(
-                    splashColor: WlColors.secondary.withOpacity(0.2),
-                    onTap: () {
+                  child: TextButton(
+                    onPressed: () {
                       context.read<HomeCubit>().onWantNotificationsClick();
                     },
-                    child: Center(
-                      child: Text(
-                        S.of(context).home_notifications_banner_button_positive,
-                        style:
-                            Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                  color: contentColor,
-                                ),
-                      ),
+                    child: Text(
+                      S.of(context).home_notifications_banner_button_positive,
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
