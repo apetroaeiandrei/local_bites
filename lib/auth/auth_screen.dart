@@ -260,11 +260,16 @@ class _AuthScreenState extends State<AuthScreen> {
       ),
       IntlPhoneField(
         controller: _phoneController,
-        decoration: textFieldDecoration(
-          label: S.of(context).profile_phone_number,
+        decoration: InputDecoration(
+          hintText: S.of(context).profile_phone_number,
+          hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: WlColors.placeholderTextColor,
+              ),
         ),
         initialCountryCode: Constants.initialCountryCodePhone,
         invalidNumberMessage: S.of(context).phone_number_error_invalid,
+        textAlignVertical: TextAlignVertical.center,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.095),
         onChanged: (phone) {
           phoneNumber = phone.completeNumber;
         },
