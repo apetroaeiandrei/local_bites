@@ -100,7 +100,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                         state.food.imageUrl,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stack) {
-                          return defaultFoodImage();
+                          return defaultFoodDetailsImage();
                         },
                       ),
                     ),

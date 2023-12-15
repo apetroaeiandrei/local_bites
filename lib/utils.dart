@@ -119,6 +119,12 @@ Widget defaultFoodImage() => Image.asset(
       fit: BoxFit.cover,
     );
 
+Widget defaultFoodDetailsImage() => Image.asset(
+  Img.genericFood,
+  fit: BoxFit.cover,
+);
+
+
 Widget defaultRestaurantImage() => Image.asset(
       Img.restaurantPlaceholder,
       fit: BoxFit.cover,
