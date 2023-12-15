@@ -75,8 +75,8 @@ class HomeScreenCard extends StatelessWidget {
                                 child: Icon(
                                   Icons.credit_card,
                                   size: _iconsSize,
-                                  color:
-                                      Colors.black.withOpacity(_iconsOpacity),
+                                  color: WlColors.textColor
+                                      .withOpacity(_iconsOpacity),
                                 ),
                               ),
                             ),
@@ -92,8 +92,8 @@ class HomeScreenCard extends StatelessWidget {
                                 child: Icon(
                                   Icons.discount_outlined,
                                   size: _iconsSize,
-                                  color:
-                                      Colors.black.withOpacity(_iconsOpacity),
+                                  color: WlColors.textColor
+                                      .withOpacity(_iconsOpacity),
                                 ),
                               ),
                             ),
@@ -127,7 +127,7 @@ class HomeScreenCard extends StatelessWidget {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black,
+                            WlColors.textColor,
                           ],
                         ),
                       ),
@@ -193,7 +193,7 @@ class HomeScreenCard extends StatelessWidget {
         Icon(
           Icons.timer_outlined,
           size: _iconsSize,
-          color: Colors.black.withOpacity(_iconsOpacity),
+          color: WlColors.textColor.withOpacity(_iconsOpacity),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 2),
@@ -227,7 +227,7 @@ class HomeScreenCard extends StatelessWidget {
         Icon(
           Icons.thumb_up_alt_outlined,
           size: _iconsSize,
-          color: Colors.black.withOpacity(_iconsOpacity),
+          color: WlColors.textColor.withOpacity(_iconsOpacity),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 3),
@@ -238,9 +238,12 @@ class HomeScreenCard extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 3),
-          child: Text("($totalRatings)",
-              style: ratingStyle.copyWith(
-                  color: WlColors.textColor.withOpacity(0.5))),
+          child: Text(
+            "($totalRatings)",
+            style: ratingStyle.copyWith(
+              color: WlColors.textColor.withOpacity(0.6),
+            ),
+          ),
         ),
       ],
     );
