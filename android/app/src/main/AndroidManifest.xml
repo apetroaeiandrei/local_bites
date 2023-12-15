@@ -36,7 +36,7 @@
             android:value="YOUR_MAPS_API_KEY"/>
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/ic_launcher_foreground"/>
+            android:resource="@drawable/notification_icon"/>
         <meta-data
             android:name="google_analytics_automatic_screen_reporting_enabled"
             android:value="false"/>
