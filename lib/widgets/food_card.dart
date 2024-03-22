@@ -45,7 +45,7 @@ class FoodCard extends StatelessWidget {
               ),
               child: foodModel.imageUrl.isNotEmpty
                   ? Image.network(
-                      foodModel.imageUrl,
+                      foodModel.imageThumbUrl ?? foodModel.imageUrl,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stack) {
                         return defaultFoodImage();
