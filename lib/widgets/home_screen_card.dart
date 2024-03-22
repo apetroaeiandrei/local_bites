@@ -251,20 +251,22 @@ class HomeScreenCard extends StatelessWidget {
 
   Widget _getDeliveryLabel(BuildContext context) {
     String labelText;
+    var style = Theme.of(context).textTheme.titleSmall?.copyWith(
+          fontSize: 11,
+          letterSpacing: -0.1,
+          color: WlColors.textColor.withOpacity(0.7),
+        );
     if (restaurant.hasExternalDelivery && restaurant.couriersAvailable) {
       labelText = S.of(context).home_restaurant_external_delivery;
     } else if (!restaurant.hasDelivery) {
       labelText = S.of(context).home_restaurant_pickup;
+      style = style?.copyWith(color: Theme.of(context).colorScheme.primary);
     } else {
       labelText = S.of(context).home_restaurant_delivery;
     }
     return Text(
       labelText,
-      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontSize: 11,
-            letterSpacing: -0.1,
-            color: WlColors.textColor.withOpacity(0.7),
-          ),
+      style: style,
     );
   }
 
