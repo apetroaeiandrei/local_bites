@@ -140,4 +140,8 @@ abstract class Metric {
       "cart_voucher_error_not_accepted";
 
   static const String eventUserZipCodeChanged = "user_zip_code_changed";
+
+  static const String eventOrderDetailsReceipt = "order_details_receipt";
+  static const String eventOrderDetailsReceiptStorno =
+      "order_details_receipt_storno";
 }

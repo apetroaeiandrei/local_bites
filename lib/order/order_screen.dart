@@ -249,6 +249,7 @@ class _OrderScreenState extends State<OrderScreen> {
             IconButton(
               iconSize: _receiptSize,
               onPressed: () {
+                _analytics.logEvent(name: Metric.eventOrderDetailsReceipt);
                 context.read<OrderCubit>().getReceipt(false);
               },
               icon: Icon(
@@ -269,6 +270,8 @@ class _OrderScreenState extends State<OrderScreen> {
               IconButton(
                 iconSize: _receiptSize,
                 onPressed: () {
+                  _analytics.logEvent(
+                      name: Metric.eventOrderDetailsReceiptStorno);
                   context.read<OrderCubit>().getReceipt(true);
                 },
                 icon: Icon(
