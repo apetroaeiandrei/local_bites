@@ -79,7 +79,7 @@ class _CartScreenState extends State<CartScreen> {
             bottom: state.amountToMinOrder == 0 || !state.deliverySelected
                 ? null
                 : PreferredSize(
-                    preferredSize: const Size.fromHeight(20),
+                    preferredSize: const Size.fromHeight(25),
                     child: _getDeliveryAndMinOrderInfo(state),
                   ),
           ),
@@ -482,9 +482,9 @@ class _CartScreenState extends State<CartScreen> {
           .cart_banner_paid_delivery_under_min_order(state.amountToMinOrder);
     }
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+      padding: const EdgeInsets.fromLTRB(12, 5, 12, 8),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Icon(Icons.info),

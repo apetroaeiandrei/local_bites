@@ -51,7 +51,7 @@ class CartCubit extends Cubit<CartState> {
           badWeatherTax: _userRepo.deliveryPrices.deliveryBadWeatherEnabled
               ? _userRepo.deliveryPrices.deliveryBadWeatherTax
               : 0,
-          deliveryFee: _restaurantsRepo.selectedRestaurant.hasExternalDelivery
+          deliveryFee: _isExternalDeliveryPricingConfig(_restaurantsRepo)
               ? Constants.deliveryPriceErrorDefault
               : _restaurantsRepo.selectedRestaurant.deliveryFee,
           deliveryEta: 0,
@@ -97,6 +97,12 @@ class CartCubit extends Cubit<CartState> {
   final _delayedDuration = const Duration(milliseconds: 10);
   bool _userChangedPaymentType = false;
   double companyDeliveryFee = 0;
+
+  static bool _isExternalDeliveryPricingConfig(
+      RestaurantsRepo restaurantsRepo) {
+    return restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
+        !restaurantsRepo.selectedRestaurant.useVendorDeliveryConfig;
+  }
 
   static bool _getInitialDeliverySelected(RestaurantModel restaurantModel) {
     if (restaurantModel.hasExternalDelivery &&
@@ -214,7 +220,7 @@ class CartCubit extends Cubit<CartState> {
     num amountToMinOrder = 0;
     num deliveryFee = state.deliveryFee;
     CartStatus status = state.status;
-    if (!_restaurantsRepo.selectedRestaurant.hasExternalDelivery &&
+    if (!_isExternalDeliveryPricingConfig(_restaurantsRepo) &&
         state.deliverySelected) {
       final voucherValue = state.selectedVoucher?.value ?? 0;
       amountToMinOrder =
@@ -271,7 +277,7 @@ class CartCubit extends Cubit<CartState> {
   }
 
   _getDelivery() async {
-    if (_restaurantsRepo.selectedRestaurant.hasExternalDelivery) {
+    if (_isExternalDeliveryPricingConfig(_restaurantsRepo)) {
       final LatLng restaurantLocation = LatLng(
           _restaurantsRepo.selectedRestaurant.location.latitude,
           _restaurantsRepo.selectedRestaurant.location.longitude);
@@ -301,6 +307,7 @@ class CartCubit extends Cubit<CartState> {
       ),
     );
     emit(state.copyWith(
+      status: CartStatus.initial,
       minOrder: _deliveryZone.minimumOrder,
       deliveryFee: _deliveryZone.deliveryFee,
     ));
