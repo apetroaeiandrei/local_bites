@@ -96,7 +96,8 @@ class CartCubit extends Cubit<CartState> {
 
   final _delayedDuration = const Duration(milliseconds: 10);
   bool _userChangedPaymentType = false;
-  double companyDeliveryFee = 0;
+  double _companyDeliveryFee = 0;
+  num _deliveryFeeCompensation = 0;
 
   static bool _isExternalDeliveryPricingConfig(
       RestaurantsRepo restaurantsRepo) {
@@ -189,7 +190,8 @@ class CartCubit extends Cubit<CartState> {
       orderId: _orderId,
       voucherId: state.selectedVoucher?.id ?? "",
       voucherValue: state.selectedVoucher?.value ?? 0.0,
-      companyDeliveryFee: companyDeliveryFee,
+      companyDeliveryFee: _companyDeliveryFee,
+      deliveryFeeCompensation: _deliveryFeeCompensation,
     );
     if (!success) {
       emit(state.copyWith(status: CartStatus.orderError));
@@ -226,8 +228,14 @@ class CartCubit extends Cubit<CartState> {
       amountToMinOrder =
           state.minOrder - (_cartRepo.cartTotalProducts - voucherValue);
       amountToMinOrder = double.parse(amountToMinOrder.toStringAsFixed(2));
-      amountToMinOrder = amountToMinOrder > 0 ? amountToMinOrder : 0;
-      deliveryFee = amountToMinOrder <= 0 ? 0 : _deliveryZone.deliveryFee;
+      if (amountToMinOrder <= 0) {
+        _deliveryFeeCompensation = _deliveryZone.deliveryFee;
+        amountToMinOrder = 0;
+        deliveryFee = 0;
+      } else {
+        _deliveryFeeCompensation = 0;
+        deliveryFee = _deliveryZone.deliveryFee;
+      }
       status = _isNotMinimumOrder()
           ? CartStatus.minimumOrderError
           : CartStatus.initial;
@@ -361,14 +369,14 @@ class CartCubit extends Cubit<CartState> {
     int adjustedKm = (routeDistanceMeters / 1000).ceil();
     final DeliveryPrices deliveryPrices = _userRepo.deliveryPrices;
     if (adjustedKm > Constants.deliveryMaxPriceKm) {
-      companyDeliveryFee = deliveryPrices.deliveryMaximalPrice / 2;
+      _companyDeliveryFee = deliveryPrices.deliveryMaximalPrice / 2;
       return deliveryPrices.deliveryMaximalPrice;
     }
 
     double price = deliveryPrices.deliveryStartPrice +
         (adjustedKm * deliveryPrices.deliveryPricePerKm);
     if (_restaurantsRepo.selectedRestaurant.isGrocery) {
-      companyDeliveryFee = deliveryPrices.groceryAdditionalPrice;
+      _companyDeliveryFee = deliveryPrices.groceryAdditionalPrice;
       price = price + deliveryPrices.groceryAdditionalPrice;
     }
 
@@ -415,7 +423,8 @@ class CartCubit extends Cubit<CartState> {
           _restaurantsRepo.selectedRestaurant.stripeAccountId,
       applicationFee:
           state.hasExternalDelivery && state.deliverySelected ? deliveryFee : 0,
-      companyDeliveryFee: companyDeliveryFee,
+      companyDeliveryFee: _companyDeliveryFee,
+      deliveryFeeCompensation: _deliveryFeeCompensation,
       voucherDiscount:
           state.selectedVoucher != null ? state.selectedVoucher!.value : 0,
       voucherId: state.selectedVoucher?.id ?? "",
