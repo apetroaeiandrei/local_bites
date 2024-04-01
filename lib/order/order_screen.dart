@@ -228,7 +228,9 @@ class _OrderScreenState extends State<OrderScreen> {
 
   bool _showReceipts(OrderState state) {
     final order = state.order!;
-    if (!(order.isExternalDelivery && order.isDelivery)) {
+    if (!(order.isExternalDelivery &&
+        order.isDelivery &&
+        order.deliveryFee > 0)) {
       return false;
     }
     if (order.paymentType == PaymentType.app) {

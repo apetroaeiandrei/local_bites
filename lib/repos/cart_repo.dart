@@ -97,6 +97,7 @@ class CartRepo {
     required String voucherId,
     required double voucherValue,
     required double companyDeliveryFee,
+    required num deliveryFeeCompensation,
   }) async {
     final restaurantDoc = _firestore
         .collection(_collectionRestaurants)
@@ -108,6 +109,7 @@ class CartRepo {
       mentions: mentions,
       isDelivery: isDelivery,
       deliveryFee: deliveryFee,
+      deliveryFeeCompensation: deliveryFeeCompensation,
       deliveryEta: deliveryEta,
       paymentType: paymentType,
       orderId: orderId,
@@ -133,6 +135,7 @@ class CartRepo {
     required String voucherId,
     required double voucherValue,
     required double companyDeliveryFee,
+    required num deliveryFeeCompensation,
   }) {
     final address = _userRepo.address!;
     final user = _userRepo.user!;
@@ -148,6 +151,7 @@ class CartRepo {
       isExternalDelivery: isExternalDelivery,
       restaurantId: _selectedRestaurantId!,
       deliveryFee: deliveryFee,
+      deliveryFeeCompensation: deliveryFeeCompensation,
       deliveryEta: deliveryEta,
       eta: 0,
       paymentType: paymentType,
@@ -202,6 +206,7 @@ class CartRepo {
       required bool isDelivery,
       required bool isExternalDelivery,
       required num deliveryFee,
+      required num deliveryFeeCompensation,
       required int deliveryEta,
       required PaymentType paymentType,
       required LocalUser user,
@@ -239,6 +244,7 @@ class CartRepo {
       mentions: mentions,
       isDelivery: isDelivery,
       deliveryFee: deliveryFee,
+      deliveryFeeCompensation: deliveryFeeCompensation,
       deliveryEta: deliveryEta,
       paymentType: paymentType,
       orderId: orderId,

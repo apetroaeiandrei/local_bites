@@ -250,6 +250,12 @@ class HomeScreenCard extends StatelessWidget {
   }
 
   Widget _getDeliveryLabel(BuildContext context) {
+    String deliveryCost = "";
+    if ((restaurant.hasExternalDelivery &&
+            restaurant.useVendorDeliveryConfig) ||
+        restaurant.hasDelivery) {
+      deliveryCost = S.of(context).home_restaurant_delivery_free_label;
+    }
     String labelText;
     var style = Theme.of(context).textTheme.titleSmall?.copyWith(
           fontSize: 11,
@@ -257,12 +263,13 @@ class HomeScreenCard extends StatelessWidget {
           color: WlColors.textColor.withOpacity(0.7),
         );
     if (restaurant.hasExternalDelivery && restaurant.couriersAvailable) {
-      labelText = S.of(context).home_restaurant_external_delivery;
+      labelText =
+          S.of(context).home_restaurant_external_delivery + deliveryCost;
     } else if (!restaurant.hasDelivery) {
       labelText = S.of(context).home_restaurant_pickup;
       style = style?.copyWith(color: Theme.of(context).colorScheme.primary);
     } else {
-      labelText = S.of(context).home_restaurant_delivery;
+      labelText = S.of(context).home_restaurant_delivery + deliveryCost;
     }
     return Text(
       labelText,

@@ -50,6 +50,7 @@
   "home_restaurant_pickup" : "Ridicare personală",
   "home_restaurant_delivery" : "Livrare proprie",
   "home_restaurant_external_delivery": "Livrare Local Bites",
+  "home_restaurant_delivery_free_label" : " - GRATUIT",
   "home_restaurant_menu_promo" : "-{discount}% TOT meniul",
   "home_restaurant_products_promo" : "-{discount}%",
   "home_notifications_banner" : "Vreau să primesc notificări cu reduceri și oferte speciale!",
