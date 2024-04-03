@@ -173,6 +173,7 @@ class HomeCubit extends Cubit<HomeState> {
     _currentOrderSubscription?.cancel();
     _restaurantsSubscription?.cancel();
     _locationSubscription?.cancel();
+    _isInNoGoZoneSubscription?.cancel();
     _ordersRepo.stopListeningForOrderInProgress();
     _restaurantsRepo.cancelAllRestaurantsSubscriptions();
     return super.close();
