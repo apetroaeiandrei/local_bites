@@ -124,6 +124,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key, required this.isLoggedIn});
+
   final bool isLoggedIn;
 
   // This widget is the root of your application.
@@ -219,6 +220,7 @@ class MyApp extends StatelessWidget {
         Routes.notifications: (context) => BlocProvider<NotificationsCubit>(
               create: (context) => NotificationsCubit(
                 RepositoryProvider.of<NotificationsRepo>(context),
+                RepositoryProvider.of<UserRepo>(context),
               ),
               child: const NotificationsScreen(),
             ),

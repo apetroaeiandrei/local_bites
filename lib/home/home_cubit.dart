@@ -20,6 +20,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../analytics/metric.dart';
+import '../constants.dart';
 import '../routes.dart';
 
 part 'home_state.dart';
@@ -236,8 +237,9 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void onWantNotificationsClick() async {
+    final zipCode = _userRepo.user?.zipCode ?? Constants.unknownZipCode;
     final notificationsAllowed =
-        await _notificationsRepo.registerNotifications();
+        await _notificationsRepo.registerNotifications(zipCode);
     if (notificationsAllowed) {
       _notificationsRepo.updateFcmToken();
       _analytics.logEvent(name: Metric.eventFCMPermissionGranted);

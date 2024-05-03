@@ -19,6 +19,8 @@ class NotificationsRepo {
   static const String vouchersChannelName = 'Vouchere';
   static const String _voucherNotificationsPrefKey = 'voucher_notification_ids';
 
+  static String topicPromoZip(String zip) => 'promo_$zip';
+
   static NotificationsRepo? _instance;
   final UserRepo _userRepo;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -40,7 +42,7 @@ class NotificationsRepo {
     importance: Importance.defaultImportance,
   );
 
-  Future<bool> registerNotifications() async {
+  Future<bool> registerNotifications(String zipCode) async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
@@ -69,7 +71,7 @@ class NotificationsRepo {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey(notificationTopic + topicPromo)) {
-      await subscribeToTopic(topicPromo);
+      await subscribeToTopic(topicPromoZip(zipCode));
     }
 
     _initLocalNotificationsPlugin();
