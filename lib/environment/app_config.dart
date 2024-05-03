@@ -29,8 +29,8 @@ class AppConfig {
           ? ProdFirebaseOptions.currentPlatform
           : DevFirebaseOptions.currentPlatform,
     );
-    await _initAppCheck();
     _initCrashlytics();
+    await _initAppCheck();
     _initStripe();
   }
 
