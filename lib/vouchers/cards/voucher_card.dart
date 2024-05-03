@@ -8,10 +8,11 @@ import '../../theme/dimens.dart';
 class VoucherCard extends StatelessWidget {
   const VoucherCard(
       {super.key, required this.voucher, required this.isCartVoucher});
+
   final Voucher voucher;
   final bool isCartVoucher;
   final double voucherHeight = 130;
-  final double voucherVerticalPadding = 16;
+  final double voucherVerticalPadding = 8;
   final double maxStarSize = 25;
   final int maxStars = 5;
 
@@ -44,6 +45,7 @@ class VoucherCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Spacer(),
                     Center(
                       child: Text(
                         S.of(context).price_currency_ron(
@@ -56,13 +58,13 @@ class VoucherCard extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                        isCartVoucher
-                            ? S.of(context).voucher_card_min_purchase(
-                                voucher.minPurchase.roundToDouble())
-                            : voucher.name,
-                        style: Theme.of(context).textTheme.headlineSmall),
-                    const SizedBox(
-                      height: 4,
+                      isCartVoucher
+                          ? S.of(context).voucher_card_min_purchase(
+                              voucher.minPurchase.roundToDouble())
+                          : voucher.name,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(_getExpirationDaysText(context),
                         style: Theme.of(context).textTheme.bodyMedium),
