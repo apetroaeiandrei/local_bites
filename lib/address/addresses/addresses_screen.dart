@@ -45,9 +45,12 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 ElevatedButton(
                   onPressed: () {
                     _analytics.setCurrentScreen(screenName: Routes.address);
-                    Navigator.of(context).pushNamed(Routes.address).then(
-                        (value) => _analytics.setCurrentScreen(
-                            screenName: Routes.addresses));
+                    Navigator.of(context)
+                        .pushNamed(Routes.address)
+                        .then((value) {
+                      _analytics.setCurrentScreen(screenName: Routes.home);
+                      Navigator.of(context).pop();
+                    });
                   },
                   child: Text(S.of(context).addresses_add),
                 ),
@@ -82,7 +85,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
                         onTap: () {
                           context
                               .read<AddressesCubit>()
-                              .onAddressSelected(state.addresses[index]);
+                              .onAddressSelected(state.addresses[index])
+                              .then((value) => Navigator.of(context).pop());
                         },
                         child: Slidable(
                           key: Key(state.addresses[index].street),
