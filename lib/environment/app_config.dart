@@ -5,6 +5,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:local/environment/env.dart';
 import 'package:local/environment/prod_firebase_options.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -13,10 +14,6 @@ import 'dev_firebase_options.dart';
 class AppConfig {
   static const String flavorDev = 'dev';
   static const String flavorProd = 'prod';
-  static const String stripePublishableKeyLive =
-      'pk_live_STRIPE';
-  static const String stripePublishableKeyTest =
-      'pk_test_STRIPE';
   static bool isProd = false;
 
   static Future<void> init() async {
@@ -67,10 +64,10 @@ class AppConfig {
   }
 
   static Future<void> _initStripe() async {
-    Stripe.publishableKey = isProd
-        ? AppConfig.stripePublishableKeyLive
-        : AppConfig.stripePublishableKeyTest;
-    Stripe.merchantIdentifier = "STRIPE_MERCHANT_ID";
+    Stripe.publishableKey = isProd ? EnvProd.stripeKey : EnvDev.stripeKey;
+    Stripe.merchantIdentifier = isProd
+        ? EnvProd.stripeMerchantIdentifier
+        : EnvDev.stripeMerchantIdentifier;
     await Stripe.instance.applySettings();
   }
 }
