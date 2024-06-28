@@ -7,6 +7,7 @@ import 'package:models/order_status.dart';
 import 'package:models/payment_type.dart';
 import 'package:models/user_order.dart';
 
+import '../environment/env.dart';
 import '../generated/l10n.dart';
 
 class OrderMini extends StatefulWidget {
@@ -104,7 +105,8 @@ class _OrderMiniState extends State<OrderMini> {
                       ),
                       Text(
                         S.of(context).price_currency_ron(
-                            widget.order.total.toStringAsFixed(2)),
+                            widget.order.total.toStringAsFixed(2),
+                            EnvProd.currency),
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],

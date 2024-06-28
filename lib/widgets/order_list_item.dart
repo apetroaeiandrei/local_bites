@@ -3,6 +3,7 @@ import 'package:local/utils.dart';
 import 'package:lottie/lottie.dart';
 import 'package:models/user_order.dart';
 
+import '../environment/env.dart';
 import '../generated/l10n.dart';
 
 class OrderListItem extends StatelessWidget {
@@ -54,7 +55,7 @@ class OrderListItem extends StatelessWidget {
                 Text(
                   S
                       .of(context)
-                      .price_currency_ron(order.total.toStringAsFixed(2)),
+                      .price_currency_ron(order.total.toStringAsFixed(2), EnvProd.currency),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],

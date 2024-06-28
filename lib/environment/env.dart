@@ -9,8 +9,8 @@ abstract class EnvDev {
   static final String stripeKey = _EnvDev.stripeKey;
   @EnviedField(varName: 'STRIPE_MERCHANT_ID', defaultValue: 'test_', obfuscate: true)
   static final String stripeMerchantIdentifier = _EnvDev.stripeMerchantIdentifier;
-  @EnviedField(varName: 'SUPPORT_PHONE', defaultValue: 'test_', obfuscate: false)
-  static const String supportPhone = _EnvDev.supportPhone;
+  @EnviedField(varName: 'CURRENCY', defaultValue: 'currency', obfuscate: false)
+  static const String currency = _EnvDev.currency;
 }
 
 @Envied(path: 'keys.env')
@@ -19,6 +19,6 @@ abstract class EnvProd {
   static final String stripeKey = _EnvProd.stripeKey;
   @EnviedField(varName: 'STRIPE_MERCHANT_ID', defaultValue: 'test_', obfuscate: true)
   static final String stripeMerchantIdentifier = _EnvDev.stripeMerchantIdentifier;
-  @EnviedField(varName: 'SUPPORT_PHONE', defaultValue: 'test_', obfuscate: false)
-  static const String supportPhone = _EnvProd.supportPhone;
+  @EnviedField(varName: 'CURRENCY', defaultValue: 'currency', obfuscate: false)
+  static const String currency = _EnvProd.currency;
 }

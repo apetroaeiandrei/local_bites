@@ -7,6 +7,7 @@ import 'package:local/vouchers/vouchers_cubit.dart';
 import 'package:lottie/lottie.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../environment/env.dart';
 import '../generated/l10n.dart';
 import '../img.dart';
 import '../routes.dart';
@@ -174,7 +175,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
                 const SizedBox(height: 6),
                 Text(
                   S.of(context).vouchers_referral_bonus(
-                      state.referralValue.toStringAsFixed(0)),
+                      state.referralValue.toStringAsFixed(0), EnvProd.currency),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 10),

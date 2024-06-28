@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:local/vouchers/cards/voucher_border.dart';
 import 'package:models/vouchers/voucher.dart';
 
+import '../../environment/env.dart';
 import '../../generated/l10n.dart';
 import '../../theme/dimens.dart';
 
@@ -49,7 +50,7 @@ class VoucherCard extends StatelessWidget {
                     Center(
                       child: Text(
                         S.of(context).price_currency_ron(
-                            voucher.value.toStringAsFixed(0)),
+                            voucher.value.toStringAsFixed(0), EnvProd.currency),
                         style:
                             Theme.of(context).textTheme.displayLarge?.copyWith(
                                   color: Theme.of(context).colorScheme.primary,
@@ -60,7 +61,8 @@ class VoucherCard extends StatelessWidget {
                     Text(
                       isCartVoucher
                           ? S.of(context).voucher_card_min_purchase(
-                              voucher.minPurchase.roundToDouble())
+                              voucher.minPurchase.roundToDouble(),
+                              EnvProd.currency)
                           : voucher.name,
                       style: Theme.of(context).textTheme.headlineSmall,
                       maxLines: 2,

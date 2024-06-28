@@ -9,6 +9,7 @@ import 'package:local/analytics/metric.dart';
 import 'package:local/cart/cart_cubit.dart';
 import 'package:local/cart/voucher_selection_bottom_sheet.dart';
 import 'package:local/environment/app_config.dart';
+import 'package:local/environment/env.dart';
 import 'package:models/payment_type.dart';
 import 'package:local/routes.dart';
 import 'package:local/theme/wl_colors.dart';
@@ -209,7 +210,9 @@ class _CartScreenState extends State<CartScreen> {
 
   _getCheckoutButtonText(CartState state) {
     if (state.status == CartStatus.minimumOrderError) {
-      return S.of(context).cart_button_min_order(state.minOrder);
+      return S
+          .of(context)
+          .cart_button_min_order(state.minOrder, EnvProd.currency);
     }
     return state.paymentType == PaymentType.app
         ? S.of(context).cart_confirm_payment_button
@@ -474,12 +477,11 @@ class _CartScreenState extends State<CartScreen> {
   Widget _getDeliveryAndMinOrderInfo(CartState state) {
     String infoText = "";
     if (state.deliveryFee == 0) {
-      infoText =
-          S.of(context).cart_banner_free_delivery_min_order(state.minOrder);
+      infoText = S.of(context).cart_banner_free_delivery_min_order(
+          state.minOrder, EnvProd.currency);
     } else {
-      infoText = S
-          .of(context)
-          .cart_banner_paid_delivery_under_min_order(state.amountToMinOrder);
+      infoText = S.of(context).cart_banner_paid_delivery_under_min_order(
+          state.amountToMinOrder, EnvProd.currency);
     }
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 5, 12, 8),
@@ -619,7 +621,8 @@ class _CartScreenState extends State<CartScreen> {
           : S.of(context).cart_vouchers_headline_used;
       vouchersInfo = state.selectedVoucher == null
           ? S.of(context).cart_vouchers_info
-          : S.of(context).cart_vouchers_info_used(state.selectedVoucher!.value);
+          : S.of(context).cart_vouchers_info_used(
+              state.selectedVoucher!.value, EnvProd.currency);
     }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -705,7 +708,7 @@ class _CartScreenState extends State<CartScreen> {
         context,
         S.of(context).cart_voucher_error_dialog_title,
         S.of(context).cart_voucher_error_dialog_message_min_purchase(
-            voucher.minPurchase),
+            voucher.minPurchase, EnvProd.currency),
       );
       return false;
     }
@@ -726,7 +729,8 @@ class _CartScreenState extends State<CartScreen> {
                 style: Theme.of(context).textTheme.bodyMedium),
             Text(
                 S.of(context).price_currency_ron(
-                    state.cartTotalProducts.toStringAsFixed(2)),
+                    state.cartTotalProducts.toStringAsFixed(2),
+                    EnvProd.currency),
                 style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
@@ -741,7 +745,8 @@ class _CartScreenState extends State<CartScreen> {
               Text(
                   state.deliveryFee > 0
                       ? S.of(context).cart_delivery_fee_currency(
-                          state.deliveryFee.toStringAsFixed(1))
+                          state.deliveryFee.toStringAsFixed(1),
+                          EnvProd.currency)
                       : S.of(context).cart_delivery_fee_free,
                   style: Theme.of(context).textTheme.bodyMedium),
             ],
@@ -767,7 +772,7 @@ class _CartScreenState extends State<CartScreen> {
               const Spacer(),
               Text(
                   S.of(context).cart_delivery_fee_currency(
-                      state.badWeatherTax.toStringAsFixed(1)),
+                      state.badWeatherTax.toStringAsFixed(1), EnvProd.currency),
                   style: Theme.of(context).textTheme.bodyMedium),
             ],
           ),
@@ -781,8 +786,8 @@ class _CartScreenState extends State<CartScreen> {
                   style: Theme.of(context).textTheme.bodyMedium),
               Text(
                   S.of(context).cart_summary_voucher_value(
-                        (state.selectedVoucher!.value).toStringAsFixed(2),
-                      ),
+                      (state.selectedVoucher!.value).toStringAsFixed(2),
+                      EnvProd.currency),
                   style: Theme.of(context).textTheme.bodyMedium),
             ],
           ),
@@ -797,7 +802,8 @@ class _CartScreenState extends State<CartScreen> {
                 style: Theme.of(context).textTheme.headlineMedium),
             Text(
                 S.of(context).price_currency_ron(
-                    _getTotalWithDelivery(state).toStringAsFixed(2)),
+                    _getTotalWithDelivery(state).toStringAsFixed(2),
+                    EnvProd.currency),
                 style: Theme.of(context).textTheme.headlineMedium),
           ],
         ),

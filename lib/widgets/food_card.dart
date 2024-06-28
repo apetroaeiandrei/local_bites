@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:models/food_model.dart';
 
+import '../environment/env.dart';
 import '../generated/l10n.dart';
 import '../theme/dimens.dart';
 import '../utils.dart';
@@ -86,7 +87,8 @@ class FoodCard extends StatelessWidget {
                           S.of(context).price_currency_ron(
                               foodModel.discountedPrice > 0
                                   ? foodModel.discountedPrice.toStringAsFixed(1)
-                                  : foodModel.price),
+                                  : foodModel.price,
+                              EnvProd.currency),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
@@ -124,7 +126,8 @@ class FoodCard extends StatelessWidget {
                             maintainAnimation: true,
                             maintainState: true,
                             child: Text(
-                              S.of(context).price_currency_ron(foodModel.price),
+                              S.of(context).price_currency_ron(
+                                  foodModel.price, EnvProd.currency),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context)

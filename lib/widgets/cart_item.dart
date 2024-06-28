@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:local/widgets/circular_icon_button.dart';
 import 'package:models/food_order.dart';
 
+import '../environment/env.dart';
 import '../generated/l10n.dart';
 
 class CartItem extends StatelessWidget {
@@ -38,7 +39,8 @@ class CartItem extends StatelessWidget {
             ),
             Text(
               S.of(context).price_currency_ron(
-                  double.parse(item.price.toStringAsFixed(2))),
+                  double.parse(item.price.toStringAsFixed(2)),
+                  EnvProd.currency),
               style: Theme.of(context).textTheme.headlineSmall,
             ),
           ],

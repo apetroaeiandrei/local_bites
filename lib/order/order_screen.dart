@@ -9,6 +9,7 @@ import 'package:models/payment_type.dart';
 
 import '../analytics/analytics.dart';
 import '../analytics/metric.dart';
+import '../environment/env.dart';
 import '../generated/l10n.dart';
 import '../img.dart';
 import '../routes.dart';
@@ -170,9 +171,10 @@ class _OrderScreenState extends State<OrderScreen> {
                             Text(S.of(context).cart_products,
                                 style: Theme.of(context).textTheme.titleMedium),
                             Text(
-                                S.of(context).price_currency_ron(state
-                                    .order!.totalProducts
-                                    .toStringAsFixed(2)),
+                                S.of(context).price_currency_ron(
+                                    state.order!.totalProducts
+                                        .toStringAsFixed(2),
+                                    EnvProd.currency),
                                 style: Theme.of(context).textTheme.titleMedium),
                           ],
                         ),
@@ -189,9 +191,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                   state.order!.deliveryFee > 0
                                       ? S
                                           .of(context)
-                                          .cart_delivery_fee_currency(state
-                                              .order!.deliveryFee
-                                              .toStringAsFixed(1))
+                                          .cart_delivery_fee_currency(
+                                              state.order!.deliveryFee
+                                                  .toStringAsFixed(1),
+                                              EnvProd.currency)
                                       : S.of(context).cart_delivery_fee_free,
                                   style:
                                       Theme.of(context).textTheme.titleMedium),
@@ -207,7 +210,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                     Theme.of(context).textTheme.headlineMedium),
                             Text(
                                 S.of(context).price_currency_ron(
-                                    state.order!.total.toStringAsFixed(2)),
+                                    state.order!.total.toStringAsFixed(2),
+                                    EnvProd.currency),
                                 style:
                                     Theme.of(context).textTheme.headlineMedium),
                           ],

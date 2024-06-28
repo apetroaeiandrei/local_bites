@@ -6,6 +6,7 @@ import 'package:models/food_option.dart';
 
 import '../analytics/analytics.dart';
 import '../analytics/metric.dart';
+import '../environment/env.dart';
 import '../generated/l10n.dart';
 import '../theme/dimens.dart';
 import '../utils.dart';
@@ -141,7 +142,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                               state.food.discountedPrice > 0
                                   ? state.food.discountedPrice
                                       .toStringAsFixed(1)
-                                  : state.food.price),
+                                  : state.food.price,
+                              EnvProd.currency),
                           style: Theme.of(context)
                               .textTheme
                               .displaySmall
@@ -161,7 +163,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                           maintainAnimation: true,
                           maintainState: true,
                           child: Text(
-                            S.of(context).price_currency_ron(state.food.price),
+                            S.of(context).price_currency_ron(
+                                state.food.price, EnvProd.currency),
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineMedium!
@@ -202,8 +205,8 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
                     context.read<FoodDetailsCubit>().addFood();
                   },
                   child: Text(
-                    S.of(context).food_details_add_button(
-                        state.quantity, state.price.toStringAsFixed(1)),
+                    S.of(context).food_details_add_button(state.quantity,
+                        state.price.toStringAsFixed(1), EnvProd.currency),
                   ),
                 ),
               ),
@@ -269,7 +272,10 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
         const SizedBox(
           width: 4,
         ),
-        Text(S.of(context).food_option_price_extra(option.price),
+        Text(
+            S
+                .of(context)
+                .food_option_price_extra(option.price, EnvProd.currency),
             style: Theme.of(context).textTheme.bodyMedium),
         IconButton(
           visualDensity: VisualDensity.compact,

@@ -6,6 +6,7 @@ import 'package:local/theme/wl_colors.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../analytics/analytics.dart';
+import '../environment/env.dart';
 import '../generated/l10n.dart';
 import '../theme/dimens.dart';
 import '../widgets/food_card.dart';
@@ -108,9 +109,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                       });
                     },
                     child: Text(
-                      S
-                          .of(context)
-                          .cart_status(state.cartCount, state.cartTotal),
+                      S.of(context).cart_status(
+                          state.cartCount, state.cartTotal, EnvProd.currency),
                     ),
                   ),
                 ),
