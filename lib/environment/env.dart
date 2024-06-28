@@ -11,6 +11,8 @@ abstract class EnvDev {
   static final String stripeMerchantIdentifier = _EnvDev.stripeMerchantIdentifier;
   @EnviedField(varName: 'CURRENCY', defaultValue: 'currency', obfuscate: false)
   static const String currency = _EnvDev.currency;
+  @EnviedField(varName: 'COUNTRY_CODE', defaultValue: '_', obfuscate: false)
+  static const String countryCode = _EnvDev.countryCode;
 }
 
 @Envied(path: 'keys.env')
@@ -21,4 +23,6 @@ abstract class EnvProd {
   static final String stripeMerchantIdentifier = _EnvDev.stripeMerchantIdentifier;
   @EnviedField(varName: 'CURRENCY', defaultValue: 'currency', obfuscate: false)
   static const String currency = _EnvProd.currency;
+  @EnviedField(varName: 'COUNTRY_CODE', defaultValue: '_', obfuscate: false)
+  static const String countryCode = _EnvDev.countryCode;
 }

@@ -515,11 +515,11 @@ class _CartScreenState extends State<CartScreen> {
           customerId: data.customer,
           primaryButtonLabel: S.of(context).cart_pay_button,
           applePay: const PaymentSheetApplePay(
-            merchantCountryCode: 'RO',
+            merchantCountryCode: EnvProd.countryCode,
           ),
           googlePay: PaymentSheetGooglePay(
-              merchantCountryCode: 'RO',
-              currencyCode: 'RON',
+              merchantCountryCode: EnvProd.countryCode,
+              currencyCode: EnvProd.currency,
               testEnv: !AppConfig.isProd),
           style: ThemeMode.light,
           appearance: PaymentSheetAppearance(

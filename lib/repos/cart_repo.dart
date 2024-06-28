@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:local/cart/stripe_pay_data.dart';
+import 'package:local/environment/env.dart';
 import 'package:local/repos/user_repo.dart';
 import 'package:models/food_model.dart';
 import 'package:models/food_order.dart';
@@ -229,7 +230,7 @@ class CartRepo {
       "mode": "payment",
       "amount":
           ((cartTotalProducts + deliveryFee - voucherDiscount) * 100).round(),
-      "currency": "RON",
+      "currency": EnvProd.currency,
       "application_fee_amount": (applicationFee * 100).round(),
       "on_behalf_of": restaurantStripeAccountId,
       "client_phone_number": user.phoneNumber,
